@@ -6,8 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class JigumiyakApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(JigumiyakApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(JigumiyakApplication.class, args);
+    }
 }
