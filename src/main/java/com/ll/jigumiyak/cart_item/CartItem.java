@@ -9,9 +9,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CartItem {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
     private Cart cart;
 }
