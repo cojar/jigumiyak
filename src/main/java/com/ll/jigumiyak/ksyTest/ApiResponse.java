@@ -1,5 +1,6 @@
 package com.ll.jigumiyak.ksyTest;
 
+import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 
