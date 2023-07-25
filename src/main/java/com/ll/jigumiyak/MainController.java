@@ -19,4 +19,9 @@ public class MainController {
     public String signup(){
         return "signup";
     }
+
+    @GetMapping("/admin")
+    public String admin() {
+        return "administration";
+    }
 }

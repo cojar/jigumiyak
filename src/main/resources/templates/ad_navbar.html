@@ -1,0 +1,50 @@
+<div th:fragment="ad_navbarFragment" class="navbar-Container">
+  <link rel="stylesheet" type="text/css" th:href="@{/ad_navbar.css}">
+
+  <header class="top-bar h-full">
+    <div class="con pr-1 w-1/6 h-full flex flex-col border-2">
+      <a href="#" class="logo flex items-center px-3">
+              <span>
+                지금이약 관리
+              </span>
+      </a>
+
+      <div class="flex-grow"></div>
+
+      <ul class="flex menu-1">
+        <li class="menu-1__li-icon">
+          <a href="#" class="h-full flex items-center px-2">
+            <span><i class="far fa-user"></i></span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="h-full flex items-center px-2">
+            <span>로그인</span>
+          </a>
+        </li>
+        <li class="menu-1__li-join">
+          <a href="#" class="h-full flex items-center px-2">
+            <span>가입하기</span>
+          </a>
+        </li>
+      </ul>
+
+    </div>
+  </header>
+  <script>
+    function TopBar__init() {
+  $(window).scroll(function() {
+    let scrollTop = $(window).scrollTop();
+
+    if ( scrollTop == 0 ) {
+      $('.top-bar').removeClass('hover');
+    }
+    else {
+      $('.top-bar').addClass('hover');
+    }
+  });
+}
+
+TopBar__init();
+</script>
+</div>
