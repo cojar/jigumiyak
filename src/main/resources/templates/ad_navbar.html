@@ -4,108 +4,108 @@
   <meta charset="UTF-8">
   <title>JIGUMIYAK_ADMIN</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-<div class="navbar-Container">
-  <div id="app" class="min-h-screen w-full flex justify-between">
-    <aside class="fixed h-screen flex flex-col justify-between items-center bg-white shadow p-6 z-50">
-      <nav class=" inline-flex flex-col space-y-2">
-        <a v-for="(link, index) in nav" class="flex items-center py-2 cursor-pointer" :class="[
-                 [selected == index ? 'bg-gray-400 text-gray-50 px-4 rounded-full' : 'hover:bg-gray-100 px-4 rounded-full']
-      ]" @click="selected = index">
-          <span v-html="selected == index ? link.selectedIcon : link.icon" class="w-8 h-8 p-1" :class="{ 'mr-4' : isEnlarge }"></span>
-          <span v-html="link.text" class="font-medium select-none" v-if="isEnlarge"></span>
-        </a>
-      </nav>
-      <div class="flex items-center justify-between w-full bg-gray-100 p-4 rounded-lg" v-if="isEnlarge">
-        <div>
-          <h3 class="text-gray-900 font-semibold" v-html="user.name"></h3>
-          <h4 class="text-sm text-gray-700 mt-1" v-html="user.role"></h4>
-        </div>
-        <a href="#"><i class="fa-solid fa-arrow-right-from-bracket fa-xl"></i></a>
-      </div>
-    </aside>
-    <aside class="h-screen bg-white  p-6">
-      <div class="w-full bg-red-400">
-        <th:block layout:fragment="content"></th:block>
-      </div>
-    </aside>
-  </div>
-  <script>
-    new Vue({
-  el: "#app",
-  data: {
-    selected: 0,
-    isEnlarge: true,
-    nav: [
-      {
-        icon:
-          '<i class="fa-solid fa-house fa-lg" style="color: #A5CDCD;"></i>',
-        selectedIcon:
-          '<i class="fa-solid fa-house fa-lg" style="color: #FAF7F0;"></i>',
-        text: "HOME"
-      },
-      {
-        icon:
-          '<i class="fa-solid fa-users fa-lg" style="color: #A5CDCD;"></i>',
-        selectedIcon:
-          '<i class="fa-solid fa-users fa-lg" style="color: #FAF7F0;"></i>',
-        text: "User manager"
-      },
-      {
-        icon:
-          '<i class="fa-solid fa-bullhorn fa-lg" style="color: #A5CDCD;"></i>',
-        selectedIcon:
-          '<i class="fa-solid fa-bullhorn fa-lg" style="color: #FAF7F0;"></i>',
-        text: "Notice manager"
-      },
-      {
-        icon:
-          '<i class="fa-solid fa-newspaper fa-lg" style="color: #A5CDCD;"></i>',
-        selectedIcon:
-          '<i class="fa-solid fa-newspaper fa-lg" style="color: #FAF7F0;"></i>',
-        text: "Article manager"
-      },
-      {
-        icon:
-          '<i class="fa-solid fa-boxes-stacked fa-lg" style="color: #A5CDCD;"></i>',
-        selectedIcon:
-          '<i class="fa-solid fa-boxes-stacked fa-lg" style="color: #FAF7F0;"></i>',
-        text: "Product manager"
-      },
-      {
-        icon:
-          '<i class="fa-solid fa-credit-card fa-lg" style="color: #A5CDCD;"></i>',
-        selectedIcon:
-          '<i class="fa-solid fa-credit-card fa-lg" style="color: #FAF7F0;"></i>',
-        text: "Payment Manager"
-      },
-      {
-        icon:
-          '<i class="fa-solid fa-truck fa-lg" style="color: #A5CDCD;"></i>',
-        selectedIcon:
-          '<i class="fa-solid fa-truck fa-lg" style="color: #FAF7F0;"></i>',
-        text: "Deliver Manager"
-      },
-      {
-        icon:
-          '<i class="fa-solid fa-comment-dots fa-lg" style="color: #A5CDCD;"></i>',
-        selectedIcon:
-          '<i class="fa-solid fa-comment-dots fa-lg" style="color: #FAF7F0;"></i>',
-        text: "Inquiry Manager"
-      }
-    ],
-    user: {
-      name: "Admin",
-      role: "관리자"
-    }
+<style>
+  .navbar-Container a.selected {
+    background-color: gray;
+    color: white;
   }
-});
+</style>
+<div class="navbar-Container">
+  <div class="min-h-screen w-full flex justify-between">
+    <div class="fixed h-screen flex flex-col justify-between items-center w-64 bg-white shadow p-6 z-50">
+      <div class="w-52 inline-flex flex-col space-y-2">
 
-  </script>
+        <a href="#" class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
+          <i class="fa-solid fa-house fa-lg" style="color: #A5CDCD; width:40px;"></i>
+          <span class="font-medium select-none ">HOME</span>
+        </a>
+
+        <a href="#" class="flex items-center py-2 cursor-pointer  hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
+          <i class="fa-solid fa-users fa-lg" style="color: #A5CDCD; width:40px;"></i>
+          <span class="font-medium select-none">User manager</span>
+        </a>
+        <a href="#" class="flex items-center py-2 cursor-pointer  hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
+          <i class="fa-solid fa-bullhorn fa-lg" style="color: #A5CDCD; width:40px;"></i>
+          <span class="font-medium select-none">Notice manager</span>
+        </a>
+        <a href="#" class="flex items-center py-2 cursor-pointer  hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
+          <i class="fa-solid fa-newspaper fa-lg" style="color: #A5CDCD; width:40px;"></i>
+          <span class="font-medium select-none">Article manager</span>
+        </a>
+        <a href="#" class="flex items-center py-2 cursor-pointer  hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
+          <i class="fa-solid fa-boxes-stacked fa-lg" style="color: #A5CDCD; width:40px;"></i>
+          <span class="font-medium select-none">Product manager</span>
+        </a>
+        <a href="#" class="flex items-center py-2 cursor-pointer  hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
+          <i class="fa-solid fa-credit-card fa-lg" style="color: #A5CDCD; width:40px;"></i>
+          <span class="font-medium select-none">Payment manager</span>
+        </a>
+        <a href="#" class="flex items-center py-2 cursor-pointer  hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
+          <i class="fa-solid fa-truck fa-lg" style="color: #A5CDCD; width:40px;"></i>
+          <span class="font-medium select-none">Deliver manager</span>
+        </a>
+        <a href="#" class="flex items-center py-2 cursor-pointer  hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
+          <i class="fa-solid fa-comment-dots fa-lg" style="color: #A5CDCD; width:40px;"></i>
+          <span class="font-medium select-none">Inquiry manager</span>
+        </a>
+      </div>
+
+
+      <div class="flex items-center justify-between w-full bg-gray-100 p-4 rounded-lg">
+        <div>
+          <h3 class="text-gray-900 font-semibold">관리자 아이디</h3>
+          <h4 class="text-sm text-gray-700 mt-1">관리자</h4>
+        </div>
+        <a href="#">
+          <i class="fa-solid fa-arrow-right-from-bracket fa-xl"></i>
+        </a>
+      </div>
+
+
+    </div>
+
+
+    <div class="w-full ml-64">
+      <th:block layout:fragment="content"></th:block>
+    </div>
+  </div>
 </div>
+
+<script>
+  function setSelectedLink(linkId) {
+    localStorage.setItem('selectedLink', linkId);
+  }
+
+  function getSelectedLink() {
+    return localStorage.getItem('selectedLink');
+  }
+
+  $(document).ready(function() {
+    const anchorLinks = $('.navbar-Container a');
+    const storedLinkId = getSelectedLink();
+
+    if (storedLinkId) {
+      anchorLinks.each(function() {
+        if ($(this).attr('id') === storedLinkId) {
+          $(this).addClass('selected');
+        }
+      });
+    }
+
+    anchorLinks.click(function(event) {
+      event.preventDefault();
+
+      anchorLinks.removeClass('selected');
+
+      $(this).addClass('selected');
+
+      setSelectedLink($(this).attr('id'));
+    });
+  });
+</script>
 </body>
 </html>
