@@ -25,30 +25,8 @@ public class ApiController {
         // JSON 데이터 가져오기
         String apiResponseJson = apiService.fetchDataFromApi();
 
-        List<String> mostNecessaryWords = extractMostNecessaryWords(apiResponseJson);
+        List<String> mostNecessaryWords = apiService.extractMostNecessaryWords(apiResponseJson);
 
         return new ResponseEntity<>(mostNecessaryWords, HttpStatus.OK);
-    }
-
-    // 예시코드
-    private List<String> extractMostNecessaryWords(String apiResponseJson) {
-        List<String> mostNecessaryWords = new ArrayList<>();
-
-        ApiResponse[] apiResponses = new Gson().fromJson(apiResponseJson, ApiResponse[].class);
-
-        // ApiResponse 배열을 순회하며 필요한 단어를 추출
-        for (ApiResponse response : apiResponses) {
-            String primaryFunctionality = response.getPrimaryFnclty(); // 필드 이름이 바뀜?
-            if (primaryFunctionality != null) {
-                // 로직을 짜자
-                String[] words = primaryFunctionality.split("\\s+");
-                if (words.length > 0) {
-                    mostNecessaryWords.add(words[0]);
-                }
-            }
-        }
-        System.out.println(mostNecessaryWords);
-
-        return mostNecessaryWords;
     }
 }

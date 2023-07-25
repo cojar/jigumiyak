@@ -1,29 +1,21 @@
 package com.ll.jigumiyak.ksyTest;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
+@Getter
+@Setter
 public class ApiResponse {
 
-    private String prdlstReportNo;
-    private String prmsDt;
-    private String prdtShapCdNm;
-    private String lcnsNo;
-    private String prdlstNm;
-    private String iftknAtntMatrCn;
-    private String bsshNm;
-    private String stdrStnd;
-    private String dispos;
-    private String primaryFnclty;
-    private String pogDaycnt;
-    private String cstdyMthd;
-    private String ntkMthd;
-    private String rawmtrlNm;
-
-    public String getPrimaryFnclty() {
-        return primaryFnclty;
-    }
-
-    public void setPrimaryFnclty(String primaryFnclty) {
-        this.primaryFnclty = primaryFnclty;
-    }
+    private String HF_FNCLTY_MTRAL_RCOGN_NO;
+    private String PRMS_DT;
+    private String BSSH_NM;
+    private String INDUTY_NM;
+    private String ADDR;
+    private String APLC_RAWMTRL_NM;
+    private String FNCLTY_CN;
+    private String DAY_INTK_CN;
+    private String IFTKN_ATNT_MATR_CN;
 }
