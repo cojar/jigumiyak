@@ -1,50 +1,111 @@
-<div th:fragment="ad_navbarFragment" class="navbar-Container">
-  <link rel="stylesheet" type="text/css" th:href="@{/ad_navbar.css}">
-
-  <header class="top-bar h-full">
-    <div class="con pr-1 w-1/6 h-full flex flex-col border-2">
-      <a href="#" class="logo flex items-center px-3">
-              <span>
-                지금이약 관리
-              </span>
-      </a>
-
-      <div class="flex-grow"></div>
-
-      <ul class="flex menu-1">
-        <li class="menu-1__li-icon">
-          <a href="#" class="h-full flex items-center px-2">
-            <span><i class="far fa-user"></i></span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="h-full flex items-center px-2">
-            <span>로그인</span>
-          </a>
-        </li>
-        <li class="menu-1__li-join">
-          <a href="#" class="h-full flex items-center px-2">
-            <span>가입하기</span>
-          </a>
-        </li>
-      </ul>
-
-    </div>
-  </header>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>JIGUMIYAK_ADMIN</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="navbar-Container">
+  <div id="app" class="min-h-screen w-full flex justify-between">
+    <aside class="fixed h-screen flex flex-col justify-between items-center bg-white shadow p-6 z-50">
+      <nav class=" inline-flex flex-col space-y-2">
+        <a v-for="(link, index) in nav" class="flex items-center py-2 cursor-pointer" :class="[
+                 [selected == index ? 'bg-gray-400 text-gray-50 px-4 rounded-full' : 'hover:bg-gray-100 px-4 rounded-full']
+      ]" @click="selected = index">
+          <span v-html="selected == index ? link.selectedIcon : link.icon" class="w-8 h-8 p-1" :class="{ 'mr-4' : isEnlarge }"></span>
+          <span v-html="link.text" class="font-medium select-none" v-if="isEnlarge"></span>
+        </a>
+      </nav>
+      <div class="flex items-center justify-between w-full bg-gray-100 p-4 rounded-lg" v-if="isEnlarge">
+        <div>
+          <h3 class="text-gray-900 font-semibold" v-html="user.name"></h3>
+          <h4 class="text-sm text-gray-700 mt-1" v-html="user.role"></h4>
+        </div>
+        <a href="#"><i class="fa-solid fa-arrow-right-from-bracket fa-xl"></i></a>
+      </div>
+    </aside>
+    <aside class="h-screen bg-white  p-6">
+      <div class="w-full bg-red-400">
+        <th:block layout:fragment="content"></th:block>
+      </div>
+    </aside>
+  </div>
   <script>
-    function TopBar__init() {
-  $(window).scroll(function() {
-    let scrollTop = $(window).scrollTop();
-
-    if ( scrollTop == 0 ) {
-      $('.top-bar').removeClass('hover');
+    new Vue({
+  el: "#app",
+  data: {
+    selected: 0,
+    isEnlarge: true,
+    nav: [
+      {
+        icon:
+          '<i class="fa-solid fa-house fa-lg" style="color: #A5CDCD;"></i>',
+        selectedIcon:
+          '<i class="fa-solid fa-house fa-lg" style="color: #FAF7F0;"></i>',
+        text: "HOME"
+      },
+      {
+        icon:
+          '<i class="fa-solid fa-users fa-lg" style="color: #A5CDCD;"></i>',
+        selectedIcon:
+          '<i class="fa-solid fa-users fa-lg" style="color: #FAF7F0;"></i>',
+        text: "User manager"
+      },
+      {
+        icon:
+          '<i class="fa-solid fa-bullhorn fa-lg" style="color: #A5CDCD;"></i>',
+        selectedIcon:
+          '<i class="fa-solid fa-bullhorn fa-lg" style="color: #FAF7F0;"></i>',
+        text: "Notice manager"
+      },
+      {
+        icon:
+          '<i class="fa-solid fa-newspaper fa-lg" style="color: #A5CDCD;"></i>',
+        selectedIcon:
+          '<i class="fa-solid fa-newspaper fa-lg" style="color: #FAF7F0;"></i>',
+        text: "Article manager"
+      },
+      {
+        icon:
+          '<i class="fa-solid fa-boxes-stacked fa-lg" style="color: #A5CDCD;"></i>',
+        selectedIcon:
+          '<i class="fa-solid fa-boxes-stacked fa-lg" style="color: #FAF7F0;"></i>',
+        text: "Product manager"
+      },
+      {
+        icon:
+          '<i class="fa-solid fa-credit-card fa-lg" style="color: #A5CDCD;"></i>',
+        selectedIcon:
+          '<i class="fa-solid fa-credit-card fa-lg" style="color: #FAF7F0;"></i>',
+        text: "Payment Manager"
+      },
+      {
+        icon:
+          '<i class="fa-solid fa-truck fa-lg" style="color: #A5CDCD;"></i>',
+        selectedIcon:
+          '<i class="fa-solid fa-truck fa-lg" style="color: #FAF7F0;"></i>',
+        text: "Deliver Manager"
+      },
+      {
+        icon:
+          '<i class="fa-solid fa-comment-dots fa-lg" style="color: #A5CDCD;"></i>',
+        selectedIcon:
+          '<i class="fa-solid fa-comment-dots fa-lg" style="color: #FAF7F0;"></i>',
+        text: "Inquiry Manager"
+      }
+    ],
+    user: {
+      name: "Admin",
+      role: "관리자"
     }
-    else {
-      $('.top-bar').addClass('hover');
-    }
-  });
-}
+  }
+});
 
-TopBar__init();
-</script>
+  </script>
 </div>
+</body>
+</html>
