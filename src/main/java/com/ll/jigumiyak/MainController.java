@@ -5,23 +5,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class MainController {
-    @GetMapping("/test")
-    public String test(){
-        return "test";
+    @GetMapping("/")
+    public String root(){
+        return "redirect:/index";
     }
 
-    @GetMapping("/login")
-    public String login(){
-        return "login";
+    @GetMapping("/index")
+    public String index() {
+        return "index";
     }
 
-    @GetMapping("/signup")
-    public String signup(){
-        return "signup";
-    }
-
-    @GetMapping("/admin")
-    public String admin() {
-        return "administration";
-    }
 }

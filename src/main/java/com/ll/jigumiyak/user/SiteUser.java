@@ -16,6 +16,16 @@ public class SiteUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
+    private String loginId;
+
+    private String password;
+
+    @Column(unique = true)
+    private String email;
+
+    private String address;
+
     @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE)
     private List<SocialAccount> socialAccountList;
 }
