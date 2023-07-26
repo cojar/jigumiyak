@@ -12,19 +12,9 @@ html > body {
   padding:0; margin:0;
 }
 
-/* 노말라이즈 */
-
-/* 라이브러리 */
-
-/* 커스텀 */
 :root {
   --site-width:1280px;
-  --top-bar__height:64px;
-}
-
-.navbar-Container {
-  background-color:transparent;
-  padding-top:var(--top-bar__height);
+  --top-bar__height:128px;
 }
 
 .con {
@@ -49,7 +39,6 @@ html > body {
   --color:#A5CDCD;
   height:var(--top-bar__height);
   color:var(--color);
-  position:fixed;
   top:0;
   left:0;
   width:100%;
