@@ -1,8 +1,8 @@
 <div th:fragment="navbarFragment" class="navbar-Container">
     <link rel="stylesheet" type="text/css" th:href="@{/navbar.css}">
 
-    <header class="top-bar">
-        <div class="con mx-auto pr-1 h-full flex">
+    <header class="top-bar fixed shadow">
+        <div class="con mx-auto pr-1 h-1/2 flex">
             <a href="/" class="logo flex items-center px-3">
               <span>
                 지금이약
@@ -12,6 +12,11 @@
             <div class="flex-grow"></div>
 
             <ul class="flex menu-1">
+                <li class="menu-1__li-icon">
+                    <a href="#" class="h-full flex items-center px-2">
+                        <span><i class="fa-solid fa-cart-shopping"></i></span>
+                    </a>
+                </li>
                 <li class="menu-1__li-icon">
                     <a href="#" class="h-full flex items-center px-2">
                         <span><i class="far fa-user"></i></span>
@@ -28,10 +33,37 @@
                     </a>
                 </li>
             </ul>
+        </div>
+
+
+        <div class="con mx-auto pr-1 h-1/2">
+
+            <ul class="flex justify-between h-full w-full">
+                <li class="w-1/5">
+                    <a href="#" class="h-full w-full flex items-center justify-center text-xl px-10">맞춤 영양제
+                    </a>
+                </li>
+                <li class="w-1/5">
+                    <a href="#" class="h-full w-full flex items-center justify-center text-xl px-10">상품 조회
+                    </a>
+                </li>
+                <li class="w-1/5">
+                    <a href="#" class="h-full w-full flex items-center justify-center text-xl px-10">커뮤니티
+                    </a>
+                </li>
+                <li class="w-1/5">
+                    <a href="#" class="h-full w-full flex items-center justify-center text-xl px-10">공지사항
+                    </a>
+                </li>
+                <li class="w-1/5">
+                    <a href="#" class="h-full w-full flex items-center justify-center text-xl px-10">문의하기
+                    </a>
+                </li>
+            </ul>
 
         </div>
     </header>
-<script>
+    <script>
     function TopBar__init() {
   $(window).scroll(function() {
     let scrollTop = $(window).scrollTop();
