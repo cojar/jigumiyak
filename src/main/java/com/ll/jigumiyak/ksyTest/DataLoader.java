@@ -1,5 +1,7 @@
 package com.ll.jigumiyak.ksyTest;
 
+import com.ll.jigumiyak.notice_category.NoticeCategory;
+import com.ll.jigumiyak.notice_category.NoticeCategoryRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -9,9 +11,11 @@ import java.nio.channels.AlreadyBoundException;
 public class DataLoader implements CommandLineRunner {
 
     private final NutrientCategoryRepository nutrientCategoryRepository;
+    private final NoticeCategoryRepository noticeCategoryRepository;
 
-    public DataLoader(NutrientCategoryRepository nutrientCategoryRepository) {
+    public DataLoader(NutrientCategoryRepository nutrientCategoryRepository, NoticeCategoryRepository noticeCategoryRepository) {
         this.nutrientCategoryRepository = nutrientCategoryRepository;
+        this.noticeCategoryRepository = noticeCategoryRepository;
     }
 
     @Override
@@ -26,7 +30,20 @@ public class DataLoader implements CommandLineRunner {
                 nutrientCategoryRepository.save(nutrientCategory);
             }
         } else {
-            System.out.println("이미 있슴다");
+            System.out.println("영양성분은 이미 생성 되어있습니다");
+        }
+
+        if(noticeCategoryRepository.findAll().isEmpty()){
+            NoticeCategory noticeCategory1 = new NoticeCategory();
+            noticeCategory1.setName("공지사항");
+            noticeCategoryRepository.save(noticeCategory1);
+
+            NoticeCategory noticeCategory2 = new NoticeCategory();
+            noticeCategory2.setName("이벤트");
+            noticeCategoryRepository.save(noticeCategory2);
+        }
+        else {
+            System.out.println("공지사항 카테고리는 이미 생성되어 있습니다");
         }
     }
 }
