@@ -2,10 +2,16 @@ package com.ll.jigumiyak.ksyTest;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.client.RestTemplate;
 
+
+@Controller
+@RequiredArgsConstructor
 public class ApiCaller {
+    private final NutrientService nutrientService;
 
     public static void main(String[] args) {
         // API 엔드포인트(URL) 설정
@@ -28,9 +34,15 @@ public class ApiCaller {
                 // JSON 데이터 파싱하여 Java 객체로 변환
                 JsonNode rootNode = objectMapper.readTree(responseBody);
                 JsonNode rowNode = rootNode.get("I-0040").get("row");
+                System.out.println(rowNode);
 
                 // JSON 배열을 하나씩 처리
+                // 현재 dataNode가 영양제 객체로 사용될 거임
                 for (JsonNode dataNode : rowNode) {
+                    Nutrient nutrient = new Nutrient();
+                    nutrient.setName(dataNode.get("APLC_RAWMTRL_NM").asText());
+
+                    System.out.println("---------------------------------------");
                     String prmsDt = dataNode.get("PRMS_DT").asText();
                     String dayIntkCn = dataNode.get("DAY_INTK_CN").asText();
                     String iftknAtntMatrCn = dataNode.get("IFTKN_ATNT_MATR_CN").asText();

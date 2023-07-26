@@ -8,4 +8,5 @@ public class ConfigK {
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
+
 }
