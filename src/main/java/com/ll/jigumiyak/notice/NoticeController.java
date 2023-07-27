@@ -1,12 +1,17 @@
 package com.ll.jigumiyak.notice;
 
+import com.ll.jigumiyak.notice_comment.CommentForm;
+import com.ll.jigumiyak.notice_comment.NoticeComment;
+import com.ll.jigumiyak.user.SiteUser;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @Controller
 @RequiredArgsConstructor

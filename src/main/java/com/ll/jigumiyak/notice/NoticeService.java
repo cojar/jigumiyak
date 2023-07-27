@@ -1,11 +1,14 @@
 package com.ll.jigumiyak.notice;
 
+import com.ll.jigumiyak.DataNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,5 +25,14 @@ public class NoticeService {
             return noticeRepository.searchByCategory(null, null, category, pageable);
         }
         return noticeRepository.findAll(pageable);
+    }
+
+    public Notice getNoticeById(Long id) {
+        Optional<Notice> notice = this.noticeRepository.findById(id);
+        if (notice.isPresent()){
+            return notice.get();
+        } else {
+            throw new DataNotFoundException("notice not found");
+        }
     }
 }
