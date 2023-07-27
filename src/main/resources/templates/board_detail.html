@@ -1,0 +1,25 @@
+<html layout:decorate="~{layout}">
+<head>
+  <title>BOARD-DETAIL</title>
+</head>
+<div layout:fragment="content" class="test-Container">
+  <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
+  <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
+    <div th:text="${board.subject}"></div>
+    <div th:text="${board.content}"></div>
+
+    <div th:text="|${#lists.size(board.commentList)}개의 답변이 있습니다.|"></div>
+    <div>
+      <ul>
+        <li th:each="comment : ${board.commentList}" th:text="${comment.content}"></li>
+      </ul>
+    </div>
+
+
+    <form th:action="@{|/comment/create/${board.id}|}" method="post">
+      <textarea name="content" id="content" rows="15"></textarea>
+      <input type="submit" value="답변등록">
+    </form>
+  </div>
+</div>
+</html>

@@ -4,7 +4,7 @@
 </head>
 <div layout:fragment="content" class="test-Container">
     <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
-    <div class="test-con mx-auto pr-1 h-full flex" style="margin-top:128px;">
+    <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
         <table>
             <thead>
             <tr>
@@ -14,7 +14,9 @@
             </thead>
             <tbody>
             <tr th:each="board : ${boardList}">
-                <td th:text="${board.subject}"></td>
+                <td>
+                    <a th:href="@{|/board/detail/${board.id}|}" th:text="${board.subject}"></a>
+                </td>
                 <td th:text="${board.createDate}"></td>
             </tr>
             </tbody>
