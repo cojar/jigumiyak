@@ -1,0 +1,25 @@
+<html layout:decorate="~{layout}">
+<head>
+    <title>BOARD-LIST</title>
+</head>
+<div layout:fragment="content" class="test-Container">
+    <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
+    <div class="test-con mx-auto pr-1 h-full flex" style="margin-top:128px;">
+        <table>
+            <thead>
+            <tr>
+                <th>제목</th>
+                <th>작성일시</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="board : ${boardList}">
+                <td th:text="${board.subject}"></td>
+                <td th:text="${board.createDate}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+</html>

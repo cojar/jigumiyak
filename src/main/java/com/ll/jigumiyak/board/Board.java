@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cascade;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -17,6 +18,17 @@ public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(length = 300)
+    private String subject;
+
+    @Column(columnDefinition = "TEXT")
+    private String content;
+
+    @Column
+    private LocalDateTime createDate;
+
+    @Column LocalDateTime modifyDate;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
     private List<BoardComment> commentList;
