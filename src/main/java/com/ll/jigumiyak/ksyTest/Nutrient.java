@@ -1,11 +1,10 @@
 package com.ll.jigumiyak.ksyTest;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -18,4 +17,6 @@ public class Nutrient {
     private String efficacy;
     private String dailyIntake;
     private String caution;
+    @OneToMany(mappedBy = "nutrient", cascade = CascadeType.REMOVE)
+    private List<NutrientCategory> categoryList;
 }

@@ -14,4 +14,6 @@ public class NutrientCategory {
     private Integer id;
     @Column
     private String categoryName;
+    @ManyToOne
+    private Nutrient nutrient;
 }
