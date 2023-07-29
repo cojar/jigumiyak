@@ -3,6 +3,7 @@ package com.ll.jigumiyak.board;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +25,11 @@ public class BoardService {
         }
     }
     public void create(String subject, String content) {
+        Board b = new Board();
+        b.setSubject(subject);
+        b.setContent(content);
+        b.setCreateDate(LocalDateTime.now());
+        this.boardRepository.save(b);
 
     }
 }

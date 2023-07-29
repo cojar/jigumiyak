@@ -5,9 +5,10 @@
 <div layout:fragment="content" class="test-Container">
     <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
     <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
-        <table>
+        <h5 class="border-b text-2xl pt-5">커뮤니티</h5>
+        <table class="block bg-gray-100">
             <thead>
-            <tr>
+            <tr class="bg-red-100">
                 <th>제목</th>
                 <th>작성일시</th>
             </tr>
@@ -17,10 +18,11 @@
                 <td>
                     <a th:href="@{|/board/detail/${board.id}|}" th:text="${board.subject}"></a>
                 </td>
-                <td th:text="${board.createDate}"></td>
+                <td th:text="${#temporals.format(board.createDate, 'yyyy-MM-dd HH:mm')}"></td>
             </tr>
             </tbody>
         </table>
+        <a th:href="@{/board/create}" class="block text-center w-32 rounded-xl p-3 my-5" style="background:#E9B384;">글 작성하기</a>
     </div>
 
 </div>

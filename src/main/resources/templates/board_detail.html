@@ -16,9 +16,10 @@
     </div>
 
 
-    <form th:action="@{|/comment/create/${board.id}|}" method="post">
-      <textarea name="content" id="content" rows="15"></textarea>
-      <input type="submit" value="답변등록">
+    <form th:action="@{|/comment/create/${board.id}|}" th:object="${boardCommentForm}" method="post">
+      <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+      <textarea name="content" id="content" rows="15" class="block w-full border rounded-lg"></textarea>
+      <input type="submit" value="답변등록" class="block text-center w-32 rounded-xl p-3 my-5" style="background:#E9B384;">
     </form>
   </div>
 </div>
