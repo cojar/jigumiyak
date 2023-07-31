@@ -12,7 +12,7 @@ import java.util.List;
 public class Nutrient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     private String name;
     private String efficacy;
     private String dailyIntake;
