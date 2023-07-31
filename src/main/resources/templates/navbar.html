@@ -22,12 +22,17 @@
                         <span><i class="far fa-user"></i></span>
                     </a>
                 </li>
-                <li>
+                <li sec:authorize="isAnonymous()">
                     <a href="/user/login" class="h-full flex items-center px-2">
                         <span>로그인</span>
                     </a>
                 </li>
-                <li class="menu-1__li-join">
+                <li>
+                    <a sec:authorize="isAuthenticated()" href="/user/logout" class="h-full flex items-center px-2">
+                        <span>로그아웃</span>
+                    </a>
+                </li>
+                <li sec:authorize="isAnonymous()" class="menu-1__li-join">
                     <a href="/user/signup" class="h-full flex items-center px-2">
                         <span>가입하기</span>
                     </a>

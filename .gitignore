@@ -26,8 +26,6 @@ bin/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
-**/application-dev.properties
-**/application-prod.properties
 
 ### NetBeans ###
 /nbproject/private/
