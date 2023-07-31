@@ -20,9 +20,9 @@ public class NoticeService {
         if (StringUtils.hasText(keyword) && StringUtils.hasText(keywordCategory) && StringUtils.hasText(category)) {
             return noticeRepository.searchByKeywordAndCategory(keyword, keywordCategory, category, pageable);
         } else if(StringUtils.hasText(keyword) && StringUtils.hasText(keywordCategory)){
-            return noticeRepository.searchByKeyword(keyword, keywordCategory,null, pageable);
+            return noticeRepository.searchByKeyword(keyword, keywordCategory, pageable);
         } else if (StringUtils.hasText(category)) {
-            return noticeRepository.searchByCategory(null, null, category, pageable);
+            return noticeRepository.searchByCategory(category, pageable);
         }
         return noticeRepository.findAll(pageable);
     }
