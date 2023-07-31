@@ -26,22 +26,22 @@
             로그인
         </h1>
 
-        <form th:action method="POST" class="flex flex-col gap-6" onsubmit="JoinForm__submit(this); return false;">
+        <form th:action="@{/user/login}" method="post" class="flex flex-col gap-6">
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">아이디</span>
                 </label>
-                <input type="text" name="username" placeholder="아이디" class="input input-bordered" autofocus />
+                <input type="text" name="loginId" placeholder="아이디" class="input input-bordered" autofocus />
             </div>
 
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">비빌번호</span>
+                    <span class="label-text">비밀번호</span>
                 </label>
-                <input type="password" name="password" placeholder="비빌번호" class="input input-bordered" />
+                <input type="password" name="password" placeholder="비밀번호" class="input input-bordered" />
             </div>
 
-            <button id="btn-join-1" class="btn btn-block border-gray-300 bg-[color:#A5CDCD] gap-1">
+            <button type="submit" id="btn-join-1" class="btn btn-block border-gray-300 bg-[color:#A5CDCD] gap-1">
                 <i class="fa-solid fa-right-to-bracket"></i>
                 <span>로그인</span>
             </button>
