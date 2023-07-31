@@ -5,7 +5,7 @@
 <div layout:fragment="content" class="test-Container">
   <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
   <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
-    <h5 class="border-b text-2xl pt-5">질문등록</h5>
+    <h5 class="border-b-4 border-double border-gray-300 text-2xl pt-5">질문등록</h5>
     <form th:action="@{/board/create}" th:object="${boardForm}" method="post">
       <div th:replace="~{form_errors :: formErrorsFragment}"></div>
       <div class="mt-5">

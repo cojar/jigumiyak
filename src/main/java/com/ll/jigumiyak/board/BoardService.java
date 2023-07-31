@@ -1,5 +1,6 @@
 package com.ll.jigumiyak.board;
 
+import com.ll.jigumiyak.user.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,11 +30,12 @@ public class BoardService {
             return null;
         }
     }
-    public void create(String subject, String content) {
+    public void create(String subject, String content, SiteUser siteUser) {
         Board b = new Board();
         b.setSubject(subject);
         b.setContent(content);
         b.setCreateDate(LocalDateTime.now());
+        b.setAuthor(siteUser);
         this.boardRepository.save(b);
     }
 
