@@ -1,5 +1,6 @@
-package com.ll.jigumiyak.ksyTest;
+package com.ll.jigumiyak.nutrient;
 
+import com.ll.jigumiyak.nutrient_category.NutrientCategory;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

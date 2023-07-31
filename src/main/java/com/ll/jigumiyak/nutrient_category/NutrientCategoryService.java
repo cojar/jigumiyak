@@ -1,4 +1,4 @@
-package com.ll.jigumiyak.ksyTest;
+package com.ll.jigumiyak.nutrient_category;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

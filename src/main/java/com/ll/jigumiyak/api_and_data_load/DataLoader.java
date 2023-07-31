@@ -1,7 +1,9 @@
-package com.ll.jigumiyak.ksyTest;
+package com.ll.jigumiyak.api_and_data_load;
 
 import com.ll.jigumiyak.notice_category.NoticeCategory;
 import com.ll.jigumiyak.notice_category.NoticeCategoryRepository;
+import com.ll.jigumiyak.nutrient_category.NutrientCategory;
+import com.ll.jigumiyak.nutrient_category.NutrientCategoryRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 

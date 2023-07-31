@@ -1,4 +1,4 @@
-package com.ll.jigumiyak.ksyTest;
+package com.ll.jigumiyak.api_and_data_load;
 
 import jakarta.persistence.Entity;
 import lombok.Getter;

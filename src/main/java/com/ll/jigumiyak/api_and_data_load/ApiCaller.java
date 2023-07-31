@@ -1,7 +1,10 @@
-package com.ll.jigumiyak.ksyTest;
+package com.ll.jigumiyak.api_and_data_load;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ll.jigumiyak.nutrient.Nutrient;
+import com.ll.jigumiyak.nutrient.NutrientService;
+import com.ll.jigumiyak.nutrient_category.NutrientCategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

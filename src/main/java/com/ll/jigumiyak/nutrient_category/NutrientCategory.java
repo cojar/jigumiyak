@@ -1,9 +1,9 @@
-package com.ll.jigumiyak.ksyTest;
+package com.ll.jigumiyak.nutrient_category;
 
+import com.ll.jigumiyak.nutrient.Nutrient;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 public class NutrientCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @Column
     private String categoryName;
     //눈 체력 체지방 뼈 등등
