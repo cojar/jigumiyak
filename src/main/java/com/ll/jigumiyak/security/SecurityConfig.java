@@ -30,7 +30,8 @@ public class SecurityConfig {
                 .formLogin((formLogin) -> formLogin
                         .loginPage("/user/login")
                         .successHandler(defaultSuccessHandler)
-                        .failureHandler(defaultFailureHandler)) // usernameParameter 추가 예정
+                        .failureHandler(defaultFailureHandler)
+                        .usernameParameter("loginId"))
                 .logout((logout) -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
                         .logoutSuccessUrl("/")

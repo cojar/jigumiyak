@@ -1,4 +1,6 @@
 <meta charset="UTF-8">
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
 <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
@@ -19,36 +21,74 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" type="text/css" th:href="@{/navbar.css}">
 
-<div class="flex-grow flex items-center justify-center h-full border-solid border-2">
+<!-- 주소 api 불러오기 -->
+<script type="text/javascript" src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+<div class="flex-grow flex items-center justify-center border-solid border-2 pt-5">
   <div class="max-w-2xl w-full px-4">
     <h1 class="mb-4">
       <i class="fa-solid fa-user-plus"></i>
       회원가입
     </h1>
 
-    <form th:action method="POST" class="flex flex-col gap-6" onsubmit="JoinForm__submit(this); return false;">
+    <form th:object=${userSignupForm} method="post" id="userSignupForm" class="flex flex-col gap-6">
       <div class="form-control">
         <label class="label">
           <span class="label-text">아이디</span>
         </label>
-        <input type="text" name="username" placeholder="아이디" class="input input-bordered" autofocus />
+        <input type="text" th:field="*{loginId}" placeholder="아이디" class="input input-bordered" autofocus>
       </div>
 
       <div class="form-control">
         <label class="label">
-          <span class="label-text">비빌번호</span>
+          <span class="label-text">비밀번호</span>
         </label>
-        <input type="password" name="password" placeholder="비빌번호" class="input input-bordered" />
+        <input type="password" th:field="*{password}" placeholder="비밀번호" class="input input-bordered">
       </div>
 
       <div class="form-control">
         <label class="label">
-          <span class="label-text">비빌번호 확인</span>
+          <span class="label-text">비밀번호 확인</span>
         </label>
-        <input type="password" name="passwordConfirm" placeholder="비빌번호 확인" class="input input-bordered" />
+        <input type="password" th:field="*{passwordConfirm}" placeholder="비밀번호 확인" class="input input-bordered">
       </div>
 
-      <button id="btn-join-1" class="btn btn-block border-gray-300 bg-[color:#A5CDCD] gap-1">
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">이메일</span>
+          <span class="alert-email label-text"></span>
+        </label>
+        <div class="flex gap-2">
+          <input type="text" th:field="*{email}" placeholder="이메일" class="input input-bordered flex-auto">
+          <button type="button" class="btn border-gray-300 bg-[color:#A5CDCD] flex-[0_0_18%]" th:onclick="_genCode()">인증번호받기</button>
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">이메일 인증번호</span>
+          <span class="alert-emailCode label-text"></span>
+        </label>
+        <div class="flex gap-2">
+          <input type="text" th:field="*{inputCode}" placeholder="이메일 인증번호" class="input input-bordered flex-auto">
+          <input type="hidden" th:field="*{genCode}">
+          <button type="button" class="btn border-gray-300 bg-[color:#A5CDCD] flex-[0_0_18%]" th:onclick="_confirmCode()">인증번호확인</button>
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">주소</span>
+        </label>
+        <div class="flex gap-2">
+          <input type="text" th:field="*{address.zoneCode}" placeholder="우편번호" class="zoneCode input input-bordered flex-[0_0_40%]" th:onclick="_zoneCode()">
+          <button type="button" class="btn border-gray-300 bg-[color:#A5CDCD]" th:onclick="_zoneCode()">주소찾기</button>
+        </div>
+        <input type="text" th:field="*{address.mainAddress}" placeholder="주소" class="mainAddress my-3 input input-bordered">
+        <input type="text" th:field="*{address.subAddress}" placeholder="상세주소" class="subAddress input input-bordered">
+      </div>
+
+      <button type="button" id="btn-join-1" class="btn btn-block border-gray-300 bg-[color:#A5CDCD] gap-1" th:onclick="_signup()">
         <i class="fa-solid fa-user-plus"></i>
         <span>회원가입</span>
       </button>
@@ -67,7 +107,95 @@
         <i class="fa-solid fa-house"></i>
         <span>메인화면</span>
       </a>
-
     </form>
   </div>
 </div>
+
+<script>
+  function _genCode() {
+    $(".alert-email").text("");
+    $(".alert-email").removeClass("text-green-700");
+    $(".alert-email").removeClass("text-red-400");
+    $.ajax({
+        url: "/user/signup/emailCode",
+        type: "GET",
+        data: {
+          "email": $("#email").val()
+        },
+        success: function(data) {
+            $("#genCode").val(data);
+            $(".alert-email").text("이메일 발송이 완료되었습니다.");
+            $(".alert-email").addClass("text-green-700");
+        },
+        error: function(res) {
+            $(".alert-email").text(res.responseJSON.message);
+            $(".alert-email").addClass("text-red-400");
+        }
+    })
+  }
+
+  function _confirmCode() {
+    $(".alert-emailCode").text("");
+    $(".alert-emailCode").removeClass("text-green-700");
+    $(".alert-emailCode").removeClass("text-red-400");
+    $.ajax({
+        url: "/user/signup/emailCode",
+        type: "POST",
+        data: {
+          "inputCode": $("#inputCode").val(),
+          "genCode": $("#genCode").val()
+        },
+        beforeSend : function() {
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+        },
+        success: function(data) {
+            $(".alert-emailCode").text("이메일 인증이 완료되었습니다.");
+            $(".alert-emailCode").addClass("text-green-700");
+        },
+        error: function(res) {
+            $(".alert-emailCode").text(res.responseJSON.message);
+            $(".alert-emailCode").addClass("text-red-400");
+        }
+    })
+  }
+
+  function _zoneCode() {
+    new daum.Postcode({
+      oncomplete: function (data) {
+          var mainAddress = "";
+
+          if (data.userSelectedType === "R") {
+              mainAddress = data.roadAddress;
+          } else {
+              mainAddress = data.jibunAddress;
+          }
+
+          $(".zoneCode").val(data.zonecode);
+          $(".mainAddress").val(mainAddress);
+          $(".subAddress").focus();
+      }
+    }).open();
+  }
+
+  function _signup() {
+    $.ajax({
+        url: "/user/signup",
+        type: "POST",
+        data: $("#userSignupForm").serialize(),
+        beforeSend : function() {
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+        },
+        success: function(data) {
+            alert(data);
+            location.href = "/user/login";
+        },
+        error: function(res) {
+            alert("입력을 전부 완료해주세요");
+        }
+    })
+  }
+</script>
