@@ -28,7 +28,12 @@ public class NoticeController {
                        @RequestParam(value = "order",  required = false) String order,
                        @RequestParam(value = "category", required = false) String category){
         // 페이징 + 페이지에 표시할 수 + 검색 키워드 + 정렬 기준(?) + 게시판의 카테고리
-        Page<Notice> noticePage = this.noticeService.getNoticeList(page, pageSize, keywordCategory, keyword, order, category);
+        Page<Notice> noticePaging = this.noticeService.getNoticeList(page, pageSize, keywordCategory, keyword, order, category);
+        model.addAttribute("noticePaging", noticePaging);
         return "noticeList";
+    }
+    @PostMapping("/create")
+    public String createNotice(){
+        return "redirect:noticeList";
     }
 }

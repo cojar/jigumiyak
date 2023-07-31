@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -41,5 +42,9 @@ public class NoticeCommentService {
 
     public void delete(NoticeComment comment) {
         this.noticeCommentRepository.delete(comment);
+    }
+
+    public List<NoticeComment> getCommentList(){
+        return noticeCommentRepository.findAll();
     }
 }

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <ul>
+        <li th:each="notice, noticeIndex : ${noticePaging}">
+            <a th:href="@{|/notice/detail/${notice.id}|}">
+                <h3 th:text="${notice.title}"></h3>
+            </a>
+        </li>
+    </ul>
+    <!-- 페이징처리 시작 -->
+    <div th:if="${!noticePaging.isEmpty()}">
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link" th:if="${noticePaging.hasPrevious()}"
+                   th:href="@{|?page=${noticePaging.number-1}|}">
+                    <span><</span>
+                </a>
+            </li>
+            <li th:each="page: ${#numbers.sequence(0, noticePaging.totalPages-1)}"
+                th:if="${page >= noticePaging.number-5 and page <= noticePaging.number+5}"
+                th:classappend="${page == noticePaging.number} ? 'active' : ''"
+                class="page-item">
+                <a th:text="${page+1}" class="page-link" th:href="@{|?page=${page}|}"></a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" th:if="${noticePaging.hasNext()}" th:href="@{|?page=${noticePaging.number+1}|}">
+                    <span>></span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<!-- 페이징처리 끝 -->
+</body>
+</html>

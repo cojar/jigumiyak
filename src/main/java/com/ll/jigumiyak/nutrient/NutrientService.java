@@ -1,9 +1,10 @@
-package com.ll.jigumiyak.ksyTest;
+package com.ll.jigumiyak.nutrient;
 
+import com.ll.jigumiyak.nutrient_category.NutrientCategory;
+import com.ll.jigumiyak.nutrient_category.NutrientCategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
