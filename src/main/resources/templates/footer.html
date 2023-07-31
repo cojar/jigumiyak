@@ -1,0 +1,71 @@
+<div th:fragment="footerFragment" class="footer-Container w-screen h-64" style="background:#FAF7F0;">
+
+    <style>
+    /* 폰트 설정 */
+    @font-face {
+      font-family: 'GmarketSansMedium';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    html > body {
+      font-family:"GmarketSansMedium";
+      text-underline-position: under;
+      padding:0; margin:0;
+    }
+
+    </style>
+    <header class="max-w-screen-xl h-full mx-auto flex justify-center">
+
+        <!--    logo    -->
+        <div class="w-60 h-auto m-5 border-2 border-black">
+            logo 넣을 자리
+        </div>
+
+
+        <!--    team    -->
+        <div class="h-auto m-5 inline-block">
+            <div class="w-full mb-3">
+                <div>전세린</div>
+                <div class="text-sm text-gray-500">EMAIL : wtf7966@gmail.com</div>
+                <div class="text-sm text-gray-500">GITHUB : <a href="https://github.com/jserin" target="_blank">https://github.com/jserin</a></div>
+            </div>
+            <div class="w-full mb-3">
+                <div>김호현</div>
+                <div class="text-sm text-gray-500">EMAIL : pintor.dev@gmail.com</div>
+                <div class="text-sm text-gray-500">GITHUB : <a href="https://github.com/pintordev" target="_blank">https://github.com/pintordev</a></div>
+            </div>
+            <div class="w-full">
+                <div>김상엽</div>
+                <div class="text-sm text-gray-500">EMAIL : pos09072@gmail.com</div>
+                <div class="text-sm text-gray-500">GITHUB : <a href="https://github.com/yup2dev" target="_blank">https://github.com/yup2dev</a></div>
+            </div>
+        </div>
+
+
+        <!--    total menu    -->
+        <div class="h-auto m-5 ml-10" style="width:500px;">
+            <!--      total menu      -->
+            <div class="h-2/3 flex">
+                <div class="w-full flex flex-col items-end pr-3 justify-between">
+                    <a href="#">이용약관</a>
+                    <a href="#">개인정보처리방침</a>
+                    <a href="#">문의하기</a>
+                    <a href="#">후원하기</a>
+                </div>
+            </div>
+
+
+            <!--     바로가기       -->
+            <div class="h-1/3 flex items-end justify-end">
+                <a href="https://github.com/Jserin/JIGUMIYAK" target="_blank" class="pb-3">
+                    <i class="fa-brands fa-square-github fa-2xl"></i>
+                </a>
+                <a href="https://github.com/Jserin/JIGUMIYAK" target="_blank" class="px-3 pb-3">
+                    <i class="fa-brands fa-trello fa-2xl"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+</div>
