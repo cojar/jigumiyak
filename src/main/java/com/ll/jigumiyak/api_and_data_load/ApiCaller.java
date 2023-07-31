@@ -12,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class ApiCaller {
     private final NutrientService nutrientService;
+    private final NutrientCategoryService nutrientCategoryService;
 
     public static void main(String[] args) {
         // API 엔드포인트(URL) 설정
@@ -65,7 +66,6 @@ public class ApiCaller {
                     System.out.println("ADDR: " + addr);
                     System.out.println("---------------------------------------");
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }

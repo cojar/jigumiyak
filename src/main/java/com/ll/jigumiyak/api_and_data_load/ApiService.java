@@ -26,13 +26,9 @@ public class ApiService {
     private String apiKey;
 
     public String fetchDataFromApi() {
-        JsonObject jsonObject = new JsonObject();
-        // Make API request using RestTemplate or any other HTTP client library
-        // In this example, RestTemplate is used to make the GET request
         RestTemplate restTemplate = new RestTemplate();
         String url = apiAddress + "?key=" + apiKey;
 
-        // Perform API call and get the JSON response
         String jsonResponse = restTemplate.getForObject(url, String.class);
 
         return jsonResponse;

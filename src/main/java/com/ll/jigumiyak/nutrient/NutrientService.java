@@ -13,7 +13,6 @@ public class NutrientService {
     private final NutrientCategoryRepository nutrientCategoryRepository;
 
     public void saveNutrient(Nutrient nutrient) {
-        extractNutrientEfficacy(nutrient);
         nutrientRepository.save(nutrient);
     }
 

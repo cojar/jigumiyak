@@ -14,6 +14,7 @@ public class NutrientCategory {
     private Integer id;
     @Column
     private String categoryName;
+    //눈 체력 체지방 뼈 등등
     @ManyToOne
     private Nutrient nutrient;
 }
