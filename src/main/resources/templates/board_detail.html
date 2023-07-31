@@ -36,7 +36,7 @@
 
 
 <!-- 댓글 작성 -->
-    <form th:action="@{|/comment/create/${board.id}|}" th:object="${boardCommentForm}" method="post">
+    <form th:action="@{|/bcomment/create/${board.id}|}" th:object="${boardCommentForm}" method="post">
       <div th:replace="~{form_errors :: formErrorsFragment}"></div>
       <textarea sec:authorize="isAnonymous()" disabled th:field="*{content}" class="block w-full border rounded-lg" rows="5"></textarea>
       <textarea sec:authorize="isAuthenticated()" th:field="*{content}" class="block w-full border rounded-lg" rows="5"></textarea>
