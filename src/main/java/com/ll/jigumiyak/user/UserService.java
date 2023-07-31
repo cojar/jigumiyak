@@ -1,5 +1,6 @@
 package com.ll.jigumiyak.user;
 
+import com.ll.jigumiyak.DataNotFoundException;
 import com.ll.jigumiyak.address.Address;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -97,5 +98,14 @@ public class UserService {
     public boolean isDuplicatedEmail(String email) {
         Optional<SiteUser> _user = this.userRepository.findByEmail(email);
         return _user.isPresent();
+    }
+
+    public SiteUser getUserByLoginId(String loginId){
+        Optional<SiteUser> siteUser = userRepository.findByLoginId(loginId);
+        if (siteUser.isPresent()) {
+            return siteUser.get();
+        } else {
+            throw new DataNotFoundException("siteuser not found");
+        }
     }
 }
