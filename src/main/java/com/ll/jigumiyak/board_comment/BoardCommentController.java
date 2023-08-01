@@ -29,7 +29,7 @@ public class BoardCommentController {
     @PostMapping("/create/{id}")
     public String createComment(Model model, @PathVariable("id") Long id, @Valid BoardCommentForm boardCommentForm, BindingResult bindingResult, Principal principal) {
         Board board = this.boardService.getBoard(id);
-        SiteUser siteUser = this.userService.getUser(principal.getName());
+        SiteUser siteUser = this.userService.getUserByLoginId(principal.getName());
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("board", board);

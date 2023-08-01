@@ -52,7 +52,7 @@ public class BoardController {
         if (bindingResult.hasErrors()) {
             return "board_form";
         }
-        SiteUser siteUser = this.userService.getUser(principal.getName());
+        SiteUser siteUser = this.userService.getUserByLoginId(principal.getName());
         this.boardService.create(boardForm.getSubject(), boardForm.getContent(), siteUser);
         return "redirect:/board/list";
     }

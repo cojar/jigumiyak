@@ -1,5 +1,6 @@
 package com.ll.jigumiyak.board;
 
+import com.ll.jigumiyak.DataNotFoundException;
 import com.ll.jigumiyak.user.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,7 +28,7 @@ public class BoardService {
         if(board.isPresent()) {
             return board.get();
         } else {
-            return null;
+            throw new DataNotFoundException("board not found");
         }
     }
     public void create(String subject, String content, SiteUser siteUser) {
