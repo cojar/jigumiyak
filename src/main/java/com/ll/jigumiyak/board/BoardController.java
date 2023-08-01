@@ -26,14 +26,14 @@ public class BoardController {
     private final BoardService boardService;
     private final UserService userService;
 
-    @GetMapping("/list")
+    @GetMapping("")
     public String boardList(Model model, @RequestParam(value="page", defaultValue="0") int page) {
         Page<Board> paging = this.boardService.getList(page);
         model.addAttribute("paging", paging);
         return "board_list";
     }
 
-    @GetMapping("/detail/{id}")
+    @GetMapping("/{id}")
     public String detail(Model model, @PathVariable("id") Long id, BoardCommentForm boardCommentForm) {
         Board board = this.boardService.getBoard(id);
         model.addAttribute("board", board);
@@ -53,8 +53,8 @@ public class BoardController {
             return "board_form";
         }
         SiteUser siteUser = this.userService.getUserByLoginId(principal.getName());
-        this.boardService.create(boardForm.getSubject(), boardForm.getContent(), siteUser);
-        return "redirect:/board/list";
+        Board b = this.boardService.create(boardForm.getSubject(), boardForm.getContent(), siteUser);
+        return String.format("redirect:/board/%d", b.getId());
     }
 
 
@@ -82,7 +82,7 @@ public class BoardController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
         this.boardService.modify(board, boardForm.getSubject(), boardForm.getContent());
-        return String.format("redirect:/board/detail/%d", id);
+        return String.format("redirect:/board/%d", id);
     }
 
 
@@ -94,6 +94,6 @@ public class BoardController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제권한이 없습니다.");
         }
         this.boardService.delete(board);
-        return "redirect:/board/list";
+        return "redirect:/board";
     }
 }

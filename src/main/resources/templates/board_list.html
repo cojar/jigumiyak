@@ -33,7 +33,7 @@
                 <tr th:each="board, loop : ${paging}" class="border-b">
                     <td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}" class="w-1/12 text-center"></td>
                     <td class="w-5/12 py-2">
-                        <a th:href="@{|/board/detail/${board.id}|}" th:text="${board.subject}" class="text-lg w-full"></a>
+                        <a th:href="@{|/board/${board.id}|}" th:text="${board.subject}" class="text-lg w-full"></a>
                         <span class="text-sm text-green-600 px-3"
                               th:if="${#lists.size(board.commentList) > 0}"
                               th:text="${#lists.size(board.commentList)}">

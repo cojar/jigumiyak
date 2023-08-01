@@ -17,12 +17,6 @@ class JigumiyakApplicationTests {
 
 	@Test
 	void contextLoads() {
-		Board a = new Board();
-		a.setSubject("testsubject");
-		a.setContent("testcontent");
-		a.setCreateDate(LocalDateTime.now());
-		this.boardRepository.save(a);
-
 	}
 
 }

@@ -31,13 +31,14 @@ public class BoardService {
             throw new DataNotFoundException("board not found");
         }
     }
-    public void create(String subject, String content, SiteUser siteUser) {
+    public Board create(String subject, String content, SiteUser siteUser) {
         Board b = new Board();
         b.setSubject(subject);
         b.setContent(content);
         b.setCreateDate(LocalDateTime.now());
         b.setAuthor(siteUser);
         this.boardRepository.save(b);
+        return b;
     }
 
     public Page<Board> getList(int page) {

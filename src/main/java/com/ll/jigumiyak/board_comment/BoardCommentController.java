@@ -21,13 +21,17 @@ import java.security.Principal;
 @RequiredArgsConstructor
 @Controller
 public class BoardCommentController {
+
     private final BoardService boardService;
     private final BoardCommentService boardCommentService;
     private final UserService userService;
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create/{id}")
-    public String createComment(Model model, @PathVariable("id") Long id, @Valid BoardCommentForm boardCommentForm, BindingResult bindingResult, Principal principal) {
+    public String createComment(Model model, @PathVariable("id") Long id,
+                                @Valid BoardCommentForm boardCommentForm,
+                                BindingResult bindingResult, Principal principal) {
+
         Board board = this.boardService.getBoard(id);
         SiteUser siteUser = this.userService.getUserByLoginId(principal.getName());
 
@@ -36,6 +40,6 @@ public class BoardCommentController {
             return "board_detail";
         }
         this.boardCommentService.create(board, boardCommentForm.getContent(), siteUser);
-        return String.format("redirect:/board/detail/%d", id);
+        return String.format("redirect:/board/%s", id);
     }
 }

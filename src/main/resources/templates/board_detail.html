@@ -66,7 +66,7 @@
 <!-- 댓글 작성 -->
     <form th:action="@{|/bcomment/create/${board.id}|}" th:object="${boardCommentForm}" method="post">
       <div th:replace="~{form_errors :: formErrorsFragment}"></div>
-      <textarea sec:authorize="isAnonymous()" disabled th:field="*{content}" class="block w-full border rounded-lg" rows="5"></textarea>
+      <textarea sec:authorize="isAnonymous()" disabled class="block w-full border rounded-lg" rows="5"></textarea>
       <textarea sec:authorize="isAuthenticated()" th:field="*{content}" class="block w-full border rounded-lg" rows="5"></textarea>
       <input type="submit" value="답변등록" class="block text-center w-32 rounded-xl p-3 my-5 cursor-pointer" style="background:#E9B384;">
     </form>
