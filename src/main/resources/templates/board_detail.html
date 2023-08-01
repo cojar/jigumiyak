@@ -14,11 +14,18 @@
       <div class="">
         <span th:if="${board.author != null}" th:text="${board.author.loginId}"></span>
       </div>
+      <div th:text="${#temporals.format(board.modifyDate, 'yyyy-MM-dd HH:mm')}"></div>
       <div th:text="${#temporals.format(board.createDate, 'yyyy-MM-dd HH:mm')}"></div>
     </div>
 
-<!--  수정 삭제  -->
+<!-- 추천 수정 삭제  -->
     <div class="">
+      <a href="javascript:void(0);" class="recommend"
+         th:data-uri="@{|/board/vote/${board.id}|}">
+        추천
+        <span class="badge rounded-pill bg-success" th:text="${#lists.size(board.voter)}"></span>
+      </a>
+
       <a th:href="@{|/board/modify/${board.id}|}" class=""
          sec:authorize="isAuthenticated()"
          th:if="${board.author != null and #authentication.getPrincipal().getUsername() == board.author.loginId}"
@@ -36,6 +43,7 @@
 
     <div th:text="|${#lists.size(board.commentList)}개의 댓글이 있습니다.|"></div>
     <div class="card my-3" th:each="comment : ${board.commentList}">
+      <a th:id="|comment_${comment.id}|"></a>
       <div class="card-body">
         <div th:text="${comment.content}"></div>
         <div class="d-flex justify-content-end">
@@ -43,12 +51,19 @@
             <div class="mb-2">
               <span th:if="${comment.author != null}" th:text="${comment.author.loginId}"></span>
             </div>
+            <div th:text="${#temporals.format(comment.modifyDate, 'yyyy-MM-dd HH:mm')}"></div>
             <div th:text="${#temporals.format(comment.createDate, 'yyyy-MM-dd HH:mm')}"></div>
           </div>
         </div>
 
-<!--     댓글 수정 삭제    -->
+<!--     댓글 추천 수정 삭제    -->
         <div class="">
+          <a href="javascript:void(0);" class="recommend"
+             th:data-uri="@{|/bcomment/vote/${comment.id}|}">
+            추천
+            <span class="badge rounded-pill bg-success" th:text="${#lists.size(comment.voter)}"></span>
+          </a>
+
           <a th:href="@{|/bcomment/modify/${comment.id}|}" class=""
              sec:authorize="isAuthenticated()"
              th:if="${comment.author != null and #authentication.getPrincipal().getUsername() == comment.author.loginId}"
@@ -70,6 +85,8 @@
       <textarea sec:authorize="isAuthenticated()" th:field="*{content}" class="block w-full border rounded-lg" rows="5"></textarea>
       <input type="submit" value="답변등록" class="block text-center w-32 rounded-xl p-3 my-5 cursor-pointer" style="background:#E9B384;">
     </form>
+
+    <a th:href="@{/board}">목록</a>
   </div>
 </div>
 
@@ -78,6 +95,15 @@ const delete_elements = document.getElementsByClassName("delete");
 Array.from(delete_elements).forEach(function(element) {
     element.addEventListener('click', function() {
         if(confirm("정말로 삭제하시겠습니까?")) {
+            location.href = this.dataset.uri;
+        };
+    });
+});
+
+const recommend_elements = document.getElementsByClassName("recommend");
+Array.from(recommend_elements).forEach(function(element) {
+    element.addEventListener('click', function() {
+        if(confirm("정말로 추천하시겠습니까?")) {
             location.href = this.dataset.uri;
         };
     });
