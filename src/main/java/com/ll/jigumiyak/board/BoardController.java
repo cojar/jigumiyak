@@ -6,11 +6,13 @@ import com.ll.jigumiyak.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -53,5 +55,33 @@ public class BoardController {
         SiteUser siteUser = this.userService.getUser(principal.getName());
         this.boardService.create(boardForm.getSubject(), boardForm.getContent(), siteUser);
         return "redirect:/board/list";
+    }
+
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/modify/{id}")
+    public String boardModify(BoardForm boardForm, @PathVariable("id") Long id, Principal principal) {
+        Board board = this.boardService.getBoard(id);
+
+        if(!board.getAuthor().getLoginId().equals(principal.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
+        }
+        boardForm.setSubject(board.getSubject());
+        boardForm.setContent(board.getContent());
+        return "board_form";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/modify/{id}")
+    public String boardModify(@Valid BoardForm boardForm, BindingResult bindingResult, Principal principal, @PathVariable("id") Long id) {
+        if (bindingResult.hasErrors()) {
+            return "board_form";
+        }
+        Board board = this.boardService.getBoard(id);
+        if (!board.getAuthor().getLoginId().equals(principal.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
+        }
+        this.boardService.modify(board, boardForm.getSubject(), boardForm.getContent());
+        return String.format("redirect:/board/detail/%d", id);
     }
 }

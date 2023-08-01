@@ -6,7 +6,8 @@
   <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
   <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
     <h5 class="border-b-4 border-double border-gray-300 text-2xl pt-5">질문등록</h5>
-    <form th:action="@{/board/create}" th:object="${boardForm}" method="post">
+    <form th:object="${boardForm}" method="post">
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
       <div th:replace="~{form_errors :: formErrorsFragment}"></div>
       <div class="mt-5">
         <label for="subject" class="w-full text-xl">제목</label>

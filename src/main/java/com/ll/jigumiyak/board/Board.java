@@ -28,7 +28,8 @@ public class Board {
     @Column
     private LocalDateTime createDate;
 
-    @Column LocalDateTime modifyDate;
+    @Column
+    private LocalDateTime modifyDate;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
     private List<BoardComment> commentList;
