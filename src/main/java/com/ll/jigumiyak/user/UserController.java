@@ -2,6 +2,7 @@ package com.ll.jigumiyak.user;
 
 import com.ll.jigumiyak.address.Address;
 import com.ll.jigumiyak.address.AddressService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,12 @@ public class UserController {
     private final AddressService addressService;
 
     @GetMapping("/login")
-    public String login(){
+    public String login(HttpServletRequest request) {
+
+        String requestUri = request.getHeader("referer");
+        log.info("requestUri: " + requestUri);
+        log.info("request: " +  request);
+
         return "login";
     }
 

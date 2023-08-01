@@ -1,5 +1,5 @@
 <div th:fragment="navbarFragment" class="navbar-Container">
-    <link rel="stylesheet" type="text/css" th:href="@{/navbar.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
 
     <header class="top-bar fixed shadow">
         <div class="con mx-auto pr-1 h-1/2 flex">
@@ -45,23 +45,23 @@
 
             <ul class="flex justify-between h-full w-full">
                 <li class="w-1/5">
-                    <a href="#" class="h-full w-full flex items-center justify-center text-xl px-10">맞춤 영양제
+                    <a href="#" class="menu h-full w-full flex items-center justify-center text-xl">맞춤 영양제
                     </a>
                 </li>
                 <li class="w-1/5">
-                    <a href="#" class="h-full w-full flex items-center justify-center text-xl px-10">상품 조회
+                    <a href="#" class="menu h-full w-full flex items-center justify-center text-xl">상품 조회
                     </a>
                 </li>
                 <li class="w-1/5">
-                    <a href="#" class="h-full w-full flex items-center justify-center text-xl px-10">커뮤니티
+                    <a th:href="@{/board}" class="menu h-full w-full flex items-center justify-center text-xl">커뮤니티
                     </a>
                 </li>
                 <li class="w-1/5">
-                    <a href="#" class="h-full w-full flex items-center justify-center text-xl px-10">공지사항
+                    <a href="#" class="menu h-full w-full flex items-center justify-center text-xl">공지사항
                     </a>
                 </li>
                 <li class="w-1/5">
-                    <a href="#" class="h-full w-full flex items-center justify-center text-xl px-10">문의하기
+                    <a href="#" class="menu h-full w-full flex items-center justify-center text-xl">문의하기
                     </a>
                 </li>
             </ul>
