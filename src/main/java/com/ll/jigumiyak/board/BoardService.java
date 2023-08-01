@@ -53,4 +53,8 @@ public class BoardService {
         board.setModifyDate(LocalDateTime.now());
         this.boardRepository.save(board);
     }
+
+    public void delete(Board board) {
+        this.boardRepository.delete(board);
+    }
 }

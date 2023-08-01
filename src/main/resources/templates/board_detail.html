@@ -18,7 +18,7 @@
     </div>
 
 <!--  수정 삭제  -->
-    <div class="my-3">
+    <div class="">
       <a th:href="@{|/board/modify/${board.id}|}" class=""
          sec:authorize="isAuthenticated()"
          th:if="${board.author != null and #authentication.getPrincipal().getUsername() == board.author.loginId}"
@@ -46,6 +46,19 @@
             <div th:text="${#temporals.format(comment.createDate, 'yyyy-MM-dd HH:mm')}"></div>
           </div>
         </div>
+
+<!--     댓글 수정 삭제    -->
+        <div class="">
+          <a th:href="@{|/bcomment/modify/${comment.id}|}" class=""
+             sec:authorize="isAuthenticated()"
+             th:if="${comment.author != null and #authentication.getPrincipal().getUsername() == comment.author.loginId}"
+             th:text="수정"></a>
+
+          <a href="javascript:void(0);" th:data-uri="@{|/bcomment/delete/${comment.id}|}"
+             class="delete" sec:authorize="isAuthenticated()"
+             th:if="${comment.author != null and #authentication.getPrincipal().getUsername() == comment.author.loginId}"
+             th:text="삭제"></a>
+        </div>
       </div>
     </div>
 
@@ -55,7 +68,7 @@
       <div th:replace="~{form_errors :: formErrorsFragment}"></div>
       <textarea sec:authorize="isAnonymous()" disabled th:field="*{content}" class="block w-full border rounded-lg" rows="5"></textarea>
       <textarea sec:authorize="isAuthenticated()" th:field="*{content}" class="block w-full border rounded-lg" rows="5"></textarea>
-      <input type="submit" value="답변등록" class="block text-center w-32 rounded-xl p-3 my-5" style="background:#E9B384;">
+      <input type="submit" value="답변등록" class="block text-center w-32 rounded-xl p-3 my-5 cursor-pointer" style="background:#E9B384;">
     </form>
   </div>
 </div>
