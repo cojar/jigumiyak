@@ -27,7 +27,7 @@ public class BoardService {
         if(board.isPresent()) {
             return board.get();
         } else {
-            return null;
+            throw new DataNotFoundException("board not found");
         }
     }
     public void create(String subject, String content, SiteUser siteUser) {
