@@ -100,7 +100,7 @@ public class UserService {
         return _user.isPresent();
     }
 
-    public SiteUser getUser(String loginId) {
+    public SiteUser getUserByLoginId(String loginId) {
         Optional<SiteUser> siteUser = this.userRepository.findByLoginId(loginId);
         if (siteUser.isPresent()) {
             return siteUser.get();
