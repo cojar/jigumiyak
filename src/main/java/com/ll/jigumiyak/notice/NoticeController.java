@@ -51,6 +51,6 @@ public class NoticeController {
         SiteUser siteUser = this.userService.getUserByLoginId(principal.getName());
         NoticeCategory category = noticeCategoryService.getCategoryByName(noticeForm.getCategory());
         this.noticeService.create(category, noticeForm.getTitle(), noticeForm.getContent(), siteUser);
-        return "redirect:noticeList";
+        return "redirect:/notice";
     }
 }

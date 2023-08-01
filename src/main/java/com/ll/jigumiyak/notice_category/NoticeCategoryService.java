@@ -8,6 +8,6 @@ import org.springframework.stereotype.Service;
 public class NoticeCategoryService {
     private final NoticeCategoryRepository noticeCategoryRepository;
     public NoticeCategory getCategoryByName(String category){
-        return noticeCategoryRepository.findByCategoryName(category);
+        return noticeCategoryRepository.findByName(category);
     }
 }

@@ -38,12 +38,13 @@ public class NoticeService {
         }
     }
 
-    public void create(NoticeCategory category, String title, String content, SiteUser siteUser) {
+    public Notice create(NoticeCategory category, String title, String content, SiteUser siteUser) {
         Notice notice = new Notice();
         notice.setCategory(category);
         notice.setTitle(title);
         notice.setContent(content);
         notice.setAuthor(siteUser);
         noticeRepository.save(notice);
+        return notice;
     }
 }

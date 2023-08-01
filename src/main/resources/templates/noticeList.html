@@ -10,6 +10,8 @@
         <li th:each="notice, noticeIndex : ${noticePaging}">
             <a th:href="@{|/notice/detail/${notice.id}|}">
                 <h3 th:text="${notice.title}"></h3>
+                <h3 th:text="${notice.category.name}"></h3>
+                <h3 th:text="${notice.content}"></h3>
             </a>
         </li>
     </ul>
