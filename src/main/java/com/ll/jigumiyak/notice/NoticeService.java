@@ -1,6 +1,8 @@
 package com.ll.jigumiyak.notice;
 
 import com.ll.jigumiyak.DataNotFoundException;
+import com.ll.jigumiyak.notice_category.NoticeCategory;
+import com.ll.jigumiyak.user.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,5 +36,14 @@ public class NoticeService {
         } else {
             throw new DataNotFoundException("notice not found");
         }
+    }
+
+    public void create(NoticeCategory category, String title, String content, SiteUser siteUser) {
+        Notice notice = new Notice();
+        notice.setCategory(category);
+        notice.setTitle(title);
+        notice.setContent(content);
+        notice.setAuthor(siteUser);
+        noticeRepository.save(notice);
     }
 }

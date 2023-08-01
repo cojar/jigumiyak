@@ -1,8 +1,12 @@
 package com.ll.jigumiyak.notice;
 
+import com.ll.jigumiyak.notice_category.NoticeCategory;
+import com.ll.jigumiyak.notice_category.NoticeCategoryRepository;
+import com.ll.jigumiyak.notice_category.NoticeCategoryService;
 import com.ll.jigumiyak.notice_comment.CommentForm;
 import com.ll.jigumiyak.notice_comment.NoticeComment;
 import com.ll.jigumiyak.user.SiteUser;
+import com.ll.jigumiyak.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,6 +22,8 @@ import java.security.Principal;
 @RequestMapping("/notice")
 public class NoticeController {
     private final NoticeService noticeService;
+    private final UserService userService;
+    private final NoticeCategoryService noticeCategoryService;
 
     @GetMapping("")
     public String main(Model model,
@@ -32,8 +38,19 @@ public class NoticeController {
         model.addAttribute("noticePaging", noticePaging);
         return "noticeList";
     }
+    @GetMapping("/create")
+    public String createNoticeG(NoticeForm noticeForm){
+        return "notice_form";
+    }
+
     @PostMapping("/create")
-    public String createNotice(){
+    public String createNoticeP(@Valid NoticeForm noticeForm, BindingResult bindingResult, Principal principal){
+        if (bindingResult.hasErrors()) {
+            return "notice_form";
+        }
+        SiteUser siteUser = this.userService.getUserByLoginId(principal.getName());
+        NoticeCategory category = noticeCategoryService.getCategoryByName(noticeForm.getCategory());
+        this.noticeService.create(category, noticeForm.getTitle(), noticeForm.getContent(), siteUser);
         return "redirect:noticeList";
     }
 }

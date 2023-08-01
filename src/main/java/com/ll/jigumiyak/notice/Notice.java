@@ -16,7 +16,9 @@ public class Notice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(length = 20)
     private String title;
+    @Column(columnDefinition = "TEXT")
     private String content;
     @OneToMany(mappedBy = "notice", cascade = CascadeType.REMOVE)
     private List<NoticeComment> commentList;
