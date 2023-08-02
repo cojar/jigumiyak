@@ -9,8 +9,13 @@ import java.util.List;
 @Service
 public class NoticeCategoryService {
     private final NoticeCategoryRepository noticeCategoryRepository;
-    public NoticeCategory getCategoryByName(String category){
-        return noticeCategoryRepository.findByName(category);
+    public NoticeCategory getCategoryByName(String name){
+        Optional<NoticeCategory> noticeCategory = noticeCategoryRepository.findByName(name);
+        if(noticeCategory.isPresent()){
+            return noticeCategory.get();
+        } else {
+            throw new DataNotFoundException("noticeCategory not found");
+        }
     }
     public List<NoticeCategory> getNoticeCategoryList(){
         return noticeCategoryRepository.findAll();
