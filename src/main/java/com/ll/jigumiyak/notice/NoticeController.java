@@ -42,7 +42,9 @@ public class NoticeController {
         return "notice_list";
     }
     @GetMapping("/create")
-    public String createNoticeG(NoticeForm noticeForm){
+    public String createNoticeG(NoticeForm noticeForm, Model model){
+        List<NoticeCategory> categoryList = this.noticeCategoryService.getNoticeCategoryList();
+        model.addAttribute("categoryList", categoryList);
         return "notice_form";
     }
 

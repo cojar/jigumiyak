@@ -1,80 +1,30 @@
-<<<<<<< HEAD
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<div>
-    <ul>
-        <li th:each="notice, noticeIndex : ${noticePaging}">
-            <a th:href="@{|/notice/detail/${notice.id}|}">
-                <h3 th:text="${notice.title}"></h3>
-                <h3 th:text="${notice.category.name}"></h3>
-                <h3 th:text="${notice.content}"></h3>
-            </a>
-        </li>
-    </ul>
-    <!-- 페이징처리 시작 -->
-    <div th:if="${!noticePaging.isEmpty()}">
-        <ul class="pagination">
-            <li class="page-item">
-                <a class="page-link" th:if="${noticePaging.hasPrevious()}"
-                   th:href="@{|?page=${noticePaging.number-1}|}">
-                    <span><</span>
-                </a>
-            </li>
-            <li th:each="page: ${#numbers.sequence(0, noticePaging.totalPages-1)}"
-                th:if="${page >= noticePaging.number-5 and page <= noticePaging.number+5}"
-                th:classappend="${page == noticePaging.number} ? 'active' : ''"
-                class="page-item">
-                <a th:text="${page+1}" class="page-link" th:href="@{|?page=${page}|}"></a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" th:if="${noticePaging.hasNext()}" th:href="@{|?page=${noticePaging.number+1}|}">
-                    <span>></span>
-                </a>
-            </li>
-        </ul>
-    </div>
-</div>
-<!-- 페이징처리 끝 -->
-</body>
-=======
 <html layout:decorate="~{layout}">
 <head>
-    <title>BOARD-LIST</title>
+    <title>NOTICE-LIST</title>
 </head>
 <div layout:fragment="content" class="test-Container">
-    <script type="text/javascript" th:src="@{/jquery-3.7.0.min.js}"></script>
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
     <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
         <h5 class="border-b-4 border-double border-gray-300 text-2xl pt-5">커뮤니티</h5>
 
         <!-- 검색  -->
-        <div class="search-area w-full h-32 border-b-4 border-double border-gray-300 flex justify-center items-center flex-wrap">
-            <div class="search-box border border-gray-300 rounded-lg h-10 w-1/2 flex items-center">
-                <form th:action="@{/notice}" method="get" id="parameterForm">
-                    <input type="hidden" id="page" name="page" th:value="${page}">
-                    <input type="hidden" id="pageSize" name="pageSize" th:value="${pageSize}">
-                    <select id="keywordCategory" name="keywordCategory">
-                        <option value="title">제목</option>
-                        <option value="content">내용</option>
-                        <option value="author">작성자</option>
-                        <option value="all">제목+내용</option>
-                    </select>
-                    <input type="text" id="keyword" name="keyword" class="inline-block h-full w-9/12 bg-transparent"
-                           th:value="${keyword}">
-                    <select id="category" name="category">
-                        <option th:each="notice : ${paging}" th:value="${notice.category.name}"
-                                th:text="${notice.category.name}"></option>
-                    </select>
-                    <button class="h-full w-3/12 inline-block border-l" type="submit" id="btn_search">찾기</button>
-                </form>
-            </div>
+        <div class="search-area flex py-4">
+            <form action="/notice" method="get" class="flex flex-grow gap-2">
+                <input type="hidden" id="page" name="page" value="${page}">
+                <input type="hidden" id="pageSize" name="pageSize" value="${pageSize}">
+                <select name="keywordCategory" id="keywordCategory" class="h-full border border-gray-400 rounded py-2">
+                    <option value="title">제목</option>
+                    <option value="content">내용</option>
+                    <option value="author">작성자</option>
+                    <option value="all">제목+내용</option>
+                </select>
+                <select name="category" id="category" class="h-full border border-gray-400 rounded py-2">
+                    <option value="">선택하세요</option>
+                    <option th:each="category : ${categoryList}" th:value="${category.name}" th:text="${category.name}"></option>
+                </select>
+                <input type="text" id="keyword" name="keyword" th:value="${keyword}" class="h-full flex-grow border border-gray-400 rounded py-2">
+                <button type="submit" id="btn_search" class="h-full border border-gray-400 rounded px-4 py-2">찾기</button>
+            </form>
         </div>
 
         <!--테이블-->
@@ -91,8 +41,7 @@
             </thead>
             <tbody class="w-full">
             <tr th:each="notice, loop : ${paging}" class="border-b">
-                <td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}"
-                    class="w-1/12 text-center"></td>
+                <td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}" class="w-1/12 text-center"></td>
                 <td class="w-5/12 py-2">
                     <a th:href="@{|/notice/${notice.id}|}" th:text="${notice.title}" class="text-lg w-full"></a>
                     <span class="text-sm text-green-600 px-3"
@@ -100,10 +49,8 @@
                           th:text="${#lists.size(notice.commentList)}">
                         </span>
                 </td>
-                <td class="w-2/12 text-center"><span th:if="${notice.author != null}"
-                                                     th:text="${notice.author.loginId}"></span></td>
-                <td th:text="${#temporals.format(notice.createDate, 'yyyy-MM-dd HH:mm')}"
-                    class="text-sm w-2/12 text-center"></td>
+                <td class="w-2/12 text-center"><span th:if="${notice.author != null}" th:text="${notice.author.loginId}"></span></td>
+                <td th:text="${#temporals.format(notice.createDate, 'yyyy-MM-dd HH:mm')}" class="text-sm w-2/12 text-center"></td>
                 <td class="w-1/12 text-center">조회수</td>
                 <td class="w-1/12 text-center">추천수</td>
             </tr>
@@ -118,10 +65,8 @@
                     <a th:href="@{|?page=${paging.number-1}|}"><span>이전</span></a>
                 </li>
 
-                <li th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}"
-                    th:if="${page >= paging.number-5 and page <= paging.number+5}"
-                    th:classappend="${page == paging.number} ? 'active'"
-                    class="p-3 mx-1 border rounded-lg hover:bg-gray-300">
+                <li th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}" th:if="${page >= paging.number-5 and page <= paging.number+5}"
+                    th:classappend="${page == paging.number} ? 'active'" class="p-3 mx-1 border rounded-lg hover:bg-gray-300">
                     <a th:text="${page+1}" class="page-link" th:href="@{|?page=${page}|}"></a>
                 </li>
 
@@ -132,49 +77,8 @@
         </div>
 
 
-        <a th:href="@{/notice/create}" class="block text-center w-32 rounded-xl p-3 my-5" style="background:#E9B384;">글
-            작성하기</a>
+        <a th:href="@{/notice/create}" class="block text-center w-32 rounded-xl p-3 my-5" style="background:#E9B384;">글 작성하기</a>
     </div>
 
 </div>
-<script type="text/javascript">
-    function _bSort(_this) {
-        $("#bSort").val(_this.dataset.sort);
-        $("#parameterForm").submit();
-    }
-
-    function _bPageSize() {
-        $("#bPage").val(0);
-        $("#bPageSize").val($("#boardPageSize").val());
-        $("#parameterForm").submit();
-    }
-
-    function _bPaging(_this) {
-        if (!$(_this).hasClass("disabled")) {
-            $("#bPage").val(_this.dataset.page);
-            $("#parameterForm").submit();
-        }
-    }
-
-    function _bSearch() {
-        $("#bPage").val(0);
-        $("#bSearch").val($("#boardSearch").val());
-        $("#bKw").val($("#boardKeyword").val());
-        $("#parameterForm").submit();
-    }
-
-    function _bCategory(_this) {
-        if (_this.dataset.count > 0) {
-            $("#bPage").val(0);
-            $("#bCategory").val(_this.dataset.category);
-            $("#parameterForm").submit();
-        }
-    }
-
-    function _goDetail(_this) {
-        $("#parameterForm").attr("action", _this.dataset.uri);
-        $("#parameterForm").submit();
-    }
-</script>
->>>>>>> c949d05e338933b03deb0ac7e8d383b7fecbfcf2
 </html>
