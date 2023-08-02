@@ -42,14 +42,14 @@ public class NoticeController {
         return "notice_list";
     }
     @GetMapping("/create")
-    public String createNoticeG(NoticeForm noticeForm, Model model){
+    public String createNotice(NoticeForm noticeForm, Model model){
         List<NoticeCategory> categoryList = this.noticeCategoryService.getNoticeCategoryList();
         model.addAttribute("categoryList", categoryList);
         return "notice_form";
     }
 
     @PostMapping("/create")
-    public String createNoticeP(@Valid NoticeForm noticeForm, BindingResult bindingResult, Principal principal){
+    public String createNotice(@Valid NoticeForm noticeForm, BindingResult bindingResult, Principal principal){
         if (bindingResult.hasErrors()) {
             return "notice_form";
         }
