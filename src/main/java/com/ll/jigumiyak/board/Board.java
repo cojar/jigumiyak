@@ -9,6 +9,7 @@ import org.hibernate.annotations.Cascade;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -36,4 +37,7 @@ public class Board {
 
     @ManyToOne
     private SiteUser author;
+
+    @ManyToMany
+    Set<SiteUser> voter;
 }

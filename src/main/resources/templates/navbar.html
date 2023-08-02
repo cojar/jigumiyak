@@ -5,7 +5,7 @@
         <div class="con mx-auto pr-1 h-1/2 flex">
             <a href="/" class="logo flex items-center px-3">
               <span>
-                지금이약 전세린
+                지금이약
               </span>
             </a>
 
@@ -18,7 +18,7 @@
                     </a>
                 </li>
                 <li class="menu-1__li-icon">
-                    <a href="#" class="h-full flex items-center px-2">
+                    <a class="h-full flex items-center px-2 cursor-pointer" th:attr="onclick=|_anonymous('user/mypage', '${#authentication.details.sessionId != null}')|">
                         <span><i class="far fa-user"></i></span>
                     </a>
                 </li>

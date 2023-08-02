@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequestMapping("/user")
@@ -28,11 +31,20 @@ public class UserController {
     private final AddressService addressService;
 
     @GetMapping("/login")
-    public String login(HttpServletRequest request) {
+    public String login(Model model, HttpServletRequest request,
+                        @RequestParam(value = "error", defaultValue = "") String error,
+                        @RequestParam(value = "field", defaultValue = "") String field) {
 
-        String requestUri = request.getHeader("referer");
-        log.info("requestUri: " + requestUri);
-        log.info("request: " +  request);
+        String refererUri = request.getHeader("referer");
+        log.info(refererUri);
+
+        if (refererUri != null && !refererUri.contains("/user/login") && !refererUri.contains("/user/signup")) {
+            request.getSession().setAttribute("refererUri", refererUri);
+        }
+
+        Map<String, String> errors = new HashMap<>();
+        errors.put(field, error);
+        model.addAttribute("errors", errors);
 
         return "login";
     }
