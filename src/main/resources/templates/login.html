@@ -17,7 +17,6 @@
 <link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.5/dist/full.css" rel="stylesheet" type="text/css" />
 <!-- 테일윈드 불러오기 -->
 <script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" type="text/css" th:href="@{/navbar.css}">
 <link rel="stylesheet" type="text/css" th:href="@{/login.css}">
 
 <div class="flex-grow flex items-center justify-center h-full border-solid border-2">
@@ -69,21 +68,5 @@
     </div>
 </div>
 
-<script>
-    $(function() {
-        $("#loginId, #password").keyup(function() {
-            let loginId = $("#loginId").val();
-            let password = $("#password").val();
-
-            if (loginId.length >= 8 && password.length >= 8) {
-                $("#login-btn").removeClass("deactivated");
-            } else {
-                $("#login-btn").addClass("deactivated");
-            }
-        });
-    });
-
-    function _login() {
-        if (!$("#login-btn").hasClass("deactivated")) $("#login-form").submit();
-    }
-</script>
+<script type="text/javascript" th:inline="javascript" th:src="@{/common.js}"></script>
+<script type="text/javascript" th:inline="javascript" th:src="@{/login.js}"></script>
