@@ -18,6 +18,7 @@
 <!-- 테일윈드 불러오기 -->
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" type="text/css" th:href="@{/navbar.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/login.css}">
 
 <div class="flex-grow flex items-center justify-center h-full border-solid border-2">
     <div class="max-w-2xl w-full px-4">
@@ -26,22 +27,25 @@
             로그인
         </h1>
 
-        <form th:action="@{/user/login}" method="post" class="flex flex-col gap-6">
+        <form th:action="@{/user/login}" id="login-form" method="post" class="flex flex-col gap-6">
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">아이디</span>
+                    <span class="alert-loginId label-text text-red-400" th:if="${errors.containsKey('loginId')}" th:text="${errors.get('loginId')}"></span>
                 </label>
-                <input type="text" name="loginId" placeholder="아이디" class="input input-bordered" autofocus />
+                <input type="text" id="loginId" name="loginId" placeholder="아이디" class="input input-bordered" autofocus />
             </div>
 
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">비밀번호</span>
+                    <span class="alert-password label-text text-red-400" th:if="${errors.containsKey('password')}" th:text="${errors.get('password')}"></span>
                 </label>
-                <input type="password" name="password" placeholder="비밀번호" class="input input-bordered" />
+                <input type="password" id="password" name="password" placeholder="비밀번호" class="input input-bordered" />
             </div>
 
-            <button type="submit" id="btn-join-1" class="btn btn-block border-gray-300 bg-[color:#A5CDCD] gap-1">
+            <button type="button" id="login-btn" th:onclick="_login()"
+                    class="btn btn-block border-gray-300 gap-1 deactivated bg-[color:#A5CDCD]">
                 <i class="fa-solid fa-right-to-bracket"></i>
                 <span>로그인</span>
             </button>
@@ -57,9 +61,29 @@
             </a>
 
             <div class="flex flex-wrap justify-center">
+                <a href="/user/signup" class="btn btn-link text-[color:gray]">회원가입</a>
                 <a href="#" class="btn btn-link text-[color:gray]">아이디찾기</a>
                 <a href="#" class="btn btn-link text-[color:gray]">비밀번호찾기</a>
             </div>
         </form>
     </div>
 </div>
+
+<script>
+    $(function() {
+        $("#loginId, #password").keyup(function() {
+            let loginId = $("#loginId").val();
+            let password = $("#password").val();
+
+            if (loginId.length >= 8 && password.length >= 8) {
+                $("#login-btn").removeClass("deactivated");
+            } else {
+                $("#login-btn").addClass("deactivated");
+            }
+        });
+    });
+
+    function _login() {
+        if (!$("#login-btn").hasClass("deactivated")) $("#login-form").submit();
+    }
+</script>
