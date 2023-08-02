@@ -17,7 +17,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class NoticeService {
     private final NoticeRepository noticeRepository;
-    public Page<Notice> getNoticeList(int page, int pageSize, String keywordCategory, String keyword, String order, String category) {
+    public Page<Notice> getNoticeList(int page, int pageSize, String keywordCategory, String category, String keyword, String order) {
         Pageable pageable = PageRequest.of(page, pageSize);
 
         if (StringUtils.hasText(keyword) && StringUtils.hasText(keywordCategory) && StringUtils.hasText(category)) {

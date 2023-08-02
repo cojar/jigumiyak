@@ -10,8 +10,8 @@
         <!-- 검색  -->
         <div class="search-area flex py-4">
             <form action="/notice" method="get" class="flex flex-grow gap-2">
-                <input type="hidden" id="page" name="page" value="${page}">
-                <input type="hidden" id="pageSize" name="pageSize" value="${pageSize}">
+                <input type="hidden" id="page" name="page" th:value="${page}">
+                <input type="hidden" id="pageSize" name="pageSize" th:value="${pageSize}">
                 <select name="keywordCategory" id="keywordCategory" class="h-full border border-gray-400 rounded py-2">
                     <option value="title">제목</option>
                     <option value="content">내용</option>
