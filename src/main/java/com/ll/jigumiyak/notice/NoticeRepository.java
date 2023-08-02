@@ -11,8 +11,8 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
     @Query("SELECT n FROM Notice n " +
             "WHERE ((:keywordCategory = 'title' AND n.title LIKE %:keyword%) " +
             "OR (:keywordCategory = 'content' AND n.content LIKE %:keyword%) " +
-            "OR (:keywordCategory = 'author' AND n.author LIKE %:keyword%) " +
-            "OR (:keywordCategory = 'title+content' AND (n.title LIKE %:keyword% OR n.content LIKE %:keyword%))) " +
+            "OR (:keywordCategory = 'author' AND n.author.loginId LIKE %:keyword%) " +
+            "OR (:keywordCategory = 'all' AND (n.title LIKE %:keyword% OR n.content LIKE %:keyword%))) " +
             "AND (n.category.name = :category)")
     Page<Notice> searchByKeywordAndCategory(@Param("keyword") String keyword,
                                             @Param("keywordCategory") String keywordCategory,
@@ -23,8 +23,8 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
     @Query("SELECT n FROM Notice n " +
             "WHERE (:keywordCategory = 'title' AND n.title LIKE %:keyword%) " +
             "OR (:keywordCategory = 'content' AND n.content LIKE %:keyword%) " +
-            "OR (:keywordCategory = 'author' AND n.author LIKE %:keyword%) " +
-            "OR (:keywordCategory = 'title+content' AND (n.title LIKE %:keyword% OR n.content LIKE %:keyword%))")
+            "OR (:keywordCategory = 'author' AND n.author.loginId LIKE %:keyword%) " +
+            "OR (:keywordCategory = 'all' AND (n.title LIKE %:keyword% OR n.content LIKE %:keyword%))")
     Page<Notice> searchByKeyword(@Param("keyword") String keyword,
                                  @Param("keywordCategory") String keywordCategory,
                                  Pageable pageable);

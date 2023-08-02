@@ -17,5 +17,5 @@ public class NoticeCategory {
     @Column
     private String name;
     @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE)
-    private List<Notice> categoryList;
+    private List<Notice> noticeList;
 }

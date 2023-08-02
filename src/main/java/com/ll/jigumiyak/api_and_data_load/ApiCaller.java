@@ -5,17 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ll.jigumiyak.nutrient.Nutrient;
 import com.ll.jigumiyak.nutrient.NutrientService;
 import com.ll.jigumiyak.nutrient_category.NutrientCategoryService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.client.RestTemplate;
 
 
-@Controller
-@RequiredArgsConstructor
+
 public class ApiCaller {
-    private final NutrientService nutrientService;
-    private final NutrientCategoryService nutrientCategoryService;
+    private NutrientService nutrientService;
+    private NutrientCategoryService nutrientCategoryService;
 
     public static void main(String[] args) {
         // API 엔드포인트(URL) 설정

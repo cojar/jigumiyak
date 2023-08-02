@@ -7,8 +7,6 @@ import com.ll.jigumiyak.nutrient_category.NutrientCategoryRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.nio.channels.AlreadyBoundException;
-
 @Component
 public class DataLoader implements CommandLineRunner {
 

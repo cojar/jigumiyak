@@ -1,10 +1,8 @@
 package com.ll.jigumiyak.api_and_data_load;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.ll.jigumiyak.nutrient.Nutrient;
 import com.ll.jigumiyak.nutrient.NutrientRepository;
-import com.ll.jigumiyak.product.Product;
 import com.ll.jigumiyak.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
