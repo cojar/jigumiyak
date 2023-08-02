@@ -2,13 +2,10 @@ package com.ll.jigumiyak.security;
 
 import com.ll.jigumiyak.user.SiteUser;
 import com.ll.jigumiyak.user.UserRepository;
-import com.ll.jigumiyak.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.web.DefaultRedirectStrategy;
-import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -34,10 +31,14 @@ public class DefaultSuccessHandler implements AuthenticationSuccessHandler {
             this.userRepository.save(user);
         }
 
+        // refererUri check
+        String refererUri = (String) request.getSession().getAttribute("refererUri");
+        request.getSession().removeAttribute("refererUri");
 
-
-        response.sendRedirect("/");
+        if (refererUri != null) {
+            response.sendRedirect(refererUri);
+        } else {
+            response.sendRedirect("/");
+        }
     }
-
-
 }
