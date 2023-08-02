@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -43,6 +44,7 @@ public class NoticeService {
         notice.setCategory(category);
         notice.setTitle(title);
         notice.setContent(content);
+        notice.setCreateDate(LocalDateTime.now());
         notice.setAuthor(siteUser);
         noticeRepository.save(notice);
         return notice;

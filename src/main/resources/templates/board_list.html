@@ -7,43 +7,43 @@
     <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
         <h5 class="border-b-4 border-double border-gray-300 text-2xl pt-5">커뮤니티</h5>
 
-<!-- 검색  -->
+        <!-- 검색  -->
         <div class="search-area w-full h-32 border-b-4 border-double border-gray-300 flex justify-center items-center flex-wrap">
             <div class="search-box border border-gray-300 rounded-lg h-10 w-1/2 flex items-center">
-                <input type="text" id="search_kw" class="inline-block h-full w-9/12 bg-transparent" th:value="${kw}">
+                <input type="text" id="search_kw"  class="inline-block h-full w-9/12 bg-transparent" th:value="${kw}">
                 <button class="h-full w-3/12 inline-block border-l" type="button" id="btn_search">찾기</button>
             </div>
         </div>
 
 
 
-<!--테이블-->
+        <!--테이블-->
         <table class="w-full">
             <thead>
-                <tr class="border-b">
-                    <th class="py-3">번호</th>
-                    <th>제목</th>
-                    <th>작성자</th>
-                    <th>작성일시</th>
-                    <th>조회수</th>
-                    <th>추천수</th>
-                </tr>
+            <tr class="border-b">
+                <th class="py-3">번호</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>작성일시</th>
+                <th>조회수</th>
+                <th>추천수</th>
+            </tr>
             </thead>
             <tbody class="w-full">
-                <tr th:each="board, loop : ${paging}" class="border-b">
-                    <td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}" class="w-1/12 text-center"></td>
-                    <td class="w-5/12 py-2">
-                        <a th:href="@{|/board/${board.id}|}" th:text="${board.subject}" class="text-lg w-full"></a>
-                        <span class="text-sm text-green-600 px-3"
-                              th:if="${#lists.size(board.commentList) > 0}"
-                              th:text="${#lists.size(board.commentList)}">
+            <tr th:each="board, loop : ${paging}" class="border-b">
+                <td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}" class="w-1/12 text-center"></td>
+                <td class="w-5/12 py-2">
+                    <a th:href="@{|/board/${board.id}|}" th:text="${board.subject}" class="text-lg w-full"></a>
+                    <span class="text-sm text-green-600 px-3"
+                          th:if="${#lists.size(board.commentList) > 0}"
+                          th:text="${#lists.size(board.commentList)}">
                         </span>
-                    </td>
-                    <td class="w-2/12 text-center"><span th:if="${board.author != null}" th:text="${board.author.loginId}"></span></td>
-                    <td th:text="${#temporals.format(board.createDate, 'yyyy-MM-dd HH:mm')}" class="text-sm w-2/12 text-center"></td>
-                    <td class="w-1/12 text-center">조회수</td>
-                    <td class="w-1/12 text-center">추천수</td>
-                </tr>
+                </td>
+                <td class="w-2/12 text-center"><span th:if="${board.author != null}" th:text="${board.author.loginId}"></span></td>
+                <td th:text="${#temporals.format(board.createDate, 'yyyy-MM-dd HH:mm')}" class="text-sm w-2/12 text-center"></td>
+                <td class="w-1/12 text-center">조회수</td>
+                <td class="w-1/12 text-center">추천수</td>
+            </tr>
             </tbody>
         </table>
 

@@ -12,7 +12,7 @@ public class NoticeCategoryService {
     public NoticeCategory getCategoryByName(String category){
         return noticeCategoryRepository.findByName(category);
     }
-    public List<NoticeCategory> getCategoryList(){
+    public List<NoticeCategory> getNoticeCategoryList(){
         return noticeCategoryRepository.findAll();
     }
 }

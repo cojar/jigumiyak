@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -20,6 +21,10 @@ public class Notice {
     private String title;
     @Column(columnDefinition = "TEXT")
     private String content;
+    @Column
+    private LocalDateTime createDate;
+    @Column
+    private LocalDateTime modifyDate;
     @OneToMany(mappedBy = "notice", cascade = CascadeType.REMOVE)
     private List<NoticeComment> commentList;
     @ManyToOne
