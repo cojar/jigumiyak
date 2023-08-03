@@ -1,6 +1,6 @@
 package com.ll.jigumiyak.notice_comment;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 
