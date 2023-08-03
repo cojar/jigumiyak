@@ -79,7 +79,7 @@ public class BoardCommentController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제권한이 없습니다.");
         }
         this.boardCommentService.delete(boardComment);
-        return String.format("redirect:/question/detail/%s", boardComment.getBoard().getId());
+        return String.format("redirect:/board/%s", boardComment.getBoard().getId());
     }
 
     @PreAuthorize("isAuthenticated()")
