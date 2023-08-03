@@ -1,0 +1,100 @@
+<html layout:decorate="~{layout}">
+<head>
+  <title>NOTICE-DETAIL</title>
+</head>
+<div layout:fragment="content" class="test-Container">
+  <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
+  <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
+    <h5 class="border-b-4 border-double border-gray-300 text-2xl pt-5">커뮤니티</h5>
+
+    <!--  글 상세  -->
+    <div>
+      <div th:text="${notice.title}"></div>
+      <div th:text="${notice.content}"></div>
+      <div class="">
+        <span th:if="${notice.author != null}" th:text="${notice.author.loginId}"></span>
+      </div>
+      <div th:text="${#temporals.format(notice.modifyDate, 'yyyy-MM-dd HH:mm')}"></div>
+      <div th:text="${#temporals.format(notice.createDate, 'yyyy-MM-dd HH:mm')}"></div>
+    </div>
+
+    <!-- 추천 수정 삭제  -->
+    <div class="">
+      <a th:href="@{|/notice/modify/${notice.id}|}" class=""
+         sec:authorize="isAuthenticated()"
+         th:if="${notice.author != null and #authentication.getPrincipal().getUsername() == notice.author.loginId}"
+         th:text="수정"></a>
+
+      <a href="javascript:void(0);" th:data-uri="@{|/notice/delete/${notice.id}|}"
+         class="delete" sec:authorize="isAuthenticated()"
+         th:if="${notice.author != null and #authentication.getPrincipal().getUsername() == notice.author.loginId}"
+         th:text="삭제"></a>
+    </div>
+
+
+
+    <!--  댓글  -->
+
+    <div th:text="|${#lists.size(notice.commentList)}개의 댓글이 있습니다.|"></div>
+    <div class="card my-3" th:each="comment : ${notice.commentList}">
+      <a th:id="|comment_${comment.id}|"></a>
+      <div class="card-body">
+        <div th:text="${comment.content}"></div>
+        <div class="d-flex justify-content-end">
+          <div class="badge bg-light text-dark p-2 text-start">
+            <div class="mb-2">
+              <span th:if="${comment.author != null}" th:text="${comment.author.loginId}"></span>
+            </div>
+            <div th:text="${#temporals.format(comment.modifyDate, 'yyyy-MM-dd HH:mm')}"></div>
+            <div th:text="${#temporals.format(comment.createDate, 'yyyy-MM-dd HH:mm')}"></div>
+          </div>
+        </div>
+
+        <!--     댓글 추천 수정 삭제    -->
+        <div class="">
+          <a th:href="@{|/ncomment/modify/${comment.id}|}" class=""
+             sec:authorize="isAuthenticated()"
+             th:if="${comment.author != null and #authentication.getPrincipal().getUsername() == comment.author.loginId}"
+             th:text="수정"></a>
+
+          <a href="javascript:void(0);" th:data-uri="@{|/ncomment/delete/${comment.id}|}"
+             class="delete" sec:authorize="isAuthenticated()"
+             th:if="${comment.author != null and #authentication.getPrincipal().getUsername() == comment.author.loginId}"
+             th:text="삭제"></a>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- 댓글 작성 -->
+    <form th:action="@{|/ncomment/create/${notice.id}|}" th:object="${noticeCommentForm}" method="post">
+      <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+      <textarea sec:authorize="isAnonymous()" disabled class="block w-full border rounded-lg" rows="5"></textarea>
+      <textarea sec:authorize="isAuthenticated()" th:field="*{content}" class="block w-full border rounded-lg" rows="5"></textarea>
+      <input type="submit" value="답변등록" class="block text-center w-32 rounded-xl p-3 my-5 cursor-pointer" style="background:#E9B384;">
+    </form>
+
+    <a th:href="@{/notice}">목록</a>
+  </div>
+</div>
+
+<script layout:fragment="script" type='text/javascript'>
+const delete_elements = document.getElementsByClassName("delete");
+Array.from(delete_elements).forEach(function(element) {
+    element.addEventListener('click', function() {
+        if(confirm("정말로 삭제하시겠습니까?")) {
+            location.href = this.dataset.uri;
+        };
+    });
+});
+
+const recommend_elements = document.getElementsByClassName("recommend");
+Array.from(recommend_elements).forEach(function(element) {
+    element.addEventListener('click', function() {
+        if(confirm("정말로 추천하시겠습니까?")) {
+            location.href = this.dataset.uri;
+        };
+    });
+});
+</script>
+</html>

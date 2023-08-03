@@ -1,10 +1,8 @@
 package com.ll.jigumiyak.notice;
 
 import com.ll.jigumiyak.notice_category.NoticeCategory;
-import com.ll.jigumiyak.notice_category.NoticeCategoryRepository;
 import com.ll.jigumiyak.notice_category.NoticeCategoryService;
-import com.ll.jigumiyak.notice_comment.CommentForm;
-import com.ll.jigumiyak.notice_comment.NoticeComment;
+import com.ll.jigumiyak.notice_comment.NoticeCommentForm;
 import com.ll.jigumiyak.user.SiteUser;
 import com.ll.jigumiyak.user.UserService;
 import jakarta.validation.Valid;
@@ -57,5 +55,11 @@ public class NoticeController {
         NoticeCategory category = noticeCategoryService.getCategoryByName(noticeForm.getCategory());
         this.noticeService.create(category, noticeForm.getTitle(), noticeForm.getContent(), siteUser);
         return "redirect:/notice";
+    }
+    @GetMapping("/{id}")
+    public String detail(Model model, @PathVariable("id") Long id, NoticeCommentForm noticeCommentForm) {
+        Notice notice = this.noticeService.getNoticeById(id);
+        model.addAttribute("notice", notice);
+        return "notice_detail";
     }
 }
