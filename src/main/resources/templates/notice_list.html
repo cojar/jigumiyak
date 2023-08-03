@@ -5,21 +5,50 @@
 <div layout:fragment="content" class="test-Container">
     <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
     <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
-        <h5 class="border-b-4 border-double border-gray-300 text-2xl pt-5">커뮤니티</h5>
-
+        <div class="flex">
+            <h5 class="border-b-4 border-double border-gray-300 text-2xl pt-5">커뮤니티</h5>
+<!--            <select id="boardPageSize" name="boardPageSize" th:value="${bPageSize}" th:onchange="_bPageSize()">-->
+<!--                <option value="20" th:selected="${bPageSize} == 20">20개씩 보기</option>-->
+<!--                <option value="50" th:selected="${bPageSize} == 50">50개씩 보기</option>-->
+<!--                <option value="100" th:selected="${bPageSize} == 100">100개씩 보기</option>-->
+<!--            </select>-->
+            <select th:if="${pageSize == 20}" id="pageSizeSelect" name="pageSizeSelect" class="">
+                <option value="">선택하세요</option>
+                <option value="5">5개씩보기</option>
+                <option value="10">10개씩보기</option>
+                <option value="20">20개씩보기</option>
+            </select>
+            <select th:if="${pageSize != 20}" id="pageSizeSelect2" name="pageSizeSelect" class="">
+                <option th:text="${pageSize} + '개씩보기'"></option>
+                <option value="5">5개씩보기</option>
+                <option value="10">10개씩보기</option>
+                <option value="20">20개씩보기</option>
+            </select>
+        </div>
         <!-- 검색  -->
         <div class="search-area flex py-4">
-            <form action="/notice" method="get" class="flex flex-grow gap-2">
+            <form action="/notice" method="get" class="flex flex-grow gap-2" id="noticeForm">
                 <input type="hidden" id="page" name="page" th:value="${page}">
                 <input type="hidden" id="pageSize" name="pageSize" th:value="${pageSize}">
-                <select name="keywordCategory" id="keywordCategory" class="h-full border border-gray-400 rounded py-2">
-                    <option value="title">제목</option>
-                    <option value="content">내용</option>
-                    <option value="author">작성자</option>
-                    <option value="all">제목+내용</option>
+                <select th:if="${!keywordCategory.isEmpty()}" name="keywordCategory" class="h-full border border-gray-400 rounded py-2">
+                    <option th:text="${keywordCategory}"></option>
+                    <option value="제목">제목</option>
+                    <option value="내용">내용</option>
+                    <option value="작성자">작성자</option>
+                    <option value="제목+내용">제목+내용</option>
                 </select>
-                <select name="category" id="category" class="h-full border border-gray-400 rounded py-2">
+                <select th:if="${keywordCategory.isEmpty()}" name="keywordCategory" class="h-full border border-gray-400 rounded py-2">
+                    <option value="제목">제목</option>
+                    <option value="내용">내용</option>
+                    <option value="작성자">작성자</option>
+                    <option value="제목+내용">제목+내용</option>
+                </select>
+                <select th:if="${category.isEmpty()}" name="category" class="h-full border border-gray-400 rounded py-2">
                     <option value="">선택하세요</option>
+                    <option th:each="category : ${categoryList}" th:value="${category.name}" th:text="${category.name}"></option>
+                </select>
+                <select th:if="${!category.isEmpty()}" name="category" class="h-full border border-gray-400 rounded py-2">
+                    <option th:text="${category}"></option>
                     <option th:each="category : ${categoryList}" th:value="${category.name}" th:text="${category.name}"></option>
                 </select>
                 <input type="text" id="keyword" name="keyword" th:value="${keyword}" class="h-full flex-grow border border-gray-400 rounded py-2">
@@ -42,7 +71,7 @@
             <tbody class="w-full">
             <tr th:each="notice, loop : ${paging}" class="border-b">
                 <td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}" class="w-1/12 text-center"></td>
-                <td class="w-5/12 py-2">
+                <td class="w-5/12 py-2 text-center">
                     <a th:href="@{|/notice/${notice.id}|}" th:text="${notice.title}" class="text-lg w-full"></a>
                     <span class="text-sm text-green-600 px-3"
                           th:if="${#lists.size(notice.commentList) > 0}"
@@ -79,6 +108,15 @@
 
         <a th:href="@{/notice/create}" class="block text-center w-32 rounded-xl p-3 my-5" style="background:#E9B384;">글 작성하기</a>
     </div>
-
+    <script>
+      const pageSizeSelect = document.getElementById('pageSizeSelect');
+      pageSizeSelect.addEventListener('change', function () {
+        const selectedPageSize = this.value;
+        const pageSizeInput = document.getElementById('pageSize');
+        pageSizeInput.value = selectedPageSize;
+        localStorage.setItem('selectedPageSize', selectedPageSize);
+        document.getElementById('noticeForm').submit();
+      });
+    </script>
 </div>
 </html>

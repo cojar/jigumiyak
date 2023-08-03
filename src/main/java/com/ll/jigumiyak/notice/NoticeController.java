@@ -28,15 +28,22 @@ public class NoticeController {
     public String main(Model model,
                        @RequestParam(value = "page", defaultValue = "0") int page,
                        @RequestParam(value = "pageSize", defaultValue = "20") int pageSize,
-                       @RequestParam(value = "keywordCategory", required = false) String keywordCategory,
-                       @RequestParam(value = "category", required = false) String category,
-                       @RequestParam(value = "keyword", required = false) String keyword,
+                       @RequestParam(value = "keywordCategory", defaultValue = "") String keywordCategory,
+                       @RequestParam(value = "category", defaultValue = "") String category,
+                       @RequestParam(value = "keyword", defaultValue = "") String keyword,
                        @RequestParam(value = "order",  required = false) String order){
         // 페이징 + 페이지에 표시할 수 + 검색 키워드 + 정렬 기준(?) + 게시판의 카테고리
         Page<Notice> noticePaging = this.noticeService.getNoticeList(page, pageSize, keywordCategory, category, keyword, order);
         List<NoticeCategory> categoryList = this.noticeCategoryService.getNoticeCategoryList();
         model.addAttribute("paging", noticePaging);
         model.addAttribute("categoryList", categoryList);
+        // 검색 값 유지를 위한 modeling
+        model.addAttribute("page", page);
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("keywordCategory", keywordCategory);
+        model.addAttribute("category", category);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("order", order);
         return "notice_list";
     }
     @GetMapping("/create")
