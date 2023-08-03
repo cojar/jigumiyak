@@ -67,7 +67,7 @@ public class BoardCommentController {
         if (!boardComment.getAuthor().getLoginId().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
-        this.boardCommentService.modify(boardComment, boardComment.getContent());
+        this.boardCommentService.modify(boardComment, boardCommentForm.getContent());
         return String.format("redirect:/board/%s#comment_%s", boardComment.getBoard().getId(), boardComment.getId());
     }
 
