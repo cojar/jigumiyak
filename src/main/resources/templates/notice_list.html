@@ -7,22 +7,12 @@
     <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
         <div class="flex">
             <h5 class="border-b-4 border-double border-gray-300 text-2xl pt-5">커뮤니티</h5>
-<!--            <select id="boardPageSize" name="boardPageSize" th:value="${bPageSize}" th:onchange="_bPageSize()">-->
-<!--                <option value="20" th:selected="${bPageSize} == 20">20개씩 보기</option>-->
-<!--                <option value="50" th:selected="${bPageSize} == 50">50개씩 보기</option>-->
-<!--                <option value="100" th:selected="${bPageSize} == 100">100개씩 보기</option>-->
-<!--            </select>-->
-            <select th:if="${pageSize == 20}" id="pageSizeSelect" name="pageSizeSelect" class="">
-                <option value="">선택하세요</option>
-                <option value="5">5개씩보기</option>
-                <option value="10">10개씩보기</option>
-                <option value="20">20개씩보기</option>
-            </select>
-            <select th:if="${pageSize != 20}" id="pageSizeSelect2" name="pageSizeSelect" class="">
-                <option th:text="${pageSize} + '개씩보기'"></option>
-                <option value="5">5개씩보기</option>
-                <option value="10">10개씩보기</option>
-                <option value="20">20개씩보기</option>
+            <select th:value="${pageSize}" id="pageSizeSelect" name="pageSizeSelect" class="">
+                <option value="" th:selected="${pageSize}.isEmpty()">선택하세요</option>
+                <option value="5" th:selected="${pageSize} == 5">5개씩보기</option>
+                <option value="10" th:selected="${pageSize} == 10">10개씩보기</option>
+                <option value="20" th:selected="${pageSize} == 20">20개씩보기</option>
+                <option value="50" th:selected="${pageSize} == 50">50개씩보기</option>
             </select>
         </div>
         <!-- 검색  -->
