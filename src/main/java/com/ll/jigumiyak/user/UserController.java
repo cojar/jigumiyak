@@ -30,9 +30,9 @@ public class UserController {
     private final UserService userService;
     private final AddressService addressService;
 
-    @GetMapping("/my")
+    @GetMapping("/mypage")
     public String my() {
-        return "my";
+        return "mypage";
     }
 
     @GetMapping("/login")
