@@ -1,0 +1,55 @@
+<html layout:decorate="~{layout}">
+<head>
+    <title>JIGUMIYAK</title>
+</head>
+<div layout:fragment="content" class="test-Container">
+    <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
+    <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
+        <h5 class="border-b border-gray-400 text-2xl pt-5">마이페이지</h5>
+        <div class="border-b border-gray-400 h-64 w-full flex items-center">
+            <div class="h-24 w-full flex items-center flex-wrap">
+                <div class="text-4xl font-bold pl-10">아이디 님</div>
+                <div class="text-sm self-end mb-2 pl-5 text-gray-500">소셜 연동여부?</div>
+                <div class="w-full pl-10">example@email.com</div>
+            </div>
+            <div class="bg-gray-100 w-full p-5 flex flex-wrap">
+                <div class="flex items-center">
+                    <div class="text-lg font-bold">회원정보</div>
+                    <a href="#" class="text-sm text-gray-500 px-3" >정보수정 ></a>
+                </div>
+                <div class="w-full text-lg text-gray-600">
+                    <div>회원 유형 : 일반</div>
+                    <div>무슨 정보</div>
+                    <div>어떤 정보</div>
+                    <div>주소 : 어쩌구 저쩌구</div>
+                </div>
+            </div>
+        </div>
+        <!--주문내역-->
+        <div class="border-b border-gray-400">
+            <div class="text-xl mt-3 py-2 border-b">주문내역</div>
+            <div class="h-56 bg-blue-100">내용넣는 자리</div>
+            <div class="h-24 flex justify-center items-center">
+                <a href="#" class="bg-white border text-xl px-5 h-12 py-2 text-gray-500">more</a>
+            </div>
+        </div>
+        <!--찜-->
+        <div class="border-b border-gray-400">
+            <div class="text-xl mt-3 py-2 border-b">찜 목록</div>
+            <div class="h-56 bg-blue-100">내용넣는 자리</div>
+            <div class="h-24 flex justify-center items-center">
+                <a href="#" class="bg-white border text-xl px-5 h-12 py-2 text-gray-500">more</a>
+            </div>
+        </div>
+        <!--문의-->
+        <div class="">
+            <div class="text-xl mt-3 py-2 border-b">문의내역</div>
+            <div class="h-56 bg-blue-100">내용넣는 자리</div>
+            <div class="h-24 flex justify-center items-center">
+                <a href="#" class="bg-white border text-xl px-5 h-12 py-2 text-gray-500">more</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+</html>
