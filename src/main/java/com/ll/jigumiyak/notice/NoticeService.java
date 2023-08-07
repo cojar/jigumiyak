@@ -31,7 +31,7 @@ public class NoticeService {
         return noticeRepository.findAll(pageable);
     }
 
-    public Notice getNoticeById(Long id) {
+    public Notice getNotice(Long id) {
         Optional<Notice> notice = this.noticeRepository.findById(id);
         if (notice.isPresent()){
             return notice.get();
@@ -48,6 +48,19 @@ public class NoticeService {
         notice.setCreateDate(LocalDateTime.now());
         notice.setAuthor(siteUser);
         noticeRepository.save(notice);
+        return notice;
+    }
+
+    public void delete(Notice notice) {
+        this.noticeRepository.delete(notice);
+    }
+
+    public Notice modify(Notice notice, String title, String content, NoticeCategory category) {
+        notice.setTitle(title);
+        notice.setContent(content);
+        notice.setModifyDate(LocalDateTime.now());
+        notice.setCategory(category);
+        this.noticeRepository.save(notice);
         return notice;
     }
 }

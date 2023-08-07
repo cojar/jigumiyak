@@ -30,7 +30,7 @@ public class NoticeCommentController {
     @PostMapping("/create/{id}")
     public String createComment(Model model, @PathVariable("id") Long id,
                                 @Valid NoticeCommentForm noticeCommentForm, BindingResult bindingResult, Principal principal) {
-        Notice notice = this.noticeService.getNoticeById(id);
+        Notice notice = this.noticeService.getNotice(id);
         SiteUser siteUser = this.userService.getUserByLoginId(principal.getName());
         if (bindingResult.hasErrors()) {
             model.addAttribute("notice", notice);
