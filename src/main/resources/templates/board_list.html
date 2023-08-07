@@ -19,6 +19,12 @@
             <input type="hidden" id="page" name="page" th:value="${paging.number}">
         </form>
 
+        <!-- 정렬 버튼들 -->
+        <div class="order-buttons">
+            <button class="order-button" onclick="handleOrderChange('outdated')">▼</button>
+            <button class="order-button" onclick="handleOrderChange('views')">▼</button>
+            <button class="order-button" onclick="handleOrderChange('voter')">▼</button>
+        </div>
 
 
         <!--테이블-->
