@@ -7,6 +7,7 @@ import com.ll.jigumiyak.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,7 +26,7 @@ public class NoticeCommentController {
     private final NoticeService noticeService;
     private final NoticeCommentService noticeCommentService;
     private final UserService userService;
-
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/create/{id}")
     public String createComment(Model model, @PathVariable("id") Long id,
                                 @Valid NoticeCommentForm noticeCommentForm, BindingResult bindingResult, Principal principal) {
@@ -38,7 +39,7 @@ public class NoticeCommentController {
         NoticeComment comment = this.noticeCommentService.create(notice, noticeCommentForm.getContent(), siteUser);
         return String.format("redirect:/notice/%s#comment_%s", comment.getNotice().getId(), notice.getId());
     }
-
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/modify/{id}")
     public String commentModify(Model model, NoticeCommentForm noticeCommentForm, @PathVariable("id") Long id, Principal principal) {
         NoticeComment comment = this.noticeCommentService.getCommentById(id);
@@ -49,7 +50,7 @@ public class NoticeCommentController {
         noticeCommentForm.setContent(comment.getContent());
         return "ncomment_form";
     }
-
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify/{id}")
     public String answerModify(@Valid NoticeCommentForm noticeCommentForm, BindingResult bindingResult,
                                @PathVariable("id") Long id, Principal principal) {
@@ -64,7 +65,7 @@ public class NoticeCommentController {
         return String.format("redirect:/notice/%s#comment_%s",
                 comment.getNotice().getId(), comment.getId());
     }
-
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/delete/{id}")
     public String commentDelete(Principal principal, @PathVariable("id") Long id) {
         NoticeComment comment = this.noticeCommentService.getCommentById(id);
