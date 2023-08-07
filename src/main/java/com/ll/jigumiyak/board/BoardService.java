@@ -46,11 +46,24 @@ public class BoardService {
         return b;
     }
 
-    public Page<Board> getList(int page, String kw) {
+    public Page<Board> getList(int page, String kw, String kwc) {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createDate"));
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
+
         Specification<Board> spec = search(kw);
+        Specification<Board> spec2 = search(kwc);
+
+        if (kwc.equals("title")) {
+            return this.boardRepository.findSubjectByKeyword(kw, pageable);
+        } else if(kwc.equals("content")) {
+            return this.boardRepository.findContentByKeyword(kw, pageable);
+        } else if(kwc.equals("titleandcontent")) {
+            return this.boardRepository.findSubjectAndContentByKeyword(kw, pageable);
+        } else if(kwc.equals("author")) {
+            return this.boardRepository.findAuthorByKeyword(kw, pageable);
+        }
+
         return this.boardRepository.findAllByKeyword(kw, pageable);
     }
 

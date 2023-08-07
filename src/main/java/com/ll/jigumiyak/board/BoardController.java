@@ -26,10 +26,12 @@ public class BoardController {
 
     @GetMapping("")
     public String boardList(Model model, @RequestParam(value="page", defaultValue="0") int page,
-                            @RequestParam(value = "kw", defaultValue = "") String kw) {
-        Page<Board> paging = this.boardService.getList(page, kw);
+                            @RequestParam(value = "kw", defaultValue = "") String kw,
+                            @RequestParam(value = "kwc", defaultValue = "") String kwc) {
+        Page<Board> paging = this.boardService.getList(page, kw, kwc);
         model.addAttribute("paging", paging);
         model.addAttribute("kw", kw);
+        model.addAttribute("kwc", kwc);
         return "board_list";
     }
 
