@@ -5,41 +5,31 @@
 <div layout:fragment="content" class="test-Container">
     <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
     <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
-        <div class="flex">
+        <div class="flex justify-between items-end">
             <h5 class="border-b-4 border-double border-gray-300 text-2xl pt-5">커뮤니티</h5>
-            <select th:value="${pageSize}" id="pageSizeSelect" name="pageSizeSelect" class="">
-                <option value="" th:selected="${pageSize}.isEmpty()">선택하세요</option>
+            <select th:value="${pageSize}" id="pageSizeSelect" name="pageSizeSelect" class="border border-gray-400 rounded py-2 mt-auto">
                 <option value="5" th:selected="${pageSize} == 5">5개씩보기</option>
                 <option value="10" th:selected="${pageSize} == 10">10개씩보기</option>
                 <option value="20" th:selected="${pageSize} == 20">20개씩보기</option>
                 <option value="50" th:selected="${pageSize} == 50">50개씩보기</option>
             </select>
         </div>
+
         <!-- 검색  -->
         <div class="search-area flex py-4">
             <form action="/notice" method="get" class="flex flex-grow gap-2" id="noticeForm">
                 <input type="hidden" id="page" name="page" th:value="${page}">
                 <input type="hidden" id="pageSize" name="pageSize" th:value="${pageSize}">
-                <select th:if="${!keywordCategory.isEmpty()}" name="keywordCategory" class="h-full border border-gray-400 rounded py-2">
-                    <option th:text="${keywordCategory}"></option>
-                    <option value="제목">제목</option>
-                    <option value="내용">내용</option>
-                    <option value="작성자">작성자</option>
-                    <option value="제목+내용">제목+내용</option>
+                <select th:value="${keywordCategory}" name="keywordCategory" class="h-full border border-gray-400 rounded py-2">
+                    <option value="title" th:selected="${keywordCategory == 'title'}">제목</option>
+                    <option value="content" th:selected="${keywordCategory == 'content'}">내용</option>
+                    <option value="author" th:selected="${keywordCategory == 'author'}">작성자</option>
+                    <option value="all" th:selected="${keywordCategory == 'all'}">제목+내용</option>
                 </select>
-                <select th:if="${keywordCategory.isEmpty()}" name="keywordCategory" class="h-full border border-gray-400 rounded py-2">
-                    <option value="제목">제목</option>
-                    <option value="내용">내용</option>
-                    <option value="작성자">작성자</option>
-                    <option value="제목+내용">제목+내용</option>
-                </select>
-                <select th:if="${category.isEmpty()}" name="category" class="h-full border border-gray-400 rounded py-2">
+                <select th:value="${noticeCategory}" name="noticeCategory" class="h-full border border-gray-400 rounded py-2">
                     <option value="">선택하세요</option>
-                    <option th:each="category : ${categoryList}" th:value="${category.name}" th:text="${category.name}"></option>
-                </select>
-                <select th:if="${!category.isEmpty()}" name="category" class="h-full border border-gray-400 rounded py-2">
-                    <option th:text="${category}"></option>
-                    <option th:each="category : ${categoryList}" th:value="${category.name}" th:text="${category.name}"></option>
+                    <option value="공지사항" th:selected="${noticeCategory == '공지사항'}">공지사항</option>
+                    <option value="이벤트" th:selected="${noticeCategory == '이벤트'}">이벤트</option>
                 </select>
                 <input type="text" id="keyword" name="keyword" th:value="${keyword}" class="h-full flex-grow border border-gray-400 rounded py-2">
                 <button type="submit" id="btn_search" class="h-full border border-gray-400 rounded px-4 py-2">찾기</button>

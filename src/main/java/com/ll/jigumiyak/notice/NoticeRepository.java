@@ -9,10 +9,10 @@ import org.springframework.data.repository.query.Param;
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
     // 키워드와 카테고리 둘 다 주어질때
     @Query("SELECT n FROM Notice n " +
-            "WHERE ((:keywordCategory = '제목' AND n.title LIKE %:keyword%) " +
-            "OR (:keywordCategory = '내용' AND n.content LIKE %:keyword%) " +
-            "OR (:keywordCategory = '작성자' AND n.author.loginId LIKE %:keyword%) " +
-            "OR (:keywordCategory = '제목+내용' AND (n.title LIKE %:keyword% OR n.content LIKE %:keyword%))) " +
+            "WHERE ((:keywordCategory = 'title' AND n.title LIKE %:keyword%) " +
+            "OR (:keywordCategory = 'content' AND n.content LIKE %:keyword%) " +
+            "OR (:keywordCategory = 'author' AND n.author.loginId LIKE %:keyword%) " +
+            "OR (:keywordCategory = 'all' AND (n.title LIKE %:keyword% OR n.content LIKE %:keyword%))) " +
             "AND (n.category.name = :category)")
     Page<Notice> searchByKeywordAndCategory(@Param("keyword") String keyword,
                                             @Param("keywordCategory") String keywordCategory,
@@ -21,10 +21,10 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
     // 키워드만 주어질때
     @Query("SELECT n FROM Notice n " +
-            "WHERE (:keywordCategory = '제목' AND n.title LIKE %:keyword%) " +
-            "OR (:keywordCategory = '내용' AND n.content LIKE %:keyword%) " +
-            "OR (:keywordCategory = '작성자' AND n.author.loginId LIKE %:keyword%) " +
-            "OR (:keywordCategory = '제목+내용' AND (n.title LIKE %:keyword% OR n.content LIKE %:keyword%))")
+            "WHERE (:keywordCategory = 'title' AND n.title LIKE %:keyword%) " +
+            "OR (:keywordCategory = 'content' AND n.content LIKE %:keyword%) " +
+            "OR (:keywordCategory = 'author' AND n.author.loginId LIKE %:keyword%) " +
+            "OR (:keywordCategory = 'all' AND (n.title LIKE %:keyword% OR n.content LIKE %:keyword%))")
     Page<Notice> searchByKeyword(@Param("keyword") String keyword,
                                  @Param("keywordCategory") String keywordCategory,
                                  Pageable pageable);
