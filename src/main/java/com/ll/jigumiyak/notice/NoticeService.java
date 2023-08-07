@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -18,7 +19,7 @@ import java.util.Optional;
 public class NoticeService {
     private final NoticeRepository noticeRepository;
     public Page<Notice> getNoticeList(int page, int pageSize, String keywordCategory, String category, String keyword, String order) {
-        Pageable pageable = PageRequest.of(page, pageSize);
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id"));
 
         if (StringUtils.hasText(keyword) && StringUtils.hasText(keywordCategory) && StringUtils.hasText(category)) {
             return noticeRepository.searchByKeywordAndCategory(keyword, keywordCategory, category, pageable);
