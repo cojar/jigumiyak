@@ -30,6 +30,11 @@ public class UserController {
     private final UserService userService;
     private final AddressService addressService;
 
+    @GetMapping("/mypage")
+    public String my() {
+        return "mypage";
+    }
+
     @GetMapping("/login")
     public String login(Model model, HttpServletRequest request,
                         @RequestParam(value = "error", defaultValue = "") String error,
