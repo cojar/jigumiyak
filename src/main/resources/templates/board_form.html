@@ -9,9 +9,6 @@
     <form th:object="${boardForm}" method="post">
       <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
       <div th:replace="~{form_errors :: formErrorsFragment}"></div>
-      <div>
-        <select name="" id=""></select>
-      </div>
       <div class="mt-5">
         <label for="subject" class="w-full text-xl">제목</label>
         <input type="text" th:field="*{subject}" class="block border w-full h-12 rounded-lg p-3">

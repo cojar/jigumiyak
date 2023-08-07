@@ -1,12 +1,12 @@
 <html layout:decorate="~{layout}">
 <head>
-  <title>BOARD-DETAIL</title>
+  <title>NOTICCE-DETAIL</title>
 </head>
 <div layout:fragment="content" class="test-Container">
   <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
   <style>
     @media ( max-width:767px ) {
-      .boardDate {
+      .noticeDate {
         display:none;
       }
     }
@@ -18,51 +18,40 @@
   <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
     <h5 class="border-b-4 border-double border-gray-300 text-2xl pt-5">커뮤니티</h5>
 
-<!--  글 상세  -->
+    <!--  글 상세  -->
     <div>
 
       <div class="py-3 border-b mt-3">
-        <div th:text="${board.subject}" class="text-3xl font-bold"></div>
+        <div th:text="${notice.title}" class="text-3xl font-bold"></div>
         <div class="flex justify-between my-3 text-gray-500">
           <div class="flex items=center">
-            <div th:if="${board.author != null}" th:text="|작성자 : ${board.author.loginId}|"></div>
+            <div th:if="${notice.author != null}" th:text="|작성자 : ${notice.author.loginId}|"></div>
             <div class="mx-3 flex items-center">
-              <a th:href="@{|/board/modify/${board.id}|}" class="px-1 border-b border-gray-600 border-opacity-0 hover:border-opacity-100"
+              <a th:href="@{|/notice/modify/${notice.id}|}" class="px-1 border-b border-gray-600 border-opacity-0 hover:border-opacity-100"
                  sec:authorize="isAuthenticated()"
-                 th:if="${board.author != null and #authentication.getPrincipal().getUsername() == board.author.loginId}"
+                 th:if="${notice.author != null and #authentication.getPrincipal().getUsername() == notice.author.loginId}"
                  th:text="수정"></a>
 
-              <a href="javascript:void(0);" th:data-uri="@{|/board/delete/${board.id}|}"
+              <a href="javascript:void(0);" th:data-uri="@{|/notice/delete/${notice.id}|}"
                  class="delete px-1 border-b border-gray-600 border-opacity-0 hover:border-opacity-100" sec:authorize="isAuthenticated()"
-                 th:if="${board.author != null and #authentication.getPrincipal().getUsername() == board.author.loginId}"
+                 th:if="${notice.author != null and #authentication.getPrincipal().getUsername() == notice.author.loginId}"
                  th:text="삭제"></a>
             </div>
           </div>
-          <div class="boardDate flex items-center">
-            <div th:if="${board.modifyDate != null}" th:text="|수정 - ${#temporals.format(board.modifyDate, 'yyyy-MM-dd HH:mm')}|"></div>
-            <div th:text="|작성 - ${#temporals.format(board.createDate, 'yyyy-MM-dd HH:mm')}|" class="pl-10"></div>
+          <div class="noticeDate flex items-center">
+            <div th:if="${notice.modifyDate != null}" th:text="|수정 - ${#temporals.format(notice.modifyDate, 'yyyy-MM-dd HH:mm')}|"></div>
+            <div th:text="|작성 - ${#temporals.format(notice.createDate, 'yyyy-MM-dd HH:mm')}|" class="pl-10"></div>
           </div>
         </div>
 
       </div>
-
-      <div class="px-10 pt-16 pb-10 border-b">
-        <div th:text="${board.content}" class="text-lg"></div>
-        <div class="flex justify-center mt-10">
-          <a href="javascript:void(0);" class="recommend bg-white py-3 px-5 text-2xl rounded-xl border-2 hover:bg-transparent"
-             style="border-color:#E9B384;"
-             th:data-uri="@{|/board/vote/${board.id}|}">👍
-            <span class="text-xl text-gray-500" th:text="${#lists.size(board.voter)}"></span>
-          </a>
-        </div>
-      </div>
     </div>
 
-<!--  댓글  -->
+    <!--  댓글  -->
     <div class="px-10 pb-5 mt-10 border-b">
-      <div th:text="|댓글 ( ${#lists.size(board.commentList)} )|" class="text-xl font-bold"></div>
+      <div th:text="|댓글 ( ${#lists.size(notice.commentList)} )|" class="text-xl font-bold"></div>
 
-      <form th:action="@{|/bcomment/create/${board.id}|}" th:object="${boardCommentForm}" method="post" class="mt-5">
+      <form th:action="@{|/ncomment/create/${notice.id}|}" th:object="${noticeCommentForm}" method="post" class="mt-5">
         <div th:replace="~{form_errors :: formErrorsFragment}"></div>
         <div class="flex border rounded-xl">
           <textarea sec:authorize="isAnonymous()" disabled class="w-full px-3 rounded-tl-xl rounded-bl-xl resize-none" rows="5"></textarea>
@@ -71,33 +60,27 @@
         </div>
       </form>
 
-      <div class="card border rounded-xl p-3 bg-gray-50 mt-5" th:each="comment : ${board.commentList}">
+      <div class="card border rounded-xl p-3 bg-gray-50 mt-5" th:each="comment : ${notice.commentList}">
         <a th:id="|comment_${comment.id}|"></a>
         <div class="card-body">
           <div class="flex justify-between items-center">
             <div class="flex">
               <div th:if="${comment.author != null}" th:text="|🗨️ ${comment.author.loginId}|"></div>
 
-              <a href="javascript:void(0);" class="recommend rounded-lg px-1 mx-1"
-                 th:data-uri="@{|/bcomment/vote/${comment.id}|}">
-                👍
-                <span class="text-sm text-gray-500" th:text="${#lists.size(comment.voter)}"></span>
-              </a>
-
               <div class="text-sm flex items-center">
-                <a th:href="@{|/bcomment/modify/${comment.id}|}" class="px-1 border-b border-gray-600 border-opacity-0 hover:border-opacity-100"
+                <a th:href="@{|/ncomment/modify/${comment.id}|}" class="px-1 border-b border-gray-600 border-opacity-0 hover:border-opacity-100"
                    sec:authorize="isAuthenticated()"
                    th:if="${comment.author != null and #authentication.getPrincipal().getUsername() == comment.author.loginId}"
                    th:text="수정"></a>
 
-                <a href="javascript:void(0);" th:data-uri="@{|/bcomment/delete/${comment.id}|}"
+                <a href="javascript:void(0);" th:data-uri="@{|/ncomment/delete/${comment.id}|}"
                    class="delete px-1 border-b border-gray-600 border-opacity-0 hover:border-opacity-100" sec:authorize="isAuthenticated()"
                    th:if="${comment.author != null and #authentication.getPrincipal().getUsername() == comment.author.loginId}"
                    th:text="삭제"></a>
               </div>
             </div>
 
-            <div class="boardDate flex text-gray-500 text-sm">
+            <div class="noticeDate flex text-gray-500 text-sm">
               <div th:if="${comment.modifyDate != null}" th:text="|수정 - ${#temporals.format(comment.modifyDate, 'yyyy-MM-dd HH:mm')}|"></div>
               <div th:text="|작성 - ${#temporals.format(comment.createDate, 'yyyy-MM-dd HH:mm')}|" class="pl-3"></div>
             </div>
@@ -110,7 +93,7 @@
     </div>
 
     <div class="m-8 text-center">
-      <a th:href="@{/board}" class="py-3 px-5 text-xl rounded-xl" style="background:#E9B384;">목록</a>
+      <a th:href="@{/notice}" class="py-3 px-5 text-xl rounded-xl" style="background:#E9B384;">목록</a>
     </div>
   </div>
 </div>
