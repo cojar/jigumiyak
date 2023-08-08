@@ -2,6 +2,7 @@ package com.ll.jigumiyak.user;
 
 import com.ll.jigumiyak.address.Address;
 import com.ll.jigumiyak.address.AddressService;
+import com.ll.jigumiyak.util.RsData;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -134,13 +135,34 @@ public class UserController {
 
     @GetMapping("/signup/emailCode")
     @ResponseBody
-    public String genEmailCode(@RequestParam("email") String email) {
+    public ResponseEntity genEmailCode(@RequestParam("email") String email) {
 
-        String[] codeBits = this.userService.genSecurityCode(8);
+        log.info("email: " + email);
 
-        this.userService.sendEmail(email, codeBits[0], "이메일 인증코드", "인증코드를");
+        if (email.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-1", "이메일을 입력해주세요", ""));
+        }
 
-        return codeBits[1];
+        if (!email.matches("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]$")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-2", "올바른 이메일 형식이 아닙니다", ""));
+        }
+
+        if (this.userService.isDuplicatedEmail(email)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-3", "이미 사용중인 이메일입니다", ""));
+        }
+
+        String[] codeBits = this.userService.genSecurityCode(email, 8);
+
+        if(!this.userService.sendEmail(email, codeBits[0], "이메일 인증코드", "인증코드를")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-4", "이메일 발송 중에 오류가 발생했습니다", ""));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new RsData<>("S-1", "이메일 발송이 완료되었습니다", codeBits[1]));
     }
 
     @PostMapping("/signup/emailCode")
@@ -150,7 +172,7 @@ public class UserController {
         if(this.userService.isMatched(inputCode, genCode)) {
             return "success";
         } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "인증코드가 일치하지 않습니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "인증코드가 일치하지 않습니다");
         }
     }
 }

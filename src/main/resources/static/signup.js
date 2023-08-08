@@ -8,12 +8,14 @@ function _genCode() {
         data: {
           "email": $("#email").val()
         },
-        success: function(data) {
-            $("#genCode").val(data);
-            $(".alert-email").text("이메일 발송이 완료되었습니다.");
+        success: function(res) {
+            console.log(res.code + ": " + res.message);
+            $("#genCode").val(res.data);
+            $(".alert-email").text(res.message);
             $(".alert-email").addClass("text-green-700");
         },
         error: function(res) {
+            console.log(res.responseJSON.code + ": " + res.responseJSON.message);
             $(".alert-email").text(res.responseJSON.message);
             $(".alert-email").addClass("text-red-400");
         }
