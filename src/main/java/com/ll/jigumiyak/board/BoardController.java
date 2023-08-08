@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
 
 @RequestMapping("/board")
 @RequiredArgsConstructor
@@ -27,9 +25,13 @@ public class BoardController {
     private final UserService userService;
 
     @GetMapping("")
-    public String boardList(Model model, @RequestParam(value="page", defaultValue="0") int page) {
-        Page<Board> paging = this.boardService.getList(page);
+    public String boardList(Model model, @RequestParam(value="page", defaultValue="0") int page,
+                            @RequestParam(value = "kw", defaultValue = "") String kw,
+                            @RequestParam(value = "kwc", defaultValue = "") String kwc) {
+        Page<Board> paging = this.boardService.getList(page, kw, kwc);
         model.addAttribute("paging", paging);
+        model.addAttribute("kw", kw);
+        model.addAttribute("kwc", kwc);
         return "board_list";
     }
 
