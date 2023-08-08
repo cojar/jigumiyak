@@ -71,16 +71,20 @@ function _signup() {
         type: "POST",
         data: $("#userSignupForm").serialize(),
         beforeSend : function() {
-          var token = $("meta[name='_csrf']").attr("content");
-          var header = $("meta[name='_csrf_header']").attr("content");
-          $(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
         },
         success: function(data) {
-          alert(data);
-          location.href = "/user/login";
+            alert(data);
+            location.href = "/user/login";
         },
         error: function(res) {
-          alert("입력을 전부 완료해주세요");
+            let errorMsg = "";
+            $.each(res.responseJSON, function(key, value){
+                errorMsg += value + "\n";
+            });
+            alert(errorMsg);
         }
     })
 }
