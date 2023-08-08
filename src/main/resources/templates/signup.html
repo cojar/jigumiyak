@@ -34,8 +34,12 @@
       <div class="form-control">
         <label class="label">
           <span class="label-text">아이디</span>
+          <span class="alert-loginId label-text"></span>
         </label>
-        <input type="text" th:field="*{loginId}" placeholder="아이디" class="input input-bordered" autofocus>
+        <div class="flex gap-2">
+          <input type="text" th:field="*{loginId}" placeholder="아이디" class="input input-bordered flex-auto" autofocus>
+          <button type="button" class="btn border-gray-300 bg-[color:#A5CDCD] flex-[0_0_20%]" th:onclick="_checkLoginId()">중복확인</button>
+        </div>
       </div>
 
       <div class="form-control">
@@ -71,7 +75,7 @@
         <div class="flex gap-2">
           <input type="text" th:field="*{inputCode}" placeholder="이메일 인증번호" class="input input-bordered flex-auto">
           <input type="hidden" th:field="*{genCode}">
-          <button type="button" class="btn border-gray-300 bg-[color:#A5CDCD] flex-[0_0_20%]" th:onclick="_confirmCode()">인증번호확인</button>
+          <button type="button" class="btn border-gray-300 bg-[color:#A5CDCD] flex-[0_0_20%]" th:onclick="_checkCode()">인증번호확인</button>
         </div>
       </div>
 

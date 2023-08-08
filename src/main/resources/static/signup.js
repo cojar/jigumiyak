@@ -1,9 +1,32 @@
+function _checkLoginId() {
+    $(".alert-loginId").text("");
+    $(".alert-loginId").removeClass("text-green-700");
+    $(".alert-loginId").removeClass("text-red-400");
+    $.ajax({
+        url: "/user/signup/loginId",
+        type: "GET",
+        data: {
+          "loginId": $("#loginId").val()
+        },
+        success: function(res) {
+            console.log(res.code + ": " + res.message);
+            $(".alert-loginId").text(res.message);
+            $(".alert-loginId").addClass("text-green-700");
+        },
+        error: function(res) {
+            console.log(res.responseJSON.code + ": " + res.responseJSON.message);
+            $(".alert-loginId").text(res.responseJSON.message);
+            $(".alert-loginId").addClass("text-red-400");
+        }
+    })
+}
+
 function _genCode() {
     $(".alert-email").text("");
     $(".alert-email").removeClass("text-green-700");
     $(".alert-email").removeClass("text-red-400");
     $.ajax({
-        url: "/user/signup/emailCode",
+        url: "/user/signup/email",
         type: "GET",
         data: {
           "email": $("#email").val()
@@ -22,12 +45,12 @@ function _genCode() {
     })
 }
 
-function _confirmCode() {
+function _checkCode() {
     $(".alert-emailCode").text("");
     $(".alert-emailCode").removeClass("text-green-700");
     $(".alert-emailCode").removeClass("text-red-400");
     $.ajax({
-        url: "/user/signup/emailCode",
+        url: "/user/signup/email",
         type: "POST",
         data: {
         "inputCode": $("#inputCode").val(),

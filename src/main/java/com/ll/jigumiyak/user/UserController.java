@@ -45,8 +45,7 @@ public class UserController {
                         @RequestParam(value = "field", defaultValue = "") String field) {
 
         String refererUri = request.getHeader("Referer");
-        log.info(request.toString());
-        log.info(refererUri);
+        log.info("referer: " + refererUri);
 
         if (refererUri != null && !refererUri.contains("/user/login") && !refererUri.contains("/user/signup")) {
             request.getSession().setAttribute("refererUri", refererUri);
@@ -89,7 +88,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorList);
         }
 
-        if (this.userService.isDuplicatedId(userSignupForm.getLoginId())) {
+        if (this.userService.isDuplicatedLoginId(userSignupForm.getLoginId())) {
             bindingResult.rejectValue("loginId", "Duplicated", "입력한 아이디가 이미 존재합니다.");
         }
 
@@ -133,7 +132,32 @@ public class UserController {
                 .body(String.format("%s님 환영합니다.\n확인 버튼을 누르시면 로그인 페이지로 이동합니다.", user.getLoginId()));
     }
 
-    @GetMapping("/signup/emailCode")
+    @GetMapping("/signup/loginId")
+    @ResponseBody
+    public ResponseEntity checkLoginId(@RequestParam("loginId") String loginId) {
+
+        log.info("loginId: " + loginId);
+
+        if (loginId.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-1", "아이디를 입력해주세요", ""));
+        }
+
+        if (!loginId.matches("(?=.*[a-zA-Z])(?=.*\\d)[a-zA-Z0-9]{8,20}")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-2", "영문과 숫자를 조합해서 8자 이상 20자 이하로 입력해주세요", ""));
+        }
+
+        if (this.userService.isDuplicatedLoginId(loginId)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-3", "이미 사용중인 아이디입니다", ""));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new RsData<>("S-1", "사용 가능한 아이디입니다", ""));
+    }
+
+    @GetMapping("/signup/email")
     @ResponseBody
     public ResponseEntity genEmailCode(@RequestParam("email") String email) {
 
@@ -165,9 +189,9 @@ public class UserController {
                 .body(new RsData<>("S-1", "이메일 발송이 완료되었습니다", codeBits[1]));
     }
 
-    @PostMapping("/signup/emailCode")
+    @PostMapping("/signup/email")
     @ResponseBody
-    public String confirmEmailCode(@RequestParam("inputCode") String inputCode, @RequestParam("genCode") String genCode) {
+    public String checkEmailCode(@RequestParam("inputCode") String inputCode, @RequestParam("genCode") String genCode) {
 
         if(this.userService.isMatched(inputCode, genCode)) {
             return "success";

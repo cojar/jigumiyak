@@ -93,7 +93,7 @@ public class UserService {
         return this.passwordEncoder.matches(raw, encoded);
     }
 
-    public boolean isDuplicatedId(String loginId) {
+    public boolean isDuplicatedLoginId(String loginId) {
         Optional<SiteUser> _user = this.userRepository.findByLoginId(loginId);
         return _user.isPresent();
     }
