@@ -86,10 +86,11 @@
         </div>
 
 
-        <a th:href="@{/board/create}" class="block text-center w-32 rounded-xl p-3 my-5" style="background:#E9B384;">글 작성하기</a>
+        <a th:attr="onclick=|_anonymous('/board/create', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}')|" class="cursor-pointer block text-center w-32 rounded-xl p-3 my-5" style="background:#E9B384;">글 작성하기</a>
     </div>
 
 </div>
+<script type="text/javascript" th:inline="javascript" th:src="@{/common.js}"></script>
 <script layout:fragment="script" type='text/javascript'>
     const page_elements = document.getElementsByClassName("page-link");
     Array.from(page_elements).forEach(function(element) {
