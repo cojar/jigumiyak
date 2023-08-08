@@ -186,17 +186,30 @@ public class UserController {
         }
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new RsData<>("S-1", "이메일 발송이 완료되었습니다", codeBits[1]));
+                .body(new RsData<>("S-1", "이메일 인증번호 발송이 완료되었습니다", codeBits[1]));
     }
 
-    @PostMapping("/signup/email")
+    @GetMapping("/signup/code")
     @ResponseBody
-    public String checkEmailCode(@RequestParam("inputCode") String inputCode, @RequestParam("genCode") String genCode) {
+    public ResponseEntity checkEmailCode(@RequestParam("email") String email,
+                                 @RequestParam("inputCode") String inputCode,
+                                 @RequestParam("genCode") String genCode) {
 
-        if(this.userService.isMatched(inputCode, genCode)) {
-            return "success";
-        } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "인증코드가 일치하지 않습니다");
+        log.info("email: " + email);
+        log.info("inputCode: " + inputCode);
+        log.info("genCode: " + genCode);
+
+        if (inputCode.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-1", "이메일 인증번호를 입력해주세요", ""));
         }
+
+        if (!this.userService.isMatched(email + inputCode, genCode)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-2", "이메일 인증번호가 일치하지 않습니다", ""));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new RsData<>("S-1", "이메일 인증이 완료되었습니다", ""));
     }
 }

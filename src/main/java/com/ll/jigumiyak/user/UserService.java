@@ -48,7 +48,7 @@ public class UserService {
 
     public String[] genSecurityCode(String email, int length) {
 
-        String candidateCode = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String candidateCode = "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&";
         SecureRandom secureRandom = new SecureRandom();
 
         String code = "";

@@ -50,24 +50,22 @@ function _checkCode() {
     $(".alert-emailCode").removeClass("text-green-700");
     $(".alert-emailCode").removeClass("text-red-400");
     $.ajax({
-        url: "/user/signup/email",
-        type: "POST",
+        url: "/user/signup/code",
+        type: "GET",
         data: {
+        "email": $("#email").val(),
         "inputCode": $("#inputCode").val(),
         "genCode": $("#genCode").val()
         },
-        beforeSend : function() {
-          var token = $("meta[name='_csrf']").attr("content");
-          var header = $("meta[name='_csrf_header']").attr("content");
-          $(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
-        },
-        success: function(data) {
-          $(".alert-emailCode").text("이메일 인증이 완료되었습니다.");
-          $(".alert-emailCode").addClass("text-green-700");
+        success: function(res) {
+            console.log(res.code + ": " + res.message);
+            $(".alert-emailCode").text("이메일 인증이 완료되었습니다.");
+            $(".alert-emailCode").addClass("text-green-700");
         },
         error: function(res) {
-          $(".alert-emailCode").text(res.responseJSON.message);
-          $(".alert-emailCode").addClass("text-red-400");
+            console.log(res.responseJSON.code + ": " + res.responseJSON.message);
+            $(".alert-emailCode").text(res.responseJSON.message);
+            $(".alert-emailCode").addClass("text-red-400");
         }
     })
 }
