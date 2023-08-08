@@ -18,7 +18,7 @@
                     </a>
                 </li>
                 <li class="menu-1__li-icon">
-                    <a class="h-full flex items-center px-2 cursor-pointer" th:attr="onclick=|_anonymous('/user/mypage', '${#authentication.details.sessionId != null}')|">
+                    <a class="h-full flex items-center px-2 cursor-pointer" th:attr="onclick=|_anonymous('/user/mypage', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}')|">
                         <span><i class="far fa-user"></i></span>
                     </a>
                 </li>

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindException;
@@ -30,6 +31,7 @@ public class UserController {
     private final UserService userService;
     private final AddressService addressService;
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/mypage")
     public String my() {
         return "mypage";
@@ -40,7 +42,8 @@ public class UserController {
                         @RequestParam(value = "error", defaultValue = "") String error,
                         @RequestParam(value = "field", defaultValue = "") String field) {
 
-        String refererUri = request.getHeader("referer");
+        String refererUri = request.getHeader("Referer");
+        log.info(request.toString());
         log.info(refererUri);
 
         if (refererUri != null && !refererUri.contains("/user/login") && !refererUri.contains("/user/signup")) {
