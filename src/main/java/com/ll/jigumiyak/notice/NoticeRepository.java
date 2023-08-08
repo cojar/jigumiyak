@@ -34,4 +34,7 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
             "WHERE (n.category.name = :category)")
     Page<Notice> searchByCategory(@Param("category") String category,
                                   Pageable pageable);
+
+    @Query("SELECT MAX(n.id) FROM Notice n")
+    Long findMaxId();
 }

@@ -7,6 +7,9 @@ import com.ll.jigumiyak.notice_category.NoticeCategoryService;
 import com.ll.jigumiyak.notice_comment.NoticeCommentForm;
 import com.ll.jigumiyak.user.SiteUser;
 import com.ll.jigumiyak.user.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -36,7 +39,7 @@ public class NoticeController {
                        @RequestParam(value = "keywordCategory", defaultValue = "") String keywordCategory,
                        @RequestParam(value = "noticeCategory", defaultValue = "") String noticeCategory,
                        @RequestParam(value = "keyword", defaultValue = "") String keyword,
-                       @RequestParam(value = "order",  required = false) String order){
+                       @RequestParam(value = "order", required = false) String order) {
         // 페이징 + 페이지에 표시할 수 + 검색 키워드 + 정렬 기준(?) + 게시판의 카테고리
         Page<Notice> noticePaging = this.noticeService.getNoticeList(page, pageSize, keywordCategory, noticeCategory, keyword, order);
         List<NoticeCategory> categoryList = this.noticeCategoryService.getNoticeCategoryList();
@@ -51,9 +54,10 @@ public class NoticeController {
         model.addAttribute("order", order);
         return "notice_list";
     }
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/create")
-    public String createNotice(NoticeForm noticeForm, Model model){
+    public String createNotice(NoticeForm noticeForm, Model model) {
         List<NoticeCategory> categoryList = this.noticeCategoryService.getNoticeCategoryList();
         model.addAttribute("categoryList", categoryList);
         return "notice_form";
@@ -61,7 +65,7 @@ public class NoticeController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
-    public String createNotice(@Valid NoticeForm noticeForm, BindingResult bindingResult, Principal principal){
+    public String createNotice(@Valid NoticeForm noticeForm, BindingResult bindingResult, Principal principal) {
         if (bindingResult.hasErrors()) {
             return "notice_form";
         }
@@ -72,9 +76,22 @@ public class NoticeController {
     }
 
     @GetMapping("/{id}")
-    public String detail(Model model, @PathVariable("id") Long id, NoticeCommentForm noticeCommentForm) {
-        Notice notice = this.noticeService.getNotice(id);
+    public String detail(Model model,
+                         @PathVariable("id") Long id,
+                         NoticeCommentForm noticeCommentForm,
+                         HttpServletRequest request,
+                         HttpServletResponse response) {
+        Notice notice;
+        if (hitCountJudge(id, request, response)) {
+            notice = this.noticeService.hit(id);
+        } else {
+            notice = this.noticeService.getNotice(id);
+        }
         model.addAttribute("notice", notice);
+
+        // 디테일페이지 마지막페이지일 경우 처리하기 위함
+        Long maxId = noticeService.maxId();
+        model.addAttribute("maxId", maxId);
         return "notice_detail";
     }
 
@@ -83,7 +100,7 @@ public class NoticeController {
     public String boardModify(Model model, NoticeForm noticeForm, @PathVariable("id") Long id, Principal principal) {
         Notice notice = this.noticeService.getNotice(id);
 
-        if(!notice.getAuthor().getLoginId().equals(principal.getName())) {
+        if (!notice.getAuthor().getLoginId().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
 
@@ -121,5 +138,53 @@ public class NoticeController {
         }
         this.noticeService.delete(notice);
         return "redirect:/notice";
+    }
+
+    private boolean hitCountJudge(Long id, HttpServletRequest request, HttpServletResponse response) {
+        // 요청 이전 url을 확인해서 제대로 된 게시물 접근인지 확인
+        String refer = request.getHeader("REFERER");
+
+        if (refer == null) return false;
+
+        String path = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+        String referUri = refer.replaceFirst(path, "");
+        System.out.println(referUri);
+
+        // 게시판에서 접근한 경우가 아니면 reject
+        if (!referUri.startsWith("/notice") && !referUri.equals("/index") && !referUri.startsWith("/user/mypage"))
+            return false;
+
+        Cookie oldCookie = null;
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("noticeHit")) {
+                    oldCookie = cookie;
+                }
+            }
+        }
+
+        // 관련 쿠기가 있다면
+        if (oldCookie != null) {
+            // 해당 쿠키가 해당 게시물 id를 조회할 때 생성된 쿠기인지 판단
+            if (!oldCookie.getValue().contains("[" + id + "]")) {
+                // 아니라면 해당 게시물 id를 조회한 결과를 쿠기에 저장
+                oldCookie.setValue(oldCookie.getValue() + "_[" + id + "]");
+                oldCookie.setPath("/");
+                oldCookie.setMaxAge(30); // 지속시간 30초
+                response.addCookie(oldCookie); // 쿠키를 브라우저에 저장
+                return true;
+            }
+            // 맞다면 reject
+            return false;
+        } else {
+            // 쿠키가 없다면 새로 생성해서 해당 게시물 id를 조회한 결과를 쿠기에 저장
+            Cookie newCookie = new Cookie("noticeHit", "[" + id + "]");
+            newCookie.setPath("/");
+            newCookie.setMaxAge(30); // 지속시간 30초
+            response.addCookie(newCookie); // 쿠키를 브라우저에 저장
+            return true;
+        }
     }
 }
