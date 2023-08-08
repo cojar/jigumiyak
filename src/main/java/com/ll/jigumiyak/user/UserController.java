@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindException;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +32,7 @@ public class UserController {
     private final UserService userService;
     private final AddressService addressService;
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/mypage")
     public String my() {
         return "mypage";
@@ -40,7 +43,8 @@ public class UserController {
                         @RequestParam(value = "error", defaultValue = "") String error,
                         @RequestParam(value = "field", defaultValue = "") String field) {
 
-        String refererUri = request.getHeader("referer");
+        String refererUri = request.getHeader("Referer");
+        log.info(request.toString());
         log.info(refererUri);
 
         if (refererUri != null && !refererUri.contains("/user/login") && !refererUri.contains("/user/signup")) {
@@ -74,13 +78,14 @@ public class UserController {
         log.info("address.subAddress: " + userSignupForm.getAddress().getSubAddress());
 
         if (bindingResult.hasErrors()) {
+            List<String> errorList = new ArrayList<>();
             for (FieldError fieldError : bindingResult.getFieldErrors()) {
-                log.info(fieldError.toString());
                 log.info("field: " + fieldError.getField());
                 log.info("code: " + fieldError.getCode());
                 log.info("message: " + fieldError.getDefaultMessage());
+                errorList.add(fieldError.getField() + ": " + fieldError.getDefaultMessage());
             }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getFieldErrors());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorList);
         }
 
         if (this.userService.isDuplicatedId(userSignupForm.getLoginId())) {
@@ -103,7 +108,16 @@ public class UserController {
             bindingResult.rejectValue("address", "NotEmpty", "주소는 필수 항목입니다.");
         }
 
-        if (bindingResult.hasErrors()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getFieldErrors());
+        if (bindingResult.hasErrors()) {
+            List<String> errorList = new ArrayList<>();
+            for (FieldError fieldError : bindingResult.getFieldErrors()) {
+                log.info("field: " + fieldError.getField());
+                log.info("code: " + fieldError.getCode());
+                log.info("message: " + fieldError.getDefaultMessage());
+                errorList.add(fieldError.getField() + ": " + fieldError.getDefaultMessage());
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorList);
+        }
 
         Address address = this.addressService.create(userSignupForm.getAddress().getZoneCode(),
                 userSignupForm.getAddress().getMainAddress(),
