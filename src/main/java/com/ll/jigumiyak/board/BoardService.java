@@ -51,9 +51,6 @@ public class BoardService {
         sorts.add(Sort.Order.desc("createDate"));
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
 
-        Specification<Board> spec = search(kw);
-        Specification<Board> spec2 = search(kwc);
-
         if (kwc.equals("title")) {
             return this.boardRepository.findSubjectByKeyword(kw, pageable);
         } else if(kwc.equals("content")) {
