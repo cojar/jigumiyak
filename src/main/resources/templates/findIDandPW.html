@@ -1,0 +1,30 @@
+<html layout:decorate="~{layout}">
+<head>
+  <title>BOARD-LIST</title>
+</head>
+<div layout:fragment="content" class="test-Container">
+  <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
+  <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
+    <h5 class="border-b-4 border-double border-gray-300 text-2xl pt-5">ID/PW 찾기</h5>
+    <div class="w-full flex justify-around">
+      <div class="w-full my-24 mx-16">
+        <div class="w-full text-3xl text-center border-b-4 border-double border-black py-3">ID 찾기</div>
+        <form action="" class="w-4/5 m-auto flex flex-wrap justify-center items-center">
+          <input type="text" class="w-4/5 h-12 border border-black rounded-xl my-8" placeholder="  email 입력">
+          <button class="w-4/5 h-12 border border-gray-400 rounded-xl mb-3" style="background:#A5CDCD;">ID 찾기</button>
+        </form>
+      </div>
+
+      <div class="w-full my-24 mx-16">
+        <div class="w-full text-3xl text-center border-b-4 border-double border-black py-3">PW 찾기</div>
+        <form action="" class="w-4/5 m-auto flex flex-wrap justify-center items-center">
+          <input type="text" class="w-4/5 h-12 border border-black rounded-xl my-8" placeholder="  ID 입력">
+          <input type="text" class="w-4/5 h-12 border border-black rounded-xl mb-8" placeholder="  email 입력">
+          <button class="w-4/5 h-12 border border border-gray-400 rounded-xl mb-3" style="background:#A5CDCD;">임시 비밀번호 받기</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+</html>

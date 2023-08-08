@@ -139,4 +139,9 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "인증코드가 일치하지 않습니다.");
         }
     }
+
+    @GetMapping("/find")
+    public String findIDAndPw(){
+        return "findIDandPW";
+    }
 }
