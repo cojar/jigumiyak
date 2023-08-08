@@ -16,7 +16,7 @@
     }
   </style>
   <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
-    <h5 class="border-b-4 border-double border-gray-300 text-2xl pt-5">커뮤니티</h5>
+    <h5 class="border-b-4 border-double border-gray-300 text-2xl pt-5">공지사항</h5>
 
     <!--  글 상세  -->
     <div>
@@ -43,7 +43,9 @@
             <div th:text="|작성 - ${#temporals.format(notice.createDate, 'yyyy-MM-dd HH:mm')}|" class="pl-10"></div>
           </div>
         </div>
-
+      </div>
+      <div class="px-10 pt-16 pb-10 border-b">
+        <div th:text="${notice.content}" class="text-lg"></div>
       </div>
     </div>
     <!--  댓글  -->

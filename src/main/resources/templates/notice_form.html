@@ -12,9 +12,9 @@
       <div class="flex items-center justify-between">
         <div class="w-1/5 mr-4">
           <label for="category" class="text-xl">카테고리 선택</label>
-          <select name="category" id="category" class="block h-12 rounded-lg border w-full rounded-lg p-3">
+          <select th:field="*{category}" name="category" id="category" class="block h-12 rounded-lg border w-full rounded-lg p-3">
             <option value="">선택하세요</option>
-            <option th:each="category : ${categoryList}" th:value="${category.name}" th:text="${category.name}" th:field="*{category}"></option>
+            <option th:each="category : ${categoryList}" th:value="${category.name}" th:text="${category.name}"></option>
           </select>
         </div>
         <div class="w-4/5">
