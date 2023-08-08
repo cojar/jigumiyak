@@ -46,9 +46,8 @@
 
       </div>
     </div>
-
     <!--  댓글  -->
-    <div class="px-10 pb-5 mt-10 border-b">
+    <div class="px-10 pb-5 mt-10 border-b cursor-pointer" th:attr="onclick=|_anonymous('/user/login', '${#authentication.authorities == '[ROLE_ANONYMOUS]'}')|">
       <div th:text="|댓글 ( ${#lists.size(notice.commentList)} )|" class="text-xl font-bold"></div>
 
       <form th:action="@{|/ncomment/create/${notice.id}|}" th:object="${noticeCommentForm}" method="post" class="mt-5">
@@ -97,7 +96,7 @@
     </div>
   </div>
 </div>
-
+<script type="text/javascript" th:inline="javascript" th:src="@{/common.js}"></script>
 <script layout:fragment="script" type='text/javascript'>
 const delete_elements = document.getElementsByClassName("delete");
 Array.from(delete_elements).forEach(function(element) {
