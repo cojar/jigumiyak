@@ -1,13 +1,36 @@
 let isLoginIdChecked = false;
 let isPasswordChecked = false;
 let isPasswordConfirmChecked = false;
+let isEmailChecked = false;
+let isEmailCodeChecked = false;
+let isAddressChecked = false;
 
 $(function() {
+    $("#loginId").keyup(_changeInput);
     $("#password").keyup(_checkPassword);
     $("#passwordConfirm").keyup(_checkPasswordConfirm);
+    $("#email").keyup(_changeInput);
+    $("#inputCode").keyup(_changeInput);
 });
 
+function _changeInput() {
+    let target = $(this).attr("id");
+    $(".alert-" + target).text("");
+    eval("is" + target.charAt(0).toUpperCase() + target.slice(1) + "Checked = false;");
+
+    if (target === "email") {
+        $(".alert-inputCode").text("");
+        $("#inputCode").val("");
+    }
+
+    _checkSignupAvailable();
+}
+
 function _checkLoginId() {
+
+    isLoginIdChecked = false;
+    _checkSignupAvailable();
+
     $(".alert-loginId").text("");
     $.ajax({
         url: "/user/signup/loginId",
@@ -20,6 +43,9 @@ function _checkLoginId() {
             $(".alert-loginId").removeClass("text-red-400");
             $(".alert-loginId").addClass("text-green-700");
             $(".alert-loginId").text(res.message);
+            isLoginIdChecked = true;
+            _checkSignupAvailable();
+
         },
         error: function(res) {
             console.log(res.responseJSON.code + ": " + res.responseJSON.message);
@@ -32,6 +58,10 @@ function _checkLoginId() {
 
 function _checkPassword() {
 
+    isPasswordChecked = false;
+    isPasswordConfirmChecked = false;
+    _checkSignupAvailable();
+
     let password = $("#password").val();
     let passwordConfirm = $("#passwordConfirm").val();
     let passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]{8,}$/;
@@ -41,6 +71,8 @@ function _checkPassword() {
             $(".alert-password").removeClass("text-red-400");
             $(".alert-password").addClass("text-green-700");
             $(".alert-password").text("사용 가능한 비밀번호입니다");
+            isPasswordChecked = true;
+            _checkSignupAvailable();
         } else {
             $(".alert-password").removeClass("text-green-700");
             $(".alert-password").addClass("text-red-400");
@@ -57,6 +89,9 @@ function _checkPassword() {
             $(".alert-passwordConfirm").removeClass("text-red-400");
             $(".alert-passwordConfirm").addClass("text-green-700");
             $(".alert-passwordConfirm").text("입력한 비밀번호가 서로 일치합니다");
+            isPasswordChecked = true;
+            isPasswordConfirmChecked = true;
+            _checkSignupAvailable();
         } else {
             $(".alert-passwordConfirm").removeClass("text-green-700");
             $(".alert-passwordConfirm").addClass("text-red-400");
@@ -67,6 +102,8 @@ function _checkPassword() {
 
 function _checkPasswordConfirm() {
 
+    isPasswordConfirmChecked = false;
+    _checkSignupAvailable();
     let password = $("#password").val();
     let passwordConfirm = $("#passwordConfirm").val();
 
@@ -75,6 +112,8 @@ function _checkPasswordConfirm() {
             $(".alert-passwordConfirm").removeClass("text-red-400");
             $(".alert-passwordConfirm").addClass("text-green-700");
             $(".alert-passwordConfirm").text("입력한 비밀번호가 서로 일치합니다");
+            isPasswordConfirmChecked = true;
+            _checkSignupAvailable();
         } else {
             $(".alert-passwordConfirm").removeClass("text-green-700");
             $(".alert-passwordConfirm").addClass("text-red-400");
@@ -86,7 +125,14 @@ function _checkPasswordConfirm() {
 }
 
 function _genCode() {
+
+    isEmailChecked = false;
+    isEmailCodeChecked = false;
+    _checkSignupAvailable();
+
     $(".alert-email").text("");
+    $(".alert-inputCode").text("");
+    $("#inputCode").val("");
     $.ajax({
         url: "/user/signup/email",
         type: "GET",
@@ -99,6 +145,8 @@ function _genCode() {
             $(".alert-email").removeClass("text-red-400");
             $(".alert-email").addClass("text-green-700");
             $(".alert-email").text(res.message);
+            isEmailChecked = true;
+            _checkSignupAvailable();
         },
         error: function(res) {
             console.log(res.responseJSON.code + ": " + res.responseJSON.message);
@@ -110,7 +158,11 @@ function _genCode() {
 }
 
 function _checkCode() {
-    $(".alert-emailCode").text("");
+
+    isEmailCodeChecked = false;
+    _checkSignupAvailable();
+
+    $(".alert-inputCode").text("");
     $.ajax({
         url: "/user/signup/code",
         type: "GET",
@@ -121,15 +173,17 @@ function _checkCode() {
         },
         success: function(res) {
             console.log(res.code + ": " + res.message);
-            $(".alert-emailCode").removeClass("text-red-400");
-            $(".alert-emailCode").addClass("text-green-700");
-            $(".alert-emailCode").text("이메일 인증이 완료되었습니다.");
+            $(".alert-inputCode").removeClass("text-red-400");
+            $(".alert-inputCode").addClass("text-green-700");
+            $(".alert-inputCode").text("이메일 인증이 완료되었습니다.");
+            isEmailCodeChecked = true;
+            _checkSignupAvailable();
         },
         error: function(res) {
             console.log(res.responseJSON.code + ": " + res.responseJSON.message);
-            $(".alert-emailCode").removeClass("text-green-700");
-            $(".alert-emailCode").addClass("text-red-400");
-            $(".alert-emailCode").text(res.responseJSON.message);
+            $(".alert-inputCode").removeClass("text-green-700");
+            $(".alert-inputCode").addClass("text-red-400");
+            $(".alert-inputCode").text(res.responseJSON.message);
         }
     })
 }
@@ -147,13 +201,27 @@ function _zoneCode() {
 
             $(".zoneCode").val(data.zonecode);
             $(".mainAddress").val(mainAddress);
+            isAddressChecked = true;
+            _checkSignupAvailable();
+
             $(".subAddress").focus();
         }
     }).open();
 }
 
+function _checkSignupAvailable() {
+    if (isLoginIdChecked && isPasswordChecked && isPasswordConfirmChecked && isEmailChecked && isEmailCodeChecked && isAddressChecked) {
+        console.log("checked");
+        $("#signup-btn").removeClass("deactivated");
+    } else {
+        $("#signup-btn").addClass("deactivated");
+    }
+}
+
 function _signup() {
     if (!$("#signup-btn").hasClass("deactivated")) {
+        $("input[id='address.zoneCode']").prop("disabled", false);
+        $("input[id='address.mainAddress']").prop("disabled", false);
         $.ajax({
             url: "/user/signup",
             type: "POST",

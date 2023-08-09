@@ -100,7 +100,7 @@ public class UserController {
             bindingResult.rejectValue("email", "Duplicated", "입력한 이메일이 이미 존재합니다.");
         }
 
-        if (!this.userService.isMatched(userSignupForm.getInputCode(), userSignupForm.getGenCode())) {
+        if (!this.userService.isMatched(userSignupForm.getEmail() + userSignupForm.getInputCode(), userSignupForm.getGenCode())) {
             bindingResult.rejectValue("inputCode", "CodeNotMatch", "입력한 이메일 인증번호가 일치하지 않습니다.");
         }
 
