@@ -27,15 +27,6 @@
             <input type="hidden" id="page" name="page" th:value="${paging.number}">
         </form>
 
-
-        <!-- 정렬 버튼들 -->
-        <div class="order-buttons">
-            <button class="order-button" onclick="handleOrderChange('outdated')">▼</button>
-            <button class="order-button" onclick="handleOrderChange('views')">▼</button>
-            <button class="order-button" onclick="handleOrderChange('voter')">▼</button>
-        </div>
-
-
         <!--테이블-->
         <table class="w-full">
             <thead>
@@ -43,9 +34,15 @@
                 <th class="py-3">번호</th>
                 <th>제목</th>
                 <th>작성자</th>
-                <th>작성일시</th>
-                <th>조회수</th>
-                <th>추천수</th>
+                <th>작성일시
+                    <button class="order-button" data-order="outdated">▼</button>
+                </th>
+                <th>조회수
+                    <button class="order-button" data-order="views">▼</button>
+                </th>
+                <th>추천수
+                    <button class="order-button" data-order="voter">▼</button>
+                </th>
             </tr>
             </thead>
             <tbody class="w-full">
@@ -61,7 +58,7 @@
                 <td class="w-2/12 text-center"><span th:if="${board.author != null}" th:text="${board.author.loginId}"></span></td>
                 <td th:text="${#temporals.format(board.createDate, 'yyyy-MM-dd HH:mm')}" class="text-sm w-2/12 text-center"></td>
                 <td class="w-1/12 text-center">조회수</td>
-                <td class="w-1/12 text-center">추천수</td>
+                <td class="w-1/12 text-center" th:text="${#lists.size(board.voter)}"></td>
             </tr>
             </tbody>
         </table>
@@ -106,5 +103,28 @@
         document.getElementById('page').value = 0;  // 검색버튼을 클릭할 경우 0페이지부터 조회한다.
         document.getElementById('searchForm').submit();
     });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const orderButtons = document.querySelectorAll(".order-button");
+        const sortedListContainer = document.getElementById("sorted-list-container");
+
+        orderButtons.forEach(function (button) {
+            button.addEventListener("click", function () {
+                const order = button.getAttribute("data-order");
+
+                // Make an AJAX request to the server to get the sorted list
+                fetch(`/board?kwc=${kwc}&kw=${kw}&order=${order}`)
+                    .then(response => response.text())
+                    .then(data => {
+                        // Update the sorted list container with the new data
+                        sortedListContainer.innerHTML = data;
+                    })
+                    .catch(error => {
+                        console.error("Error fetching sorted list:", error);
+                    });
+            });
+        });
+    });
+
 </script>
 </html>
