@@ -31,4 +31,5 @@ public class Notice {
     private NoticeCategory category;
     @ManyToOne
     private SiteUser author;
+    private Long hit;
 }

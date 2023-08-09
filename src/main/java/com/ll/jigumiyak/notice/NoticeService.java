@@ -47,6 +47,7 @@ public class NoticeService {
         notice.setContent(content);
         notice.setCreateDate(LocalDateTime.now());
         notice.setAuthor(siteUser);
+        notice.setHit(0L);
         noticeRepository.save(notice);
         return notice;
     }
@@ -62,5 +63,15 @@ public class NoticeService {
         notice.setCategory(category);
         this.noticeRepository.save(notice);
         return notice;
+    }
+
+    public Notice hit(Long id) {
+        Notice notice = this.getNotice(id);
+        notice.setHit(notice.getHit() + 1);
+        this.noticeRepository.save(notice);
+        return notice;
+    }
+    public long maxId() {
+        return noticeRepository.findMaxId();
     }
 }
