@@ -1,5 +1,7 @@
-package com.ll.jigumiyak.user;
+package com.ll.jigumiyak.security;
 
+import com.ll.jigumiyak.user.SiteUser;
+import com.ll.jigumiyak.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,7 +19,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class UserSecurityService implements UserDetailsService {
+public class CustomSecurityService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
