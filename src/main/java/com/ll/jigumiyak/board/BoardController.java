@@ -3,6 +3,9 @@ package com.ll.jigumiyak.board;
 import com.ll.jigumiyak.board_comment.BoardCommentForm;
 import com.ll.jigumiyak.user.SiteUser;
 import com.ll.jigumiyak.user.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,17 +30,29 @@ public class BoardController {
     @GetMapping("")
     public String boardList(Model model, @RequestParam(value="page", defaultValue="0") int page,
                             @RequestParam(value = "kw", defaultValue = "") String kw,
-                            @RequestParam(value = "kwc", defaultValue = "") String kwc) {
-        Page<Board> paging = this.boardService.getList(page, kw, kwc);
+                            @RequestParam(value = "kwc", defaultValue = "") String kwc,
+                            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+                            @RequestParam(value = "order", defaultValue = "createDate") String order) {
+        Page<Board> paging = this.boardService.getList(page, kw, kwc, pageSize, order);
         model.addAttribute("paging", paging);
         model.addAttribute("kw", kw);
         model.addAttribute("kwc", kwc);
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("order", order);
         return "board_list";
     }
 
     @GetMapping("/{id}")
-    public String detail(Model model, @PathVariable("id") Long id, BoardCommentForm boardCommentForm) {
-        Board board = this.boardService.getBoard(id);
+    public String detail(Model model, @PathVariable("id") Long id, BoardCommentForm boardCommentForm,
+                         HttpServletRequest request, HttpServletResponse response) {
+
+        Board board;
+        if (hitCountJudge(id, request, response)) {
+            board = this.boardService.hit(id);
+        } else {
+            board = this.boardService.getBoard(id);
+        }
+
         model.addAttribute("board", board);
         return "board_detail";
     }
@@ -105,6 +120,49 @@ public class BoardController {
         Board board = this.boardService.getBoard(id);
         SiteUser siteUser = this.userService.getUserByLoginId(principal.getName());
         this.boardService.vote(board, siteUser);
+        this.boardService.updateVote(board);
         return String.format("redirect:/board/%s", id);
+    }
+
+    private boolean hitCountJudge(Long id, HttpServletRequest request, HttpServletResponse response) {
+        String refer = request.getHeader("REFERER");
+
+        if (refer == null) return false;
+
+        String path = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+        String referUri = refer.replaceFirst(path, "");
+        System.out.println(referUri);
+
+        if (!referUri.startsWith("/board") && !referUri.equals("/index") && !referUri.startsWith("/user/mypage"))
+            return false;
+
+        Cookie oldCookie = null;
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("boardHit")) {
+                    oldCookie = cookie;
+                }
+            }
+        }
+
+        // 관련 쿠기가 있다면
+        if (oldCookie != null) {
+            if (!oldCookie.getValue().contains("[" + id + "]")) {
+                oldCookie.setValue(oldCookie.getValue() + "_[" + id + "]");
+                oldCookie.setPath("/");
+                oldCookie.setMaxAge(30);
+                response.addCookie(oldCookie);
+                return true;
+            }
+            return false;
+        } else {
+            Cookie newCookie = new Cookie("boardHit", "[" + id + "]");
+            newCookie.setPath("/");
+            newCookie.setMaxAge(30);
+            response.addCookie(newCookie);
+            return true;
+        }
     }
 }
