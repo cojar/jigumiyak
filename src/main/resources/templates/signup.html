@@ -45,6 +45,7 @@
       <div class="form-control">
         <label class="label">
           <span class="label-text">비밀번호</span>
+          <span class="alert-password label-text"></span>
         </label>
         <input type="password" th:field="*{password}" placeholder="비밀번호" class="input input-bordered">
       </div>
@@ -52,6 +53,7 @@
       <div class="form-control">
         <label class="label">
           <span class="label-text">비밀번호 확인</span>
+          <span class="alert-passwordConfirm label-text"></span>
         </label>
         <input type="password" th:field="*{passwordConfirm}" placeholder="비밀번호 확인" class="input input-bordered">
       </div>
@@ -87,7 +89,7 @@
           <input type="text" th:field="*{address.zoneCode}" placeholder="우편번호" class="zoneCode input input-bordered flex-[0_0_40%]" th:onclick="_zoneCode()">
           <button type="button" class="btn border-gray-300 bg-[color:#A5CDCD]" th:onclick="_zoneCode()">주소찾기</button>
         </div>
-        <input type="text" th:field="*{address.mainAddress}" placeholder="주소" class="mainAddress my-3 input input-bordered">
+        <input type="text" th:field="*{address.mainAddress}" placeholder="주소" class="mainAddress my-3 input input-bordered" th:onclick="_zoneCode()">
         <input type="text" th:field="*{address.subAddress}" placeholder="상세주소" class="subAddress input input-bordered">
       </div>
 

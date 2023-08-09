@@ -168,7 +168,7 @@ public class UserController {
                     .body(new RsData<>("F-1", "이메일을 입력해주세요", ""));
         }
 
-        if (!email.matches("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]$")) {
+        if (!email.matches("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,}$")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new RsData<>("F-2", "올바른 이메일 형식이 아닙니다", ""));
         }
