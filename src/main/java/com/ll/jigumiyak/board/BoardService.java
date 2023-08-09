@@ -79,22 +79,4 @@ public class BoardService {
         board.getVoter().add(siteUser);
         this.boardRepository.save(board);
     }
-
-    private Specification<Board> search(String kw) {
-        return new Specification<>() {
-            private static final long serialVersionUID = 1L;
-            @Override
-            public Predicate toPredicate(Root<Board> q, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                query.distinct(true);  // 중복을 제거
-                Join<Board, SiteUser> u1 = q.join("author", JoinType.LEFT);
-                Join<Board, BoardComment> a = q.join("commentList", JoinType.LEFT);
-                Join<BoardComment, SiteUser> u2 = a.join("author", JoinType.LEFT);
-                return cb.or(cb.like(q.get("subject"), "%" + kw + "%"), // 제목
-                        cb.like(q.get("content"), "%" + kw + "%"),      // 내용
-                        cb.like(u1.get("loginId"), "%" + kw + "%"),    // 질문 작성자
-                        cb.like(a.get("content"), "%" + kw + "%"),      // 답변 내용
-                        cb.like(u2.get("loginId"), "%" + kw + "%"));   // 답변 작성자
-            }
-        };
-    }
 }

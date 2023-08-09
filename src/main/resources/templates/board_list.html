@@ -33,12 +33,12 @@
             <thead>
             <tr class="border-b">
                 <th>
-                    <select th:value="${size}" id="pageSizeSelect" name="pageSizeSelect"
+                    <select th:value="${pageSize}" id="pageSizeSelect" name="pageSizeSelect"
                             class="border border-gray-400 rounded py-2 mt-auto">
-                        <option value="5" th:selected="${size} == 5">5개</option>
-                        <option value="10" th:selected="${size} == 10">10개</option>
-                        <option value="20" th:selected="${size} == 20">20개</option>
-                        <option value="50" th:selected="${size} == 50">50개</option>
+                        <option value="5" th:selected="${pageSize} == 5">5개</option>
+                        <option value="10" th:selected="${pageSize} == 10">10개</option>
+                        <option value="20" th:selected="${pageSize} == 20">20개</option>
+                        <option value="50" th:selected="${pageSize} == 50">50개</option>
                     </select>
                 </th>
                 <th>제목</th>
@@ -82,7 +82,7 @@
 
                 <li th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}" th:if="${page >= paging.number-5 and page <= paging.number+5}"
                     th:classappend="${page == paging.number} ? 'active'">
-                    <a th:text="${page+1}" class="page-link p-3 mx-1 border rounded-lg hover:bg-gray-300" th:href="@{/board(kwc=${kwc}, kw=${kw}, page=${page})}"></a>
+                    <a th:text="${page+1}" class="page-link p-3 mx-1 border rounded-lg hover:bg-gray-300" th:href="@{/board(kwc=${kwc}, kw=${kw}, page=${page}, pageSize=${pageSize})}"></a>
                 </li>
 
                 <li th:classappend="${!paging.hasNext} ? 'disabled'" class="py-3 px-1">
@@ -121,6 +121,7 @@
         const pageSizeInput = document.getElementById('pageSize');
         pageSizeInput.value = selectedPageSize;
         localStorage.setItem('selectedPageSize', selectedPageSize);
+        document.getElementById('page').value = 0;
         document.getElementById('searchForm').submit();
         });
 </script>

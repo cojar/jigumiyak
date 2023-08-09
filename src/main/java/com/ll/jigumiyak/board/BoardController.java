@@ -33,7 +33,7 @@ public class BoardController {
         model.addAttribute("paging", paging);
         model.addAttribute("kw", kw);
         model.addAttribute("kwc", kwc);
-        model.addAttribute("size", pageSize);
+        model.addAttribute("pageSize", pageSize);
         return "board_list";
     }
 
