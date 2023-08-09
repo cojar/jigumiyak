@@ -2,6 +2,7 @@ package com.ll.jigumiyak.board;
 
 import com.ll.jigumiyak.DataNotFoundException;
 import com.ll.jigumiyak.board_comment.BoardComment;
+import com.ll.jigumiyak.notice.Notice;
 import com.ll.jigumiyak.user.SiteUser;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
@@ -46,9 +47,19 @@ public class BoardService {
         return b;
     }
 
-    public Page<Board> getList(int page, String kw, String kwc, int size) {
+    public Page<Board> getList(int page, String kw, String kwc, int size, String order) {
         List<Sort.Order> sorts = new ArrayList<>();
-        sorts.add(Sort.Order.desc("createDate"));
+
+        if(order.equals("hit")) {
+            sorts.add(Sort.Order.desc("hit"));
+        } else if (order.equals("vote")) {
+            sorts.add(Sort.Order.desc("vote"));
+        } else if (order.equals("old")){
+            sorts.add(Sort.Order.asc("createDate"));
+        } else {
+            sorts.add(Sort.Order.desc("createDate"));
+        }
+
         Pageable pageable = PageRequest.of(page, size, Sort.by(sorts));
 
         if (kwc.equals("title")) {
@@ -78,5 +89,23 @@ public class BoardService {
     public void vote(Board board, SiteUser siteUser) {
         board.getVoter().add(siteUser);
         this.boardRepository.save(board);
+    }
+
+    public void updateVote(Board board) {
+        int vote = board.getVoter().size();
+        board.setVote(vote);
+        boardRepository.save(board);
+    }
+
+    public Board hit(Long id) {
+        Board board = this.getBoard(id);
+
+        if (board.getHit() == null) {
+            board.setHit(0L);
+        }
+
+        board.setHit(board.getHit() + 1);
+        this.boardRepository.save(board);
+        return board;
     }
 }
