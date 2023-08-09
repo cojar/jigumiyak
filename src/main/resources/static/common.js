@@ -4,6 +4,6 @@ function _anonymous(uri, isAuthenticated) {
             location.href = uri;
         }
     } else {
-        location.href = uri;
+        uri = location.href;
     }
 }
