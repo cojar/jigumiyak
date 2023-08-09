@@ -212,4 +212,9 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new RsData<>("S-1", "이메일 인증이 완료되었습니다", ""));
     }
+
+    @GetMapping("/find")
+    public String findIDAndPw(){
+        return "findIDandPW";
+    }
 }

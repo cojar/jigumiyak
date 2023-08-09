@@ -40,4 +40,8 @@ public class Board {
 
     @ManyToMany
     Set<SiteUser> voter;
+
+    private Integer vote;
+
+    private Long hit;
 }
