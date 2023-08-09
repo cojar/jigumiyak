@@ -27,11 +27,13 @@ public class BoardController {
     @GetMapping("")
     public String boardList(Model model, @RequestParam(value="page", defaultValue="0") int page,
                             @RequestParam(value = "kw", defaultValue = "") String kw,
-                            @RequestParam(value = "kwc", defaultValue = "") String kwc) {
-        Page<Board> paging = this.boardService.getList(page, kw, kwc);
+                            @RequestParam(value = "kwc", defaultValue = "") String kwc,
+                            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+        Page<Board> paging = this.boardService.getList(page, kw, kwc, pageSize);
         model.addAttribute("paging", paging);
         model.addAttribute("kw", kw);
         model.addAttribute("kwc", kwc);
+        model.addAttribute("size", pageSize);
         return "board_list";
     }
 

@@ -46,10 +46,10 @@ public class BoardService {
         return b;
     }
 
-    public Page<Board> getList(int page, String kw, String kwc) {
+    public Page<Board> getList(int page, String kw, String kwc, int size) {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createDate"));
-        Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sorts));
 
         if (kwc.equals("title")) {
             return this.boardRepository.findSubjectByKeyword(kw, pageable);

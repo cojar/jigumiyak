@@ -25,13 +25,22 @@
             <input type="hidden" id="kwc" name="kwc" th:value="${kwc}">
             <input type="hidden" id="kw" name="kw" th:value="${kw}">
             <input type="hidden" id="page" name="page" th:value="${paging.number}">
+            <input type="hidden" id="pageSize" name="pageSize" th:value="${size}">
         </form>
 
         <!--테이블-->
         <table class="w-full">
             <thead>
             <tr class="border-b">
-                <th class="py-3">번호</th>
+                <th>
+                    <select th:value="${size}" id="pageSizeSelect" name="pageSizeSelect"
+                            class="border border-gray-400 rounded py-2 mt-auto">
+                        <option value="5" th:selected="${size} == 5">5개</option>
+                        <option value="10" th:selected="${size} == 10">10개</option>
+                        <option value="20" th:selected="${size} == 20">20개</option>
+                        <option value="50" th:selected="${size} == 50">50개</option>
+                    </select>
+                </th>
                 <th>제목</th>
                 <th>작성자</th>
                 <th>작성일시
@@ -96,35 +105,23 @@
             document.getElementById('searchForm').submit();
         });
     });
+
     const btn_search = document.getElementById("btn_search");
     btn_search.addEventListener('click', function() {
         document.getElementById('kwc').value = document.getElementById('search_kwc').value;
         document.getElementById('kw').value = document.getElementById('search_kw').value;
         document.getElementById('page').value = 0;  // 검색버튼을 클릭할 경우 0페이지부터 조회한다.
+        document.getElementById('pageSize').value = document.getElementById('pageSize').value;
         document.getElementById('searchForm').submit();
     });
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const orderButtons = document.querySelectorAll(".order-button");
-        const sortedListContainer = document.getElementById("sorted-list-container");
-
-        orderButtons.forEach(function (button) {
-            button.addEventListener("click", function () {
-                const order = button.getAttribute("data-order");
-
-                // Make an AJAX request to the server to get the sorted list
-                fetch(`/board?kwc=${kwc}&kw=${kw}&order=${order}`)
-                    .then(response => response.text())
-                    .then(data => {
-                        // Update the sorted list container with the new data
-                        sortedListContainer.innerHTML = data;
-                    })
-                    .catch(error => {
-                        console.error("Error fetching sorted list:", error);
-                    });
-            });
+    const pageSizeSelect = document.getElementById('pageSizeSelect');
+    pageSizeSelect.addEventListener('change', function () {
+        const selectedPageSize = this.value;
+        const pageSizeInput = document.getElementById('pageSize');
+        pageSizeInput.value = selectedPageSize;
+        localStorage.setItem('selectedPageSize', selectedPageSize);
+        document.getElementById('searchForm').submit();
         });
-    });
-
 </script>
 </html>
