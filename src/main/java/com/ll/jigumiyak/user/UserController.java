@@ -214,7 +214,7 @@ public class UserController {
     }
 
     @GetMapping("/find")
-    public String findIDAndPw(){
-        return "findIDandPW";
+    public String findUser() {
+        return "find_user";
     }
 }
