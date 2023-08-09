@@ -1,5 +1,6 @@
 $(function() {
     $("#loginId, #password").keyup(function() {
+
         let loginId = $("#loginId").val();
         let password = $("#password").val();
 
