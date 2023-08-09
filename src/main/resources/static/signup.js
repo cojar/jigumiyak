@@ -1,3 +1,7 @@
+let isLoginIdChecked = false;
+let isPasswordChecked = false;
+let isPasswordConfirmChecked = false;
+
 $(function() {
     $("#password").keyup(_checkPassword);
     $("#passwordConfirm").keyup(_checkPasswordConfirm);
@@ -48,6 +52,16 @@ function _checkPassword() {
 
     if (passwordConfirm.length > password.length) {
         $(".alert-passwordConfirm").text("");
+    } else if (passwordConfirm.length >= 8) {
+        if (password === passwordConfirm) {
+            $(".alert-passwordConfirm").removeClass("text-red-400");
+            $(".alert-passwordConfirm").addClass("text-green-700");
+            $(".alert-passwordConfirm").text("입력한 비밀번호가 서로 일치합니다");
+        } else {
+            $(".alert-passwordConfirm").removeClass("text-green-700");
+            $(".alert-passwordConfirm").addClass("text-red-400");
+            $(".alert-passwordConfirm").text("입력한 비밀번호가 서로 일치하지 않습니다");
+        }
     }
 }
 
@@ -139,25 +153,27 @@ function _zoneCode() {
 }
 
 function _signup() {
-    $.ajax({
-        url: "/user/signup",
-        type: "POST",
-        data: $("#userSignupForm").serialize(),
-        beforeSend : function() {
-            var token = $("meta[name='_csrf']").attr("content");
-            var header = $("meta[name='_csrf_header']").attr("content");
-            $(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
-        },
-        success: function(data) {
-            alert(data);
-            location.href = "/user/login";
-        },
-        error: function(res) {
-            let errorMsg = "";
-            $.each(res.responseJSON, function(key, value){
-                errorMsg += value + "\n";
-            });
-            alert(errorMsg);
-        }
-    })
+    if (!$("#signup-btn").hasClass("deactivated")) {
+        $.ajax({
+            url: "/user/signup",
+            type: "POST",
+            data: $("#userSignupForm").serialize(),
+            beforeSend : function() {
+                var token = $("meta[name='_csrf']").attr("content");
+                var header = $("meta[name='_csrf_header']").attr("content");
+                $(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+            },
+            success: function(data) {
+                alert(data);
+                location.href = "/user/login";
+            },
+            error: function(res) {
+                let errorMsg = "";
+                $.each(res.responseJSON, function(key, value){
+                    errorMsg += value + "\n";
+                });
+                alert(errorMsg);
+            }
+        })
+    }
 }
