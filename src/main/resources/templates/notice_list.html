@@ -22,14 +22,14 @@
                 <input type="hidden" id="page" name="page" th:value="${page}">
                 <input type="hidden" id="pageSize" name="pageSize" th:value="${pageSize}">
                 <select th:value="${keywordCategory}" name="keywordCategory"
-                        class="h-full border border-gray-400 rounded py-2">
+                        class="h-full border border-gray-400 rounded py-2" id="keywordCategory">
                     <option value="title" th:selected="${keywordCategory == 'title'}">제목</option>
                     <option value="content" th:selected="${keywordCategory == 'content'}">내용</option>
                     <option value="author" th:selected="${keywordCategory == 'author'}">작성자</option>
                     <option value="all" th:selected="${keywordCategory == 'all'}">제목+내용</option>
                 </select>
                 <select th:value="${noticeCategory}" name="noticeCategory"
-                        class="h-full border border-gray-400 rounded py-2">
+                        class="h-full border border-gray-400 rounded py-2" id="noticeCategory">
                     <option value="">선택하세요</option>
                     <option value="공지사항" th:selected="${noticeCategory == '공지사항'}">공지사항</option>
                     <option value="이벤트" th:selected="${noticeCategory == '이벤트'}">이벤트</option>
@@ -79,46 +79,70 @@
 
         <!-- 페이징 -->
         <div th:if="${!paging.isEmpty()}" class="w-full flex justify-center mt-5">
-            <ul class="w-full flex justify-center">
+            <ul class="w-full flex justify-center items-center">
                 <li th:classappend="${!paging.hasPrevious} ? 'disabled'" class="py-3 px-1">
-                    <button type="button" th:if="${paging.hasPrevious}"
-                            th:onclick="'updatePage(' + (${paging.number}-1) + ')'" class="cursor-pointer">
-                        <span>이전</span></button>
+                    <a class="page-link" href="javascript:void(0)" th:data-page="${0}"><span><<</span></a>
                 </li>
-                <li th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}"
-                    th:if="${page >= paging.number-5 and page <= paging.number+5}"
-                    th:classappend="${page == paging.number} ? 'active'"
-                    class="p-3 mx-1 border rounded-lg hover:bg-gray-300">
-                    <button type="button" th:onclick="'updatePage(' + ${page} + ')'" class="cursor-pointer"><span
-                            th:text="${page+1}"></span></button>
+
+                <li th:classappend="${!paging.hasPrevious} ? 'disabled'" class="py-3 px-1">
+                    <a class="page-link" href="javascript:void(0)" th:data-page="${paging.number-1}"><span>이전</span></a>
                 </li>
+
+                <li th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}" th:if="${page >= paging.number-5 and page <= paging.number+5}"
+                    th:classappend="${page == paging.number} ? 'active'">
+                    <a th:text="${page+1}" class="page-link p-3 mx-1 border rounded-lg hover:bg-gray-300"
+                       th:href="@{/notice(keyword=${keyword},
+                       keywordCategory=${keywordCategory},
+                       page=${page},
+                       pageSize=${pageSize},
+                       noticeCategory=${noticeCategory}
+                       )}">
+                    </a>
+                </li>
+
                 <li th:classappend="${!paging.hasNext} ? 'disabled'" class="py-3 px-1">
-                    <button type="button" th:if="${paging.hasNext}"
-                            th:onclick="'updatePage(' + (${paging.number}+1) + ')'" class="cursor-pointer">
-                        <span>다음</span></button>
+                    <a class="page-link" href="javascript:void(0)" th:data-page="${paging.number+1}"><span>다음</span></a>
+                </li>
+
+                <li th:classappend="${!paging.hasNext} ? 'disabled'" class="py-3 px-1">
+                    <a class="page-link" href="javascript:void(0)" th:data-page="${paging.size-2}"><span>>></span></a>
                 </li>
             </ul>
         </div>
 
 
-        <a th:href="@{/notice/create}" class="block text-center w-32 rounded-xl p-3 my-5" style="background:#E9B384;">글
-            작성하기</a>
+        <a th:attr="onclick=|_anonymous('/notice/create', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}')|" class="cursor-pointer block text-center w-32 rounded-xl p-3 my-5" style="background:#E9B384;">글 작성하기</a>
     </div>
-    <script>
-        const pageSizeSelect = document.getElementById('pageSizeSelect');
-        pageSizeSelect.addEventListener('change', function () {
-            const selectedPageSize = this.value;
-            const pageSizeInput = document.getElementById('pageSize');
-            pageSizeInput.value = selectedPageSize;
-            localStorage.setItem('selectedPageSize', selectedPageSize);
-            document.getElementById('noticeForm').submit();
+
+</div>
+<script type="text/javascript" th:inline="javascript" th:src="@{/common.js}"></script>
+<script layout:fragment="script" type='text/javascript'>
+    const pageSizeSelect = document.getElementById('pageSizeSelect');
+    pageSizeSelect.addEventListener('change', function () {
+        const selectedPageSize = this.value;
+        const pageSizeInput = document.getElementById('pageSize');
+        pageSizeInput.value = selectedPageSize;
+        localStorage.setItem('selectedPageSize', selectedPageSize);
+        document.getElementById('noticeForm').submit();
         });
 
-        function updatePage(newPage) {
-            document.querySelector("#page").value = newPage;
-            document.querySelector("#noticeForm").submit();
-        }
+    const page_elements = document.getElementsByClassName("page-link");
+    Array.from(page_elements).forEach(function(element) {
+        element.addEventListener('click', function() {
+            document.getElementById('page').value = this.dataset.page;
+            document.getElementById('noticeForm').submit();
+        });
+    });
 
-    </script>
+    const btn_search = document.getElementById("btn_search");
+    btn_search.addEventListener('click', function() {
+        document.getElementById('keywordCategory').value = document.getElementById('keywordCategory').value;
+        document.getElementById('keyword').value = document.getElementById('keyword').value;
+        document.getElementById('noticeCategory').value = document.getElementById('noticeCategory').value;
+        document.getElementById('pageSize').value = document.getElementById('pageSize').value;
+        document.getElementById('page').value = 0;  // 검색버튼을 클릭할 경우 0페이지부터 조회한다.
+        document.getElementById('noticeForm').submit();
+    });
+</script>
 </div>
 </html>
