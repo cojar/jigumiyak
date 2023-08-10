@@ -20,7 +20,7 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class DefaultSuccessHandler implements AuthenticationSuccessHandler {
+public class SuccessHandler implements AuthenticationSuccessHandler {
 
     private final UserRepository userRepository;
     private final RequestCache requestCache = new HttpSessionRequestCache();
