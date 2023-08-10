@@ -79,22 +79,28 @@ public class ApiCaller {
                     System.out.println("ADDR: " + addr);
                     System.out.println("---------------------------------------");
 
+                    // 영양성분을 통한 카테고리 가공 테스트
+                    // (
+//                    String test1 = "눈 간 위 갱년기";
+//                    List<NutrientCategory> testnutrientCategoryList = apiService.extractEfficacyList(test1);
+//                    // test
+//                    for(NutrientCategory nutrientCategory : testnutrientCategoryList){
+//                        nutrientCategory.getCategoryName();
+//                        System.out.println(nutrientCategory.getCategoryName());
+//                    }
+//                    System.out.println("--------------------------------------");
+                    // )
+
                     // 영양성분을 통한 카테고리 가공
-                    String test1 = "눈 간 위 갱년기";
-                    List<NutrientCategory> testnutrientCategoryList = apiService.extractEfficacyList(test1);
                     List<NutrientCategory> nutrientCategoryList = apiService.extractEfficacyList(fncltyCn);
-                    // test
-                    for(NutrientCategory nutrientCategory : testnutrientCategoryList){
-                        nutrientCategory.getCategoryName();
-                        System.out.println(nutrientCategory.getCategoryName());
-                    }
-                    System.out.println("--------------------------------------");
                     for(NutrientCategory nutrientCategory : nutrientCategoryList){
                         nutrientCategory.getCategoryName();
                         System.out.println(nutrientCategory.getCategoryName());
                     }
+                    String dailyIntake  = apiService.extractDailyIntake(dayIntkCn);
+                    System.out.println(dailyIntake);
                     // 영양성분 저장
-                    apiService.saveNutrient(aplcRawmtrlNm, fncltyCn, nutrientCategoryList);
+                    apiService.saveNutrient(aplcRawmtrlNm, fncltyCn, dailyIntake, nutrientCategoryList);
 //                    apiService.saveNutrient(, efficacy);
                     nutrient.setName(dataNode.get("APLC_RAWMTRL_NM").asText());
                 }

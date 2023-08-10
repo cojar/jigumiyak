@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -54,11 +53,18 @@ public class ApiService {
         return categoryList;
     }
 
-    public void saveNutrient(String name, String efficacy, List<NutrientCategory> nutrientCategoryList) {
+    public void saveNutrient(String name, String efficacy, String dailyIntake, List<NutrientCategory> nutrientCategoryList) {
         Nutrient nutrient = new Nutrient();
         nutrient.setName(name);
         nutrient.setEfficacy(efficacy);
+        nutrient.setDailyIntake(dailyIntake);
         nutrient.setCategoryList(nutrientCategoryList);
         nutrientRepository.save(nutrient);
+    }
+
+    public String extractDailyIntake(String dayIntkCn){
+        String[] param = dayIntkCn.split("\\/");
+        String dailyIntake = param[0].replaceAll("[^0-9, ^mg, ^g, ^kg]", "").trim().replaceAll(" ", "");
+        return dailyIntake;
     }
 }
