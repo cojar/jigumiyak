@@ -37,24 +37,24 @@ public class ApiService {
     }
 
     public List<NutrientCategory> extractEfficacyList(String fncltyCn) {
-        NutrientCategory nutrientCategory = new NutrientCategory();
         List<NutrientCategory> categoryList = new ArrayList<>();
         if (fncltyCn != null) {
             //로직을 짜자
             for (NutrientCategory category : nutrientCategoryRepository.findAll()) {
                 if (fncltyCn.contains(category.getCategoryName())) {
                     categoryList.add(category);
-                    return categoryList;
                 }
             }
-            NutrientCategory category = nutrientCategoryRepository.findById(nutrientCategoryRepository.count()).get();
-            categoryList.add(category);
-            return categoryList;
+            if(categoryList.isEmpty()) {
+                NutrientCategory category = nutrientCategoryRepository.findById(nutrientCategoryRepository.count()).get();
+                categoryList.add(category);
+                return categoryList;
+            }
         }
         return categoryList;
     }
 
-    public void saveNutrient(String name, String efficacy,List<NutrientCategory> nutrientCategoryList) {
+    public void saveNutrient(String name, String efficacy, List<NutrientCategory> nutrientCategoryList) {
         Nutrient nutrient = new Nutrient();
         nutrient.setName(name);
         nutrient.setEfficacy(efficacy);
