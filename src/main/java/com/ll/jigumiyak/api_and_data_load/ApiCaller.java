@@ -80,11 +80,14 @@ public class ApiCaller {
                     System.out.println("ADDR: " + addr);
                     System.out.println("---------------------------------------");
 
-                    NutrientCategory nutrientCategory = apiService.extractEfficacy(fncltyCn);
-                    System.out.println(nutrientCategory.getCategoryName());
+                    List<NutrientCategory> nutrientCategoryList = apiService.extractEfficacyList(fncltyCn);
+                    for(NutrientCategory nutrientCategory : nutrientCategoryList){
+                        nutrientCategory.getCategoryName();
+                        System.out.println(nutrientCategory.getCategoryName());
+                    }
+                    apiService.saveNutrient(aplcRawmtrlNm, fncltyCn, nutrientCategoryList);
 //                    apiService.saveNutrient(, efficacy);
                     nutrient.setName(dataNode.get("APLC_RAWMTRL_NM").asText());
-
                 }
             } catch (Exception e) {
                 e.printStackTrace();

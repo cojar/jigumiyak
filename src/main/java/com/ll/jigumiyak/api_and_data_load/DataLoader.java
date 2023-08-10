@@ -27,6 +27,7 @@ public class DataLoader implements CommandLineRunner {
             for (String category : categories) {
                 NutrientCategory nutrientCategory = new NutrientCategory();
                 nutrientCategory.setCategoryName(category);
+                System.out.println(category);
                 nutrientCategoryRepository.save(nutrientCategory);
             }
         } else {
