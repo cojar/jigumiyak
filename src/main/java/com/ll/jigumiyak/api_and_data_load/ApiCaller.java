@@ -20,13 +20,10 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class ApiCaller {
-    private final NutrientCategoryService nutrientCategoryService;
     private final ApiService apiService;
     @GetMapping("/api/test/controller")
     @ResponseBody
     public String apiRead() {
-
-        List<String> nutrientCategoryNameList = nutrientCategoryService.getNutrientNameList();
 
         // API 엔드포인트(URL) 설정
         String apiUrl = "http://openapi.foodsafetykorea.go.kr/api/sample/I-0040/json/1/5"; // api주소 입력
