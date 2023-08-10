@@ -19,9 +19,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final DefaultSuccessHandler defaultSuccessHandler;
-    private final DefaultFailureHandler defaultFailureHandler;
-    private final Oauth2FailureHandler oauth2FailureHandler;
+    private final SuccessHandler successHandler;
+    private final FailureHandler failureHandler;
     private final CustomSecurityService customSecurityService;
 
     @Bean
@@ -31,8 +30,8 @@ public class SecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/**")).permitAll())
                 .formLogin((formLogin) -> formLogin
                         .loginPage("/user/login")
-                        .successHandler(defaultSuccessHandler)
-                        .failureHandler(defaultFailureHandler)
+                        .successHandler(successHandler)
+                        .failureHandler(failureHandler)
                         .usernameParameter("loginId"))
                 .logout((logout) -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
@@ -40,8 +39,8 @@ public class SecurityConfig {
                         .invalidateHttpSession(true))
                 .oauth2Login((oauth2Login) -> oauth2Login
                         .loginPage("/user/login")
-                        .successHandler(defaultSuccessHandler)
-                        .failureHandler(oauth2FailureHandler)
+                        .successHandler(successHandler)
+                        .failureHandler(failureHandler)
                         .userInfoEndpoint()
                         .userService(customSecurityService))
         ;
