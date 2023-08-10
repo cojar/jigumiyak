@@ -4,17 +4,31 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ll.jigumiyak.nutrient.Nutrient;
 import com.ll.jigumiyak.nutrient.NutrientService;
+import com.ll.jigumiyak.nutrient_category.NutrientCategory;
 import com.ll.jigumiyak.nutrient_category.NutrientCategoryService;
+import groovy.transform.AutoImplement;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 
-
+@Controller
+@RequiredArgsConstructor
 public class ApiCaller {
-    private NutrientService nutrientService;
-    private NutrientCategoryService nutrientCategoryService;
+    private final NutrientService nutrientService;
+    private final NutrientCategoryService nutrientCategoryService;
+    private final ApiService apiService;
+    @GetMapping("/api/test/controller")
+    @ResponseBody
+    public String apiRead() {
 
-    public static void main(String[] args) {
+        List<String> nutrientCategoryNameList = nutrientCategoryService.getNutrientNameList();
+
         // API 엔드포인트(URL) 설정
         String apiUrl = "http://openapi.foodsafetykorea.go.kr/api/sample/I-0040/json/1/5"; // api주소 입력
 
@@ -30,11 +44,11 @@ public class ApiCaller {
         // 응답 데이터 확인
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
             String responseBody = responseEntity.getBody();
-
             try {
                 // JSON 데이터 파싱하여 Java 객체로 변환
                 JsonNode rootNode = objectMapper.readTree(responseBody);
                 JsonNode rowNode = rootNode.get("I-0040").get("row");
+
                 System.out.println(rowNode);
 
                 // JSON 배열을 하나씩 처리
@@ -65,6 +79,12 @@ public class ApiCaller {
                     System.out.println("INDUTY_NM: " + indutyNm);
                     System.out.println("ADDR: " + addr);
                     System.out.println("---------------------------------------");
+
+                    NutrientCategory nutrientCategory = apiService.extractEfficacy(fncltyCn);
+                    System.out.println(nutrientCategory.getCategoryName());
+//                    apiService.saveNutrient(, efficacy);
+                    nutrient.setName(dataNode.get("APLC_RAWMTRL_NM").asText());
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -72,5 +92,6 @@ public class ApiCaller {
         } else {
             System.out.println("API 호출이 실패하였습니다. 상태 코드: " + responseEntity.getStatusCode());
         }
+        return "";
     }
 }
