@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -15,6 +17,6 @@ public class NutrientCategory {
     @Column
     private String categoryName;
     //눈 체력 체지방 뼈 등등
-    @ManyToOne
-    private Nutrient nutrient;
+    @ManyToMany(mappedBy = "categoryList")
+    private List<Nutrient> nutrientList;
 }

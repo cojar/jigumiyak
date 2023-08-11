@@ -3,12 +3,11 @@ package com.ll.jigumiyak.api_and_data_load;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ll.jigumiyak.nutrient.Nutrient;
-import com.ll.jigumiyak.nutrient.NutrientService;
 import com.ll.jigumiyak.nutrient_category.NutrientCategory;
-import com.ll.jigumiyak.nutrient_category.NutrientCategoryService;
+import com.ll.jigumiyak.nutrient_caution.NutrientCaution;
 import groovy.transform.AutoImplement;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,12 +20,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ApiCaller {
     private final ApiService apiService;
+    @Value("${api.address}")
+    private String apiAddress;
+    @Value("${api.auth.key}")
+    private String apiKey;
+
     @GetMapping("/api/test/controller")
     @ResponseBody
     public String apiRead() {
 
         // API 엔드포인트(URL) 설정
-        String apiUrl = "http://openapi.foodsafetykorea.go.kr/api/sample/I-0040/json/1/5"; // api주소 입력
+        // String apiUrl = apiAddress + apiKey + "/I-0040/json/1/613";
+        // http://openapi.foodsafetykorea.go.kr/api/dcbb839b5b0a4c3d8237/I-0040/json/1/613
+        String apiUrl = "http://openapi.foodsafetykorea.go.kr/api/dcbb839b5b0a4c3d8237/I-0040/json/1/613";
 
         // RestTemplate 객체 생성
         RestTemplate restTemplate = new RestTemplate();
@@ -96,10 +102,15 @@ public class ApiCaller {
                     }
                     String dailyIntake  = apiService.extractDailyIntake(dayIntkCn);
                     System.out.println(dailyIntake);
+
+                    // 영양성분의 주의사항
+                    List<NutrientCaution> cautionList = apiService.extractCautionList(iftknAtntMatrCn);
+                    for(NutrientCaution caution : cautionList){
+                        caution.getCaution();
+                        System.out.println(caution.getCaution());
+                    }
                     // 영양성분 저장
-                    apiService.saveNutrient(aplcRawmtrlNm, fncltyCn, dailyIntake, nutrientCategoryList);
-//                    apiService.saveNutrient(, efficacy);
-                    nutrient.setName(dataNode.get("APLC_RAWMTRL_NM").asText());
+                    apiService.saveNutrient(aplcRawmtrlNm, fncltyCn, dailyIntake, nutrientCategoryList, cautionList);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

@@ -17,18 +17,4 @@ public class NutrientService {
         nutrientRepository.save(nutrient);
     }
 
-    // 뭐하려고 이코드를 짰더라
-    public void extractNutrientEfficacy(Nutrient nutrient) {
-        String nge = nutrient.getEfficacy();
-        List<NutrientCategory> categories = nutrientCategoryRepository.findAll();
-        for (NutrientCategory category : categories) {
-            if (category.getCategoryName().contains(nge)) {
-                nutrient.setEfficacy(category.getCategoryName());
-                return;
-            } else {
-                nutrient.setEfficacy("기타");
-            }
-        }
-    }
-
 }

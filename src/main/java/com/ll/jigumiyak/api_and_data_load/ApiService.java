@@ -4,6 +4,8 @@ import com.ll.jigumiyak.nutrient.Nutrient;
 import com.ll.jigumiyak.nutrient.NutrientRepository;
 import com.ll.jigumiyak.nutrient_category.NutrientCategory;
 import com.ll.jigumiyak.nutrient_category.NutrientCategoryRepository;
+import com.ll.jigumiyak.nutrient_caution.NutrientCaution;
+import com.ll.jigumiyak.nutrient_caution.NutrientCautionRepository;
 import com.ll.jigumiyak.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,20 +22,7 @@ public class ApiService {
     private final ProductRepository productRepository;
     private final NutrientRepository nutrientRepository;
     private final NutrientCategoryRepository nutrientCategoryRepository;
-    @Value("${api.address}")
-    private String apiAddress;
-
-    @Value("${api.auth.key}")
-    private String apiKey;
-
-    public String fetchDataFromApi() {
-        RestTemplate restTemplate = new RestTemplate();
-        String url = apiAddress + "?key=" + apiKey;
-
-        String jsonResponse = restTemplate.getForObject(url, String.class);
-
-        return jsonResponse;
-    }
+    private final NutrientCautionRepository nutrientCautionRepository;
 
     public List<NutrientCategory> extractEfficacyList(String fncltyCn) {
         List<NutrientCategory> categoryList = new ArrayList<>();
@@ -53,12 +42,13 @@ public class ApiService {
         return categoryList;
     }
 
-    public void saveNutrient(String name, String efficacy, String dailyIntake, List<NutrientCategory> nutrientCategoryList) {
+    public void saveNutrient(String name, String efficacy, String dailyIntake, List<NutrientCategory> nutrientCategoryList, List<NutrientCaution> cautionList) {
         Nutrient nutrient = new Nutrient();
         nutrient.setName(name);
         nutrient.setEfficacy(efficacy);
         nutrient.setDailyIntake(dailyIntake);
         nutrient.setCategoryList(nutrientCategoryList);
+        nutrient.setCautionList(cautionList);
         nutrientRepository.save(nutrient);
     }
 
@@ -66,5 +56,18 @@ public class ApiService {
         String[] param = dayIntkCn.split("\\/");
         String dailyIntake = param[0].replaceAll("[^0-9, ^mg, ^g, ^kg]", "").trim().replaceAll(" ", "");
         return dailyIntake;
+    }
+
+    public List<NutrientCaution> extractCautionList(String iftknAtntMatrCn) {
+        List<NutrientCaution> cautionList = new ArrayList<>();
+        if (iftknAtntMatrCn != null) {
+            //로직을 짜자
+            for (NutrientCaution caution : nutrientCautionRepository.findAll()) {
+                if (iftknAtntMatrCn.contains(caution.getCaution())) {
+                    cautionList.add(caution);
+                }
+            }
+        }
+        return cautionList;
     }
 }
