@@ -33,7 +33,7 @@ public class ApiService {
                     categoryList.add(category);
                 }
             }
-            if(categoryList.isEmpty()) {
+            if(categoryList.size() == 0) {
                 NutrientCategory category = nutrientCategoryRepository.findById(nutrientCategoryRepository.count()).get();
                 categoryList.add(category);
                 return categoryList;
@@ -54,7 +54,7 @@ public class ApiService {
 
     public String extractDailyIntake(String dayIntkCn){
         String[] param = dayIntkCn.split("\\/");
-        String dailyIntake = param[0].replaceAll("[^0-9, ^mg, ^g, ^kg]", "").trim().replaceAll(" ", "");
+        String dailyIntake = param[0].replaceAll("[^0-9, ^mg, ^g, ^kg, ^~ ^.]", "").trim().replaceAll(" ", "");
         return dailyIntake;
     }
 

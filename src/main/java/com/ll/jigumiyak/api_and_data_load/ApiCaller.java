@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -118,6 +119,13 @@ public class ApiCaller {
         } else {
             System.out.println("API 호출이 실패하였습니다. 상태 코드: " + responseEntity.getStatusCode());
         }
+        return "";
+    }
+
+    @GetMapping("/api/list/data")
+    @ResponseBody
+    public String apiListData(){
+        List<NutrientCategory> categoryList = new ArrayList<>();
         return "";
     }
 }
