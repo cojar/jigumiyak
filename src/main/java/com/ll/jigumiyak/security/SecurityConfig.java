@@ -19,8 +19,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final DefaultSuccessHandler defaultSuccessHandler;
-    private final DefaultFailureHandler defaultFailureHandler;
+    private final SuccessHandler successHandler;
+    private final FailureHandler failureHandler;
+    private final CustomSecurityService customSecurityService;
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -29,13 +30,19 @@ public class SecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/**")).permitAll())
                 .formLogin((formLogin) -> formLogin
                         .loginPage("/user/login")
-                        .successHandler(defaultSuccessHandler)
-                        .failureHandler(defaultFailureHandler)
+                        .successHandler(successHandler)
+                        .failureHandler(failureHandler)
                         .usernameParameter("loginId"))
                 .logout((logout) -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
                         .logoutSuccessUrl("/")
                         .invalidateHttpSession(true))
+                .oauth2Login((oauth2Login) -> oauth2Login
+                        .loginPage("/user/login")
+                        .successHandler(successHandler)
+                        .failureHandler(failureHandler)
+                        .userInfoEndpoint()
+                        .userService(customSecurityService))
         ;
         return http.build();
     }

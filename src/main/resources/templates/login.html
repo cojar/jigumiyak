@@ -44,14 +44,19 @@
             </div>
 
             <button type="button" id="login-btn" th:onclick="_login()"
-                    class="btn btn-block border-gray-300 gap-1 deactivated bg-[color:#A5CDCD]">
+                    class="btn btn-block border-gray-300 gap-1 bg-[color:#A5CDCD] deactivated">
                 <i class="fa-solid fa-right-to-bracket"></i>
                 <span>로그인</span>
             </button>
 
             <a href="/oauth2/authorization/kakao" class="btn btn-block btn-outline border-gray-300 gap-1">
-                <i class="fa-solid fa-comment text-[color:#ffe812]"></i>
+                <img th:src="@{/image/login_kakao.png}" class="h-5 rounded-md mr-1" alt="">
                 <span>카카오 로그인</span>
+            </a>
+
+            <a href="/oauth2/authorization/google" class="btn btn-block btn-outline border-gray-300 gap-1">
+                <img th:src="@{/image/login_google.png}" class="h-5 rounded-md mr-1" alt="">
+                <span>구글 로그인</span>
             </a>
 
             <a href="/" class="btn btn-block btn-outline border-gray-300 gap-1">
@@ -61,8 +66,7 @@
 
             <div class="flex flex-wrap justify-center">
                 <a href="/user/signup" class="btn btn-link text-[color:gray]">회원가입</a>
-                <a href="#" class="btn btn-link text-[color:gray]">아이디찾기</a>
-                <a href="#" class="btn btn-link text-[color:gray]">비밀번호찾기</a>
+                <a href="/user/find" class="btn btn-link text-[color:gray]">아이디/비밀번호 찾기</a>
             </div>
         </form>
     </div>

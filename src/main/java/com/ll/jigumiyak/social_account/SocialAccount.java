@@ -14,6 +14,13 @@ public class SocialAccount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
+    private String providerId;
+
+    private String email;
+
+    private String name;
+
     @ManyToOne
     private SiteUser parent;
 }
