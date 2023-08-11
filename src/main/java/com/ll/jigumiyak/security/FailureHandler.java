@@ -15,7 +15,7 @@ import java.net.URLEncoder;
 
 @Slf4j
 @Component
-public class DefaultFailureHandler implements AuthenticationFailureHandler {
+public class FailureHandler implements AuthenticationFailureHandler {
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,

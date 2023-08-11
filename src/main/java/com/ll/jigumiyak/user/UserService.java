@@ -46,9 +46,9 @@ public class UserService {
         return user;
     }
 
-    public String[] genSecurityCode(int length) {
+    public String[] genSecurityCode(String email, int length) {
 
-        String candidateCode = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String candidateCode = "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&";
         SecureRandom secureRandom = new SecureRandom();
 
         String code = "";
@@ -57,10 +57,10 @@ public class UserService {
             code += candidateCode.charAt(index);
         }
 
-        return new String[] {code, this.passwordEncoder.encode(code)};
+        return new String[] {code, this.passwordEncoder.encode(email + code)};
     }
 
-    public void sendEmail(String email, String code, String titleType, String contentType) {
+    public boolean sendEmail(String email, String code, String titleType, String contentType) {
 
         try {
             MimeMessage mimeMessage = this.javaMailSender.createMimeMessage();
@@ -81,8 +81,11 @@ public class UserService {
 
             this.javaMailSender.send(mimeMessage);
 
-        } catch (MessagingException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이메일 발송 중에 오류가 발생했습니다.");
+            return true;
+
+        } catch (Exception e) {
+
+            return false;
         }
     }
 
@@ -90,7 +93,7 @@ public class UserService {
         return this.passwordEncoder.matches(raw, encoded);
     }
 
-    public boolean isDuplicatedId(String loginId) {
+    public boolean isDuplicatedLoginId(String loginId) {
         Optional<SiteUser> _user = this.userRepository.findByLoginId(loginId);
         return _user.isPresent();
     }
