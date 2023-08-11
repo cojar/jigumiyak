@@ -12,12 +12,4 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NutrientCategoryService {
     private final NutrientCategoryRepository nutrientCategoryRepository;
-    public List<String> getNutrientNameList(){
-        List<String> nameList = new ArrayList<>();
-        List<NutrientCategory> categories = nutrientCategoryRepository.findAll();
-        for(NutrientCategory category : categories){
-            nameList.add(category.getCategoryName());
-        }
-        return nameList;
-    }
 }

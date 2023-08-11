@@ -1,8 +1,11 @@
 package com.ll.jigumiyak.api_and_data_load;
 
-import com.google.gson.Gson;
 import com.ll.jigumiyak.nutrient.Nutrient;
 import com.ll.jigumiyak.nutrient.NutrientRepository;
+import com.ll.jigumiyak.nutrient_category.NutrientCategory;
+import com.ll.jigumiyak.nutrient_category.NutrientCategoryRepository;
+import com.ll.jigumiyak.nutrient_caution.NutrientCaution;
+import com.ll.jigumiyak.nutrient_caution.NutrientCautionRepository;
 import com.ll.jigumiyak.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,50 +21,53 @@ import java.util.List;
 public class ApiService {
     private final ProductRepository productRepository;
     private final NutrientRepository nutrientRepository;
-    @Value("${api.address}")
-    private String apiAddress;
+    private final NutrientCategoryRepository nutrientCategoryRepository;
+    private final NutrientCautionRepository nutrientCautionRepository;
 
-    @Value("${api.auth.key}")
-    private String apiKey;
-
-    public String fetchDataFromApi() {
-        RestTemplate restTemplate = new RestTemplate();
-        String url = apiAddress + "?key=" + apiKey;
-
-        String jsonResponse = restTemplate.getForObject(url, String.class);
-
-        return jsonResponse;
+    public List<NutrientCategory> extractEfficacyList(String fncltyCn) {
+        List<NutrientCategory> categoryList = new ArrayList<>();
+        if (fncltyCn != null) {
+            //로직을 짜자
+            for (NutrientCategory category : nutrientCategoryRepository.findAll()) {
+                if (fncltyCn.contains(category.getCategoryName())) {
+                    categoryList.add(category);
+                }
+            }
+            if(categoryList.size() == 0) {
+                NutrientCategory category = nutrientCategoryRepository.findById(nutrientCategoryRepository.count()).get();
+                categoryList.add(category);
+                return categoryList;
+            }
+        }
+        return categoryList;
     }
 
-    public List<String> extractMostNecessaryWords(String apiResponseJson) {
-        List<String> mostNecessaryWords = new ArrayList<>();
+    public void saveNutrient(String name, String efficacy, String dailyIntake, List<NutrientCategory> nutrientCategoryList, List<NutrientCaution> cautionList) {
+        Nutrient nutrient = new Nutrient();
+        nutrient.setName(name);
+        nutrient.setEfficacy(efficacy);
+        nutrient.setDailyIntake(dailyIntake);
+        nutrient.setCategoryList(nutrientCategoryList);
+        nutrient.setCautionList(cautionList);
+        nutrientRepository.save(nutrient);
+    }
 
-        //ApiResponse[] apiResponses = new Gson().fromJson(apiResponseJson, ApiResponse[].class);
-        Gson gson = new Gson();
-        ApiResponse[] apiResponses = gson.fromJson(apiResponseJson,  ApiResponse[].class);
+    public String extractDailyIntake(String dayIntkCn){
+        String[] param = dayIntkCn.split("\\/");
+        String dailyIntake = param[0].replaceAll("[^0-9, ^mg, ^g, ^kg, ^~ ^.]", "").trim().replaceAll(" ", "");
+        return dailyIntake;
+    }
 
-
-        // ApiResponse 배열을 순회하며 필요한 단어를 추출
-        for (ApiResponse response : apiResponses) {
-            String primaryFunctionality = response.getFNCLTY_CN(); // 필드 이름이 바뀜?
-            if (primaryFunctionality != null) {
-                String[] words = primaryFunctionality.split("\\s+");
-                //로직을 짜자
-                for (String word : words) {
-                    if (word.contains("기억")) {
-                        saveNutrient(response);
-                    }
+    public List<NutrientCaution> extractCautionList(String iftknAtntMatrCn) {
+        List<NutrientCaution> cautionList = new ArrayList<>();
+        if (iftknAtntMatrCn != null) {
+            //로직을 짜자
+            for (NutrientCaution caution : nutrientCautionRepository.findAll()) {
+                if (iftknAtntMatrCn.contains(caution.getCaution())) {
+                    cautionList.add(caution);
                 }
             }
         }
-        System.out.println(mostNecessaryWords);
-
-        return mostNecessaryWords;
-    }
-
-    public void saveNutrient(ApiResponse response){
-        Nutrient nutrient = new Nutrient();
-        nutrient.setName(response.getAPLC_RAWMTRL_NM());
-        nutrientRepository.save(nutrient);
+        return cautionList;
     }
 }

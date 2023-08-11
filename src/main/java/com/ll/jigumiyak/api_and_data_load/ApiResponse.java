@@ -6,7 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ApiResponse {
-
     private String HF_FNCLTY_MTRAL_RCOGN_NO;
     private String PRMS_DT;
     private String BSSH_NM;
