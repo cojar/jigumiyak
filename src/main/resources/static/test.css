@@ -85,3 +85,21 @@ html > body {
     color:gray;
     pointer-events:none;
 }
+
+
+
+.sidebar-Container {
+    border:1px solid black;
+    width:100px;
+    height:35%;
+    position:fixed;
+    top:65%;
+    left:85%;
+    transform: translate(-50%, 0);
+}
+
+@media ( max-width:1600px ) {
+  .sidebar-Container{
+    left:95%;
+  }
+}
