@@ -1,21 +1,16 @@
 package com.ll.jigumiyak.user;
 
-import com.ll.jigumiyak.DataNotFoundException;
 import com.ll.jigumiyak.address.Address;
-import jakarta.mail.MessagingException;
+import com.ll.jigumiyak.security.CustomRole;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -30,11 +25,7 @@ public class UserService {
 
         SiteUser user = new SiteUser();
 
-        List<String> authorityList = new ArrayList<>();
-        if(loginId.equals("admin_jigumiyak")) authorityList.add(UserRole.ADMIN.getValue());
-        authorityList.add(UserRole.USER.getValue());
-
-        user.setAuthorityList(authorityList);
+        user.setAuthority(CustomRole.USER.getDecCode());
         user.setLoginId(loginId);
         user.setPassword(passwordEncoder.encode(password));
         user.setEmail(email);
@@ -117,6 +108,7 @@ public class UserService {
 
     public void modifyPassword(SiteUser user, String password) {
 
+        user.setAuthority(user.getAuthority() + CustomRole.TEMP_USER.getDecCode());
         user.setPassword(passwordEncoder.encode(password));
         user.setModifyDate(LocalDateTime.now());
 

@@ -12,6 +12,9 @@
                 <div class="text-sm self-end mb-2 pl-5 text-gray-500">소셜 연동여부?</div>
                 <div class="w-full pl-10">example@email.com</div>
             </div>
+            <div>
+                <span th:each="authority : ${user.getAuthorities()}" th:text="${authority}"></span>
+            </div>
             <div class="bg-gray-100 w-full p-5 flex flex-wrap">
                 <div class="flex items-center">
                     <div class="text-lg font-bold">회원정보</div>

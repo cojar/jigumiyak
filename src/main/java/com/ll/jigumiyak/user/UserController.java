@@ -12,13 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.lang.reflect.Field;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +33,25 @@ public class UserController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/mypage")
-    public String my() {
+    public String my(Model model, Principal principal) {
+
+        SiteUser user = this.userService.getUserByLoginId(principal.getName());
+
+        model.addAttribute("user", user);
+
+
+        return "mypage";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/modify")
+    public String modify(Model model, Principal principal) {
+
+        SiteUser user = this.userService.getUserByLoginId(principal.getName());
+
+        model.addAttribute("user", user);
+
+
         return "mypage";
     }
 
