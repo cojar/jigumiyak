@@ -104,11 +104,10 @@ public class UserService {
     }
 
     public SiteUser getUserByLoginId(String loginId) {
-        Optional<SiteUser> siteUser = this.userRepository.findByLoginId(loginId);
-        if (siteUser.isPresent()) {
-            return siteUser.get();
-        } else {
-            throw new DataNotFoundException("siteuser not found");
-        }
+        return this.userRepository.findByLoginId(loginId).orElse(null);
+    }
+
+    public SiteUser getUserByEmail(String email) {
+        return this.userRepository.findByEmail(email).orElse(null);
     }
 }

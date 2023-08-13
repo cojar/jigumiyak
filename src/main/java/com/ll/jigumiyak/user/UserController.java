@@ -180,7 +180,7 @@ public class UserController {
 
         String[] codeBits = this.userService.genSecurityCode(email, 8);
 
-        if(!this.userService.sendEmail(email, codeBits[0], "이메일 인증코드", "인증코드를")) {
+        if (!this.userService.sendEmail(email, codeBits[0], "이메일 인증코드", "인증코드를")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new RsData<>("F-4", "이메일 발송 중에 오류가 발생했습니다", ""));
         }
@@ -192,8 +192,8 @@ public class UserController {
     @GetMapping("/signup/code")
     @ResponseBody
     public ResponseEntity checkEmailCode(@RequestParam("email") String email,
-                                 @RequestParam("inputCode") String inputCode,
-                                 @RequestParam("genCode") String genCode) {
+                                         @RequestParam("inputCode") String inputCode,
+                                         @RequestParam("genCode") String genCode) {
 
         log.info("email: " + email);
         log.info("inputCode: " + inputCode);
@@ -216,5 +216,53 @@ public class UserController {
     @GetMapping("/find")
     public String findUser() {
         return "find_user";
+    }
+
+    @GetMapping("/find/loginId")
+    @ResponseBody
+    public ResponseEntity findLoginId(@RequestParam("email") String email) {
+
+        log.info("email: " + email);
+
+        if (email.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-1", "이메일을 입력해주세요", ""));
+        }
+
+        if (!email.matches("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,}$")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-2", "올바른 이메일 형식이 아닙니다", ""));
+        }
+
+        SiteUser user = this.userService.getUserByEmail(email);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-3", "입력한 이메일로 가입된 통합회원 계정이 없습니다", ""));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new RsData<>("S-1", String.format("가입된 통합회원 아이디는 \"%s\" 입니다.", user.getLoginId()), user.getLoginId()));
+    }
+
+    @PostMapping("/find/password")
+    @ResponseBody
+    public ResponseEntity findPassword(@RequestParam("loginId") String loginId,
+                                      @RequestParam("email") String email) {
+
+        log.info("loginId: " + loginId);
+        log.info("email: " + email);
+
+        // ID 비었으면 ID 입력해달라는 문구 출력
+        // 이메일 비었으면 이메일 입력해달라는 문구 출력
+        // 이메일 양식 안 맞으면 제대로 된 양식으로 입력하라는 문구 출력
+        // ID, 이메일로 아이디 조회가 되지 않으면 에러 메시지
+        // ID 틀리면 ID에 아이디를 확인해주세요
+        // 이메일 틀리면 이메일에
+
+
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new RsData<>("S-1", "입력한 이메일로 임시비밀번호를 발송하였습니다\n로그인 후 비밀번호를 변경해주세요", ""));
     }
 }
