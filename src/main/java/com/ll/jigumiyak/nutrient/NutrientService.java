@@ -17,17 +17,4 @@ public class NutrientService {
         nutrientRepository.save(nutrient);
     }
 
-    public void extractNutrientEfficacy(Nutrient nutrient) {
-        String nge = nutrient.getEfficacy();
-        List<NutrientCategory> categories = nutrientCategoryRepository.findAll();
-        for (NutrientCategory category : categories) {
-            if (category.getCategoryName().contains(nge)) {
-                nutrient.setEfficacy(category.getCategoryName());
-                return;
-            } else {
-                nutrient.setEfficacy("기타");
-            }
-        }
-    }
-
 }

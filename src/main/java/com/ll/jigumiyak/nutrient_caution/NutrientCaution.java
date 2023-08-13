@@ -1,4 +1,4 @@
-package com.ll.jigumiyak.nutrient_category;
+package com.ll.jigumiyak.nutrient_caution;
 
 import com.ll.jigumiyak.nutrient.Nutrient;
 import jakarta.persistence.*;
@@ -7,16 +7,18 @@ import lombok.Setter;
 
 import java.util.List;
 
+
 @Getter
 @Setter
 @Entity
-public class NutrientCategory {
+public class NutrientCaution {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column
-    private String categoryName;
-    //눈 체력 체지방 뼈 등등
-    @ManyToMany(mappedBy = "categoryList")
-    private List<Nutrient> nutrientList;
+    private String caution;
+
+    @ManyToMany(mappedBy = "cautionList")
+    private List<Nutrient> nutrients;
 }
