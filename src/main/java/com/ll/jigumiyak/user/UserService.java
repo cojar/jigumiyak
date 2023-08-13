@@ -46,7 +46,7 @@ public class UserService {
         return user;
     }
 
-    public String[] genSecurityCode(String email, int length) {
+    public String[] genSecurityCode(String prev, int length) {
 
         String candidateCode = "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&";
         SecureRandom secureRandom = new SecureRandom();
@@ -57,7 +57,7 @@ public class UserService {
             code += candidateCode.charAt(index);
         }
 
-        return new String[] {code, this.passwordEncoder.encode(email + code)};
+        return new String[] {code, this.passwordEncoder.encode(prev + code)};
     }
 
     public boolean sendEmail(String email, String code, String titleType, String contentType) {
@@ -109,5 +109,17 @@ public class UserService {
 
     public SiteUser getUserByEmail(String email) {
         return this.userRepository.findByEmail(email).orElse(null);
+    }
+
+    public SiteUser getUserByLoginIdAndEmail(String loginId, String email) {
+        return this.userRepository.findByLoginIdAndEmail(loginId, email).orElse(null);
+    }
+
+    public void modifyPassword(SiteUser user, String password) {
+
+        user.setPassword(passwordEncoder.encode(password));
+        user.setModifyDate(LocalDateTime.now());
+
+        this.userRepository.save(user);
     }
 }

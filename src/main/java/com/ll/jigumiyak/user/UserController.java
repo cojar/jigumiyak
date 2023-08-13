@@ -47,7 +47,8 @@ public class UserController {
         String refererUri = request.getHeader("Referer");
         log.info("referer: " + refererUri);
 
-        if (refererUri != null && !refererUri.contains("/user/login") && !refererUri.contains("/user/signup")) {
+        if (refererUri != null && !refererUri.contains("/user/login")
+                && !refererUri.contains("/user/signup") && !refererUri.contains("/user/find")) {
             request.getSession().setAttribute("refererUri", refererUri);
         }
 
@@ -253,16 +254,55 @@ public class UserController {
         log.info("loginId: " + loginId);
         log.info("email: " + email);
 
-        // ID 비었으면 ID 입력해달라는 문구 출력
-        // 이메일 비었으면 이메일 입력해달라는 문구 출력
-        // 이메일 양식 안 맞으면 제대로 된 양식으로 입력하라는 문구 출력
-        // ID, 이메일로 아이디 조회가 되지 않으면 에러 메시지
-        // ID 틀리면 ID에 아이디를 확인해주세요
-        // 이메일 틀리면 이메일에
+        Map<String, RsData> errors = new HashMap<>();
 
+        // 입력 필드 에러
 
+        if (loginId.isEmpty()) {
+            errors.put("loginId", new RsData<>("F-1", "아이디를 입력해주세요", ""));
+        }
+
+        if (email.isEmpty()) {
+            errors.put("email", new RsData<>("F-2", "이메일을 입력해주세요", ""));
+        }
+
+        if (!email.matches("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,}$") && !errors.containsKey("email")) {
+            errors.put("email", new RsData<>("F-3", "올바른 이메일 형식이 아닙니다", ""));
+        }
+
+        if (!errors.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        }
+
+        SiteUser user = this.userService.getUserByLoginIdAndEmail(loginId, email);
+
+        // 계정 조회 에러
+
+        if (user == null) {
+
+            if (this.userService.getUserByLoginId(loginId) == null) {
+                errors.put("loginId", new RsData<>("F-4", "가입된 통합회원 계정이 아닙니다", ""));
+
+            } else if (this.userService.getUserByEmail(email) == null) {
+                errors.put("email", new RsData<>("F-5", "이메일을 확인해주세요", ""));
+
+            }
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        }
+
+        // 조회 성공 후 로직
+
+        String[] codeBits = this.userService.genSecurityCode("", 12);
+
+        if (!this.userService.sendEmail(email, codeBits[0], "임시비밀번호", "임시비밀번호를")) {
+            errors.put("loginId", new RsData<>("F-6", "이메일 발송 중에 오류가 발생했습니다", ""));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        }
+
+        this.userService.modifyPassword(user, codeBits[0]);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new RsData<>("S-1", "입력한 이메일로 임시비밀번호를 발송하였습니다\n로그인 후 비밀번호를 변경해주세요", ""));
+                .body(new RsData<>("S-1", "입력한 이메일로 임시비밀번호를 발송하였습니다", ""));
     }
 }

@@ -1,7 +1,6 @@
 function _findLoginId() {
 
-//    $(".alert-email").text("");
-//    $(".alert-inputCode").text("");
+    $(".alert-id-email").text("");
 
     $.ajax({
         url: "/user/find/loginId",
@@ -11,23 +10,23 @@ function _findLoginId() {
         },
         success: function(res) {
             console.log(res.code + ": " + res.message);
-//            $(".alert-email").removeClass("text-red-400");
-//            $(".alert-email").addClass("text-green-700");
-//            $(".alert-email").text(res.message);
+            $(".alert-id-email").removeClass("text-red-400");
+            $(".alert-id-email").addClass("text-green-700");
+            $(".alert-id-email").text(res.message);
         },
         error: function(res) {
             console.log(res.responseJSON.code + ": " + res.responseJSON.message);
-//            $(".alert-email").removeClass("text-green-700");
-//            $(".alert-email").addClass("text-red-400");
-//            $(".alert-email").text(res.responseJSON.message);
+            $(".alert-id-email").removeClass("text-green-700");
+            $(".alert-id-email").addClass("text-red-400");
+            $(".alert-id-email").text(res.responseJSON.message);
         }
     })
 }
 
 function _findPassword() {
 
-//    $(".alert-email").text("");
-//    $(".alert-inputCode").text("");
+    $(".alert-loginId").text("");
+    $(".alert-pw-email").text("");
 
     $.ajax({
         url: "/user/find/password",
@@ -43,15 +42,23 @@ function _findPassword() {
         },
         success: function(res) {
             console.log(res.code + ": " + res.message);
-//            $(".alert-email").removeClass("text-red-400");
-//            $(".alert-email").addClass("text-green-700");
-//            $(".alert-email").text(res.message);
+            $(".alert-loginId").removeClass("text-red-400");
+            $(".alert-loginId").addClass("text-green-700");
+            $(".alert-loginId").text(res.message);
         },
         error: function(res) {
-            console.log(res.responseJSON.code + ": " + res.responseJSON.message);
-//            $(".alert-email").removeClass("text-green-700");
-//            $(".alert-email").addClass("text-red-400");
-//            $(".alert-email").text(res.responseJSON.message);
+            if (res.responseJSON.loginId !== undefined) {
+                console.log(res.responseJSON.loginId.code + ": " + res.responseJSON.loginId.message);
+                $(".alert-loginId").removeClass("text-green-700");
+                $(".alert-loginId").addClass("text-red-400");
+                $(".alert-loginId").text(res.responseJSON.loginId.message);
+            }
+            if (res.responseJSON.email !== undefined) {
+                console.log(res.responseJSON.email.code + ": " + res.responseJSON.email.message);
+                $(".alert-pw-email").removeClass("text-green-700");
+                $(".alert-pw-email").addClass("text-red-400");
+                $(".alert-pw-email").text(res.responseJSON.email.message);
+            }
         }
     })
 }

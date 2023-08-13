@@ -28,6 +28,7 @@
                  class="input input-bordered w-4/5 h-12 border border-black rounded-xl my-8" placeholder="이메일">
           <button class="w-4/5 h-12 btn border-gray-300 rounded-xl mb-3 bg-[color:#A5CDCD]" th:onclick="_findLoginId()">ID 찾기</button>
         </div>
+        <div class="alert-id-email"></div>
       </div>
 
       <!-- PW 찾기 영역 -->
@@ -40,6 +41,8 @@
                  class="input input-bordered w-4/5 h-12 border border-black rounded-xl mb-8" placeholder="이메일">
           <button class="w-4/5 h-12 btn border-gray-300 rounded-xl mb-3 bg-[color:#A5CDCD]" th:onclick="_findPassword()">임시 비밀번호 받기</button>
         </div>
+        <div class="alert-loginId"></div>
+        <div class="alert-pw-email"></div>
       </div>
     </div>
   </div>
