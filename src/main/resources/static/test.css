@@ -10,6 +10,7 @@ html > body {
 
 .test-Container {
   background-color:transparent;
+  z-index:0;
 }
 
 .test-con {
@@ -52,6 +53,7 @@ html > body {
   top:0;
   left:0;
   width:100%;
+  z-index:999;
 }
 
 .top-bar.hover {
