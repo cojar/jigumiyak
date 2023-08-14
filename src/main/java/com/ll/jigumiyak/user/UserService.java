@@ -1,21 +1,17 @@
 package com.ll.jigumiyak.user;
 
-import com.ll.jigumiyak.DataNotFoundException;
 import com.ll.jigumiyak.address.Address;
-import jakarta.mail.MessagingException;
+import com.ll.jigumiyak.security.CustomRole;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -30,11 +26,7 @@ public class UserService {
 
         SiteUser user = new SiteUser();
 
-        List<String> authorityList = new ArrayList<>();
-        if(loginId.equals("admin_jigumiyak")) authorityList.add(UserRole.ADMIN.getValue());
-        authorityList.add(UserRole.USER.getValue());
-
-        user.setAuthorityList(authorityList);
+        user.setAuthority(CustomRole.USER.getDecCode());
         user.setLoginId(loginId);
         user.setPassword(passwordEncoder.encode(password));
         user.setEmail(email);
@@ -46,7 +38,7 @@ public class UserService {
         return user;
     }
 
-    public String[] genSecurityCode(String email, int length) {
+    public String[] genSecurityCode(String prev, int length) {
 
         String candidateCode = "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&";
         SecureRandom secureRandom = new SecureRandom();
@@ -57,7 +49,7 @@ public class UserService {
             code += candidateCode.charAt(index);
         }
 
-        return new String[] {code, this.passwordEncoder.encode(email + code)};
+        return new String[] {code, this.passwordEncoder.encode(prev + code)};
     }
 
     public boolean sendEmail(String email, String code, String titleType, String contentType) {
@@ -104,11 +96,25 @@ public class UserService {
     }
 
     public SiteUser getUserByLoginId(String loginId) {
-        Optional<SiteUser> siteUser = this.userRepository.findByLoginId(loginId);
-        if (siteUser.isPresent()) {
-            return siteUser.get();
-        } else {
-            throw new DataNotFoundException("siteuser not found");
+        return this.userRepository.findByLoginId(loginId).orElse(null);
+    }
+
+    public SiteUser getUserByEmail(String email) {
+        return this.userRepository.findByEmail(email).orElse(null);
+    }
+
+    public SiteUser getUserByLoginIdAndEmail(String loginId, String email) {
+        return this.userRepository.findByLoginIdAndEmail(loginId, email).orElse(null);
+    }
+
+    public void modifyPassword(SiteUser user, String password) {
+
+        if (!user.getAuthorities().contains(new SimpleGrantedAuthority("temp_user"))) {
+            user.setAuthority(user.getAuthority() + CustomRole.TEMP_USER.getDecCode());
         }
+        user.setPassword(passwordEncoder.encode(password));
+        user.setModifyDate(LocalDateTime.now());
+
+        this.userRepository.save(user);
     }
 }

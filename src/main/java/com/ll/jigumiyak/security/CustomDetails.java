@@ -1,16 +1,15 @@
 package com.ll.jigumiyak.security;
 
 import com.ll.jigumiyak.user.SiteUser;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class CustomDetails implements UserDetails, OAuth2User {
 
     private final SiteUser user;
@@ -23,6 +22,11 @@ public class CustomDetails implements UserDetails, OAuth2User {
     public CustomDetails(SiteUser user, Map<String, Object> attributes) {
         this.user = user;
         this.attributes = attributes;
+    }
+
+    @Override
+    public String toString() {
+        return this.user.getLoginId();
     }
 
     @Override
@@ -47,11 +51,7 @@ public class CustomDetails implements UserDetails, OAuth2User {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
-        for (String authority : user.getAuthorityList()) {
-            authorities.add(new SimpleGrantedAuthority(authority));
-        }
-        return authorities;
+        return this.user.getAuthorities();
     }
 
     @Override
