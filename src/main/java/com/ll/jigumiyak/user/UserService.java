@@ -6,6 +6,7 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -108,7 +109,9 @@ public class UserService {
 
     public void modifyPassword(SiteUser user, String password) {
 
-        user.setAuthority(user.getAuthority() + CustomRole.TEMP_USER.getDecCode());
+        if (!user.getAuthorities().contains(new SimpleGrantedAuthority("temp_user"))) {
+            user.setAuthority(user.getAuthority() + CustomRole.TEMP_USER.getDecCode());
+        }
         user.setPassword(passwordEncoder.encode(password));
         user.setModifyDate(LocalDateTime.now());
 
