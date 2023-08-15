@@ -40,9 +40,9 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
     @Query("SELECT MAX(n.id) FROM Notice n")
     Long findMaxId();
 
-    @Query("SELECT n FROM Notice n WHERE n.id = (SELECT MAX(id) FROM Notice WHERE id < :currentId)")
-    Optional<Notice> findPreviousNotice(@Param("currentId") Long currentId);
+    @Query("SELECT n FROM Notice n WHERE n.id = (SELECT MAX(id) FROM Notice WHERE id < :id)")
+    Optional<Notice> findPreviousNotice(@Param("id") Long id);
 
-    @Query("SELECT n FROM Notice n WHERE n.id = (SELECT MIN(id) FROM Notice WHERE id > :currentId)")
-    Optional<Notice> findNextNotice(@Param("currentId") Long currentId);
+    @Query("SELECT n FROM Notice n WHERE n.id = (SELECT MIN(id) FROM Notice WHERE id > :id)")
+    Optional<Notice> findNextNotice(@Param("id") Long id);
 }
