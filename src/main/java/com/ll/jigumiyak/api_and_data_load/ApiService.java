@@ -74,10 +74,10 @@ public class ApiService {
     }
 
 
-    // deleteBracketAndStringInBracket 함수에 사용할 괄호 패턴
-    private Pattern pattern_bracket = Pattern.compile("\\([^\\(\\)]+\\)");
     // 괄호와 괄호안의 내용 지우는 함수
     public String deleteBracketAndStringInBracket(String text){
+        Pattern pattern_bracket = Pattern.compile("\\([^\\(\\)]+\\)");
+
         Matcher matcher = pattern_bracket.matcher(text);
         String pureText = text;
         String removeText = new String();
