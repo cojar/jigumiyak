@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
     // 키워드와 카테고리 둘 다 주어질때
     @Query("SELECT n FROM Notice n " +
@@ -37,4 +39,10 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
     @Query("SELECT MAX(n.id) FROM Notice n")
     Long findMaxId();
+
+    @Query("SELECT n FROM Notice n WHERE n.id = (SELECT MAX(id) FROM Notice WHERE id < :currentId)")
+    Optional<Notice> findPreviousNotice(@Param("currentId") Long currentId);
+
+    @Query("SELECT n FROM Notice n WHERE n.id = (SELECT MIN(id) FROM Notice WHERE id > :currentId)")
+    Optional<Notice> findNextNotice(@Param("currentId") Long currentId);
 }
