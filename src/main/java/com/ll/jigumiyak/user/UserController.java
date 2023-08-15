@@ -12,13 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.lang.reflect.Field;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +33,25 @@ public class UserController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/mypage")
-    public String my() {
+    public String my(Model model, Principal principal) {
+
+        SiteUser user = this.userService.getUserByLoginId(principal.getName());
+
+        model.addAttribute("user", user);
+
+
+        return "mypage";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/modify")
+    public String modify(Model model, Principal principal) {
+
+        SiteUser user = this.userService.getUserByLoginId(principal.getName());
+
+        model.addAttribute("user", user);
+
+
         return "mypage";
     }
 
@@ -47,7 +63,8 @@ public class UserController {
         String refererUri = request.getHeader("Referer");
         log.info("referer: " + refererUri);
 
-        if (refererUri != null && !refererUri.contains("/user/login") && !refererUri.contains("/user/signup")) {
+        if (refererUri != null && !refererUri.contains("/user/login")
+                && !refererUri.contains("/user/signup") && !refererUri.contains("/user/find")) {
             request.getSession().setAttribute("refererUri", refererUri);
         }
 
@@ -180,7 +197,7 @@ public class UserController {
 
         String[] codeBits = this.userService.genSecurityCode(email, 8);
 
-        if(!this.userService.sendEmail(email, codeBits[0], "이메일 인증코드", "인증코드를")) {
+        if (!this.userService.sendEmail(email, codeBits[0], "이메일 인증코드", "인증코드를")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new RsData<>("F-4", "이메일 발송 중에 오류가 발생했습니다", ""));
         }
@@ -192,8 +209,8 @@ public class UserController {
     @GetMapping("/signup/code")
     @ResponseBody
     public ResponseEntity checkEmailCode(@RequestParam("email") String email,
-                                 @RequestParam("inputCode") String inputCode,
-                                 @RequestParam("genCode") String genCode) {
+                                         @RequestParam("inputCode") String inputCode,
+                                         @RequestParam("genCode") String genCode) {
 
         log.info("email: " + email);
         log.info("inputCode: " + inputCode);
@@ -216,5 +233,92 @@ public class UserController {
     @GetMapping("/find")
     public String findUser() {
         return "find_user";
+    }
+
+    @GetMapping("/find/loginId")
+    @ResponseBody
+    public ResponseEntity findLoginId(@RequestParam("email") String email) {
+
+        log.info("email: " + email);
+
+        if (email.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-1", "이메일을 입력해주세요", ""));
+        }
+
+        if (!email.matches("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,}$")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-2", "올바른 이메일 형식이 아닙니다", ""));
+        }
+
+        SiteUser user = this.userService.getUserByEmail(email);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-3", "입력한 이메일로 가입된 통합회원 계정이 없습니다", ""));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new RsData<>("S-1", String.format("가입된 통합회원 아이디는 \"%s\" 입니다.", user.getLoginId()), user.getLoginId()));
+    }
+
+    @PostMapping("/find/password")
+    @ResponseBody
+    public ResponseEntity findPassword(@RequestParam("loginId") String loginId,
+                                      @RequestParam("email") String email) {
+
+        log.info("loginId: " + loginId);
+        log.info("email: " + email);
+
+        Map<String, RsData> errors = new HashMap<>();
+
+        // 입력 필드 에러
+
+        if (loginId.isEmpty()) {
+            errors.put("loginId", new RsData<>("F-1", "아이디를 입력해주세요", ""));
+        }
+
+        if (email.isEmpty()) {
+            errors.put("email", new RsData<>("F-2", "이메일을 입력해주세요", ""));
+        }
+
+        if (!email.matches("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,}$") && !errors.containsKey("email")) {
+            errors.put("email", new RsData<>("F-3", "올바른 이메일 형식이 아닙니다", ""));
+        }
+
+        if (!errors.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        }
+
+        SiteUser user = this.userService.getUserByLoginIdAndEmail(loginId, email);
+
+        // 계정 조회 에러
+
+        if (user == null) {
+
+            if (this.userService.getUserByLoginId(loginId) == null) {
+                errors.put("loginId", new RsData<>("F-4", "가입된 통합회원 계정이 아닙니다", ""));
+
+            } else if (this.userService.getUserByEmail(email) == null) {
+                errors.put("email", new RsData<>("F-5", "이메일을 확인해주세요", ""));
+
+            }
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        }
+
+        // 조회 성공 후 로직
+
+        String[] codeBits = this.userService.genSecurityCode("", 12);
+
+        if (!this.userService.sendEmail(email, codeBits[0], "임시비밀번호", "임시비밀번호를")) {
+            errors.put("loginId", new RsData<>("F-6", "이메일 발송 중에 오류가 발생했습니다", ""));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        }
+
+        this.userService.modifyPassword(user, codeBits[0]);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new RsData<>("S-1", "입력한 이메일로 임시비밀번호를 발송하였습니다", ""));
     }
 }
