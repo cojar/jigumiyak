@@ -70,18 +70,18 @@
     </header>
     <script>
     function TopBar__init() {
-  $(window).scroll(function() {
-    let scrollTop = $(window).scrollTop();
+      $(window).scroll(function() {
+        let scrollTop = $(window).scrollTop();
 
-    if ( scrollTop == 0 ) {
-      $('.top-bar').removeClass('hover');
+        if ( scrollTop == 0 ) {
+          $('.top-bar').removeClass('hover');
+        }
+        else {
+          $('.top-bar').addClass('hover');
+        }
+      });
     }
-    else {
-      $('.top-bar').addClass('hover');
-    }
-  });
-}
 
-TopBar__init();
-</script>
+    TopBar__init();
+    </script>
 </div>
