@@ -1,5 +1,38 @@
 <div th:fragment="sidebarFragment" class="sidebar-Container">
   <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
-  <div class="">
+  <div class="w-16 h-full rounded-full float-right border border-gray-300 bg-white">
+    <div>
+      <ul class="mt-6">
+        <li class="w-12 h-12 border border-black mx-auto"><a href="#"></a></li>
+        <li class="w-12 h-12 border border-black my-3 mx-auto"><a href="#"></a></li>
+        <li class="w-12 h-12 border border-black mx-auto"><a href="#"></a></li>
+      </ul>
+    </div>
+    <a href="#" th:attr="onclick=|_anonymous('/user/mypage', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}')|">
+      <span><i class="fa-solid fa-heart w-full text-center font-lg mt-5"></i></span>
+    </a>
+    <a href="#" th:attr="onclick=|_anonymous('/user/mypage', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}')|">
+      <span><i class="fa-solid fa-cart-shopping w-full text-center font-lg my-3"></i></span>
+    </a>
+    <a href="#top">
+      <div class="w-full text-center text-sm">▲ top</div>
+    </a>
   </div>
+
+  <script>
+  function TopBar__init() {
+    $(window).scroll(function() {
+      let scrollTop = $(window).scrollTop();
+
+      if ( scrollTop == 0 ) {
+        $('.top-bar').removeClass('hover');
+      }
+      else {
+        $('.top-bar').addClass('hover');
+      }
+    });
+  }
+
+  TopBar__init();
+  </script>
 </div>
