@@ -1,6 +1,8 @@
 package com.ll.jigumiyak.board;
 
+import com.ll.jigumiyak.board_comment.BoardComment;
 import com.ll.jigumiyak.board_comment.BoardCommentForm;
+import com.ll.jigumiyak.board_comment.BoardCommentService;
 import com.ll.jigumiyak.user.SiteUser;
 import com.ll.jigumiyak.user.UserService;
 import jakarta.servlet.http.Cookie;
@@ -26,6 +28,7 @@ public class BoardController {
 
     private final BoardService boardService;
     private final UserService userService;
+    private final BoardCommentService boardCommentService;
 
     @GetMapping("")
     public String boardList(Model model, @RequestParam(value="page", defaultValue="0") int page,
@@ -44,7 +47,8 @@ public class BoardController {
 
     @GetMapping("/{id}")
     public String detail(Model model, @PathVariable("id") Long id, BoardCommentForm boardCommentForm,
-                         HttpServletRequest request, HttpServletResponse response) {
+                         HttpServletRequest request, HttpServletResponse response,
+                         @RequestParam(value = "cmtPage", defaultValue = "0") int cmtPage) {
 
         Board board;
         if (hitCountJudge(id, request, response)) {
@@ -52,8 +56,11 @@ public class BoardController {
         } else {
             board = this.boardService.getBoard(id);
         }
-
         model.addAttribute("board", board);
+
+        Page<BoardComment> paging = this.boardCommentService.getList(board, cmtPage);
+        model.addAttribute("paging", paging);
+
         return "board_detail";
     }
 

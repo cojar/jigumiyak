@@ -4,10 +4,16 @@ import com.ll.jigumiyak.DataNotFoundException;
 import com.ll.jigumiyak.board.Board;
 import com.ll.jigumiyak.user.SiteUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -48,5 +54,12 @@ public class BoardCommentService {
     public void vote(BoardComment boardComment, SiteUser siteUser) {
         boardComment.getVoter().add(siteUser);
         this.boardCommentRepository.save(boardComment);
+    }
+
+    public Page<BoardComment> getList(Board board, int page) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("createDate"));
+        Pageable pageable = PageRequest.of(page, 5, Sort.by(sorts));
+        return this.boardCommentRepository.findAllByBoard(board, pageable);
     }
 }
