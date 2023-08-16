@@ -3,6 +3,7 @@ package com.ll.jigumiyak.board;
 import com.ll.jigumiyak.board_comment.BoardComment;
 import com.ll.jigumiyak.board_comment.BoardCommentForm;
 import com.ll.jigumiyak.board_comment.BoardCommentService;
+import com.ll.jigumiyak.board_recomment.BoardRecommentForm;
 import com.ll.jigumiyak.user.SiteUser;
 import com.ll.jigumiyak.user.UserService;
 import jakarta.servlet.http.Cookie;
@@ -46,7 +47,7 @@ public class BoardController {
     }
 
     @GetMapping("/{id}")
-    public String detail(Model model, @PathVariable("id") Long id, BoardCommentForm boardCommentForm,
+    public String detail(Model model, @PathVariable("id") Long id, BoardCommentForm boardCommentForm, BoardRecommentForm boardRecommentForm,
                          HttpServletRequest request, HttpServletResponse response,
                          @RequestParam(value = "cmtPage", defaultValue = "0") int cmtPage) {
 
