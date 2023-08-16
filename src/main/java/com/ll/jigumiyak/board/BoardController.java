@@ -4,6 +4,7 @@ import com.ll.jigumiyak.board_comment.BoardComment;
 import com.ll.jigumiyak.board_comment.BoardCommentForm;
 import com.ll.jigumiyak.board_comment.BoardCommentService;
 import com.ll.jigumiyak.board_recomment.BoardRecommentForm;
+import com.ll.jigumiyak.board_recomment.BoardRecommentService;
 import com.ll.jigumiyak.user.SiteUser;
 import com.ll.jigumiyak.user.UserService;
 import jakarta.servlet.http.Cookie;
@@ -30,6 +31,7 @@ public class BoardController {
     private final BoardService boardService;
     private final UserService userService;
     private final BoardCommentService boardCommentService;
+    private final BoardRecommentService boardRecommentService;
 
     @GetMapping("")
     public String boardList(Model model, @RequestParam(value="page", defaultValue="0") int page,
