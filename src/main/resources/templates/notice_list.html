@@ -50,7 +50,6 @@
                 <th>작성자</th>
                 <th>작성일시</th>
                 <th>조회수</th>
-                <th>추천수</th>
             </tr>
             </thead>
             <tbody class="w-full">
@@ -71,7 +70,6 @@
                 <td th:text="${#temporals.format(notice.createDate, 'yyyy-MM-dd HH:mm')}"
                     class="text-sm w-2/12 text-center"></td>
                 <td class="w-1/12 text-center" th:text="${notice.hit}"></td>
-                <td class="w-1/12 text-center">추천수</td>
             </tr>
             </tbody>
         </table>
