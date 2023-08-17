@@ -121,12 +121,29 @@
             <div class="rcmtcon hidden">
               <div th:each="recomment : ${comment.recommentList}" class="mt-3">
                 <div class="border-b border-gray-400 py-1 flex justify-between items-center">
-                  <div th:if="${recomment.author != null}" th:text="|▶ ${recomment.author.loginId}|"></div>
-                  <div class="boardDate flex text-gray-500 text-sm">
+                  <div class="flex">
+                    <div th:if="${recomment.author != null}" th:text="|▶ ${recomment.author.loginId}|"></div>
+
+                    <div class="text-sm flex items-center mx-5">
+                      <a th:href="@{|/brecomment/modify/${recomment.id}|}" class="px-1 border-b border-gray-600 border-opacity-0 hover:border-opacity-100"
+                         sec:authorize="isAuthenticated()"
+                         th:if="${recomment.author != null and #authentication.getPrincipal().getUsername() == recomment.author.loginId}"
+                         th:text="수정"></a>
+
+                      <a href="javascript:void(0);" th:data-uri="@{|/brecomment/delete/${recomment.id}|}"
+                         class="delete px-1 border-b border-gray-600 border-opacity-0 hover:border-opacity-100" sec:authorize="isAuthenticated()"
+                         th:if="${recomment.author != null and #authentication.getPrincipal().getUsername() == recomment.author.loginId}"
+                         th:text="삭제"></a>
+                    </div>
+                  </div>
+
+
+                  <div class="boardDate flex text-gray-500 text-sm justify-self-end ">
                     <div th:if="${recomment.modifyDate != null}" th:text="|수정 - ${#temporals.format(recomment.modifyDate, 'yyMMdd HH:mm')}|"></div>
                     <div th:text="|작성 - ${#temporals.format(recomment.createDate, 'yyMMdd HH:mm')}|" class="pl-3"></div>
                   </div>
                 </div>
+
                 <div th:text="${recomment.content}" class="px-5 pt-2"></div>
               </div>
 

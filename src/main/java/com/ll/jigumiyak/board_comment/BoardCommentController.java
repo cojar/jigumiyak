@@ -73,7 +73,7 @@ public class BoardCommentController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/delete/{id}")
-    public String answerDelete(Principal principal, @PathVariable("id") Long id) {
+    public String commentDelete(Principal principal, @PathVariable("id") Long id) {
         BoardComment boardComment = this.boardCommentService.getBoardComment(id);
         if (!boardComment.getAuthor().getLoginId().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제권한이 없습니다.");
