@@ -126,12 +126,19 @@ public class BoardController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/vote/{id}")
-    public String boardVote(Principal principal, @PathVariable("id") Long id) {
+    public String boardVote(Model model, Principal principal, @PathVariable("id") Long id) {
         Board board = this.boardService.getBoard(id);
         SiteUser siteUser = this.userService.getUserByLoginId(principal.getName());
+
+        if (board.getAuthor().getLoginId().equals(siteUser.getLoginId())) {
+            throw new RuntimeException("본인이 작성한 글은 추천할 수 없습니다.");
+        }
+
         this.boardService.vote(board, siteUser);
         this.boardService.updateVote(board);
-        return String.format("redirect:/board/%s", id);
+
+        model.addAttribute("board", board);
+        return "board_detail :: #board_detail";
     }
 
     private boolean hitCountJudge(Long id, HttpServletRequest request, HttpServletResponse response) {

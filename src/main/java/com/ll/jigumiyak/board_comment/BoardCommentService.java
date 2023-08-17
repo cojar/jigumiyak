@@ -51,7 +51,11 @@ public class BoardCommentService {
     }
 
     public void vote(BoardComment boardComment, SiteUser siteUser) {
-        boardComment.getVoter().add(siteUser);
+        if (boardComment.getVoter().contains(siteUser)) {
+            boardComment.getVoter().remove(siteUser);
+        } else {
+            boardComment.getVoter().add(siteUser);
+        }
         this.boardCommentRepository.save(boardComment);
     }
 
