@@ -31,6 +31,10 @@
     background:transparent;
     }
 
+    .recommended:hover {
+    background:#E5E7EB;
+    }
+
     .recommended:before {
     content: "❤️";
     }
@@ -70,13 +74,13 @@
         <div th:text="${board.content}" class="text-lg"></div>
         <div class="flex justify-center mt-10">
           <div id="vote-box">
-            <a class="py-3 px-5 text-2xl rounded-xl border-2 flex justify-center items-center hover:bg-white bg-gray-200"
+            <a class="py-3 px-5 text-2xl rounded-xl border-2 flex justify-center items-center hover:bg-white bg-gray-200 cursor-pointer"
                th:data-uri="@{|/board/vote/${board.id}|}" sec:authorize="isAuthenticated()"
                th:classappend="${#sets.contains(board.voter, @commonUtil.usernameToUser(#authentication.getPrincipal().getUsername())) ? 'recommended' : 'recommend'}"
                th:onclick="_vote(this)">
               <span class="px-2 text-xl" th:text="${#lists.size(board.voter)}"></span>
             </a>
-            <a class="py-3 px-5 text-2xl rounded-xl border-2 flex justify-center items-center hover:bg-white bg-gray-200"
+            <a class="py-3 px-5 text-2xl rounded-xl border-2 flex justify-center items-center hover:bg-white bg-gray-200 cursor-pointer"
                th:data-uri="@{|/board/vote/${board.id}|}" sec:authorize="isAnonymous()"
                th:attr="onclick=|_anonymous('/user/login', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}')|">
               🤍
