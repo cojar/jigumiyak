@@ -74,4 +74,23 @@ public class NoticeService {
     public long maxId() {
         return noticeRepository.findMaxId();
     }
+
+    public Notice getPreviousNotice(Long id){
+        Optional<Notice> preNotice = this.noticeRepository.findPreviousNotice(id);
+        if (preNotice.isPresent()){
+            return preNotice.get();
+        } else {
+            // thymeleaf null 처리를 위해 null return
+            return null;
+        }
+    }
+    public Notice getNextNotice(Long id){
+        Optional<Notice> nextNotice = this.noticeRepository.findNextNotice(id);
+        if (nextNotice.isPresent()){
+            return nextNotice.get();
+        } else {
+            // thymeleaf null 처리를 위해 null return
+            return null;
+        }
+    }
 }
