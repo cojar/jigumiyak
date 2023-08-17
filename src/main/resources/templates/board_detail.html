@@ -11,10 +11,6 @@
       }
     }
 
-    .recommend:hover {
-    background : #E9B384;
-    }
-
     .rcmtBtn::after {
       content: " ∨";
       padding-right:15px;
@@ -23,7 +19,11 @@
     .recomment-box.hover > .rcmtBtn::after {
     content: " ∧";
     }
-  </style>
+
+    .recommended {
+    border-color: blue;
+    color: red;
+    }
   </style>
   <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
     <h5 class="border-b-4 border-double border-gray-300 text-2xl pt-5">커뮤니티</h5>
@@ -58,13 +58,22 @@
 
       <div class="px-10 pt-16 pb-10 border-b">
         <div th:text="${board.content}" class="text-lg"></div>
-        <div class="flex justify-center mt-10">
-          <a href="javascript:void(0);" class="recommend bg-white py-3 px-5 text-2xl rounded-xl border-2 hover:bg-transparent"
-             style="border-color:#E9B384;"
-             th:data-uri="@{|/board/vote/${board.id}|}">👍
-            <span class="text-xl text-gray-500" th:text="${#lists.size(board.voter)}"></span>
-          </a>
+
+        <div class="px-10 pt-16 pb-10 border-b">
+          <div th:text="${board.content}" class="text-lg"></div>
+          <div class="flex justify-center mt-10">
+            <a href="javascript:void(0);"
+               class="recommend py-3 px-5 text-2xl rounded-xl border-2"
+               th:data-uri="@{|/board/vote/${board.id}|}" sec:authorize="isAuthenticated()"
+               th:classappend="${#sets.contains(board.voter, #authentication.getPrincipal().getUsername()) ? 'recommended' : ''}">
+              👍
+              <span class="text-xl" th:text="${#lists.size(board.voter)}"></span>
+            </a>
+            <div th:text="${board.voter}"></div>
+            <div th:text="${#authentication.getPrincipal().getUsername()}"></div>
+          </div>
         </div>
+
       </div>
     </div>
 
