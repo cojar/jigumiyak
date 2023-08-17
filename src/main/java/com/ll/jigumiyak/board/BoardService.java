@@ -1,19 +1,13 @@
 package com.ll.jigumiyak.board;
 
 import com.ll.jigumiyak.DataNotFoundException;
-import com.ll.jigumiyak.board_comment.BoardComment;
-import com.ll.jigumiyak.notice.Notice;
 import com.ll.jigumiyak.user.SiteUser;
-import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
-
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -87,7 +81,11 @@ public class BoardService {
     }
 
     public void vote(Board board, SiteUser siteUser) {
-        board.getVoter().add(siteUser);
+        if (board.getVoter().contains(siteUser)) {
+            board.getVoter().remove(siteUser);
+        } else {
+            board.getVoter().add(siteUser);
+        }
         this.boardRepository.save(board);
     }
 
