@@ -1,4 +1,4 @@
-package com.ll.jigumiyak;
+package com.ll.jigumiyak.util;
 
 import com.ll.jigumiyak.user.SiteUser;
 import com.ll.jigumiyak.user.UserService;
