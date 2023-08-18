@@ -31,8 +31,12 @@ public class SuccessHandler implements AuthenticationSuccessHandler {
 
         // last login date update
         SiteUser user = this.userRepository.findByLoginId(authentication.getName()).orElse(null);
-        user.setLastLoginDate(LocalDateTime.now());
-        this.userRepository.save(user);
+
+        SiteUser loginedUser = user.toBuilder()
+                .lastLoginDate(LocalDateTime.now())
+                .build();
+
+        this.userRepository.save(loginedUser);
 
         // refererUri check
         String refererUri = (String) request.getSession().getAttribute("refererUri");

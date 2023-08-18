@@ -1,21 +1,22 @@
 package com.ll.jigumiyak.purchase;
 
+import com.ll.jigumiyak.base.BaseEntity;
 import com.ll.jigumiyak.purchase_detail.PurchaseDetail;
 import com.ll.jigumiyak.user.SiteUser;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
-@Entity
 @Getter
-@Setter
-public class Purchase {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@SuperBuilder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+public class Purchase extends BaseEntity {
 
     @OneToMany(mappedBy = "purchase", cascade = CascadeType.REMOVE)
     private List<PurchaseDetail> detailList;

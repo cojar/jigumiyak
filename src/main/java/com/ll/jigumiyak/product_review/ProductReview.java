@@ -1,19 +1,20 @@
 package com.ll.jigumiyak.product_review;
 
+import com.ll.jigumiyak.base.BaseEntity;
 import com.ll.jigumiyak.product.Product;
 import com.ll.jigumiyak.user.SiteUser;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-@Entity
 @Getter
-@Setter
-public class ProductReview {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@SuperBuilder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+public class ProductReview extends BaseEntity {
 
     @ManyToOne
     private Product product;
