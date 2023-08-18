@@ -12,4 +12,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NutrientCategoryService {
     private final NutrientCategoryRepository nutrientCategoryRepository;
+
+    public List<NutrientCategory> getList() {
+        return nutrientCategoryRepository.findAll();
+    }
 }

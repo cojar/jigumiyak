@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -52,11 +54,11 @@ public class ApiService {
         nutrientRepository.save(nutrient);
     }
 
-    public String extractDailyIntake(String dayIntkCn){
-        String[] param = dayIntkCn.split("\\/");
-        String dailyIntake = param[0].replaceAll("[^0-9, ^mg, ^g, ^kg, ^~ ^.]", "").trim().replaceAll(" ", "");
-        return dailyIntake;
-    }
+//    public String extractDailyIntake(String dayIntkCn){
+//        String[] param = dayIntkCn.split("\\/");
+//        String dailyIntake = param[0].replaceAll("[^0-9, ^mg, ^g, ^kg, ^~ ^.]", "").trim().replaceAll(" ", "");
+//        return dailyIntake;
+//    }
 
     public List<NutrientCaution> extractCautionList(String iftknAtntMatrCn) {
         List<NutrientCaution> cautionList = new ArrayList<>();
@@ -69,5 +71,29 @@ public class ApiService {
             }
         }
         return cautionList;
+    }
+
+
+    // 괄호와 괄호안의 내용 지우는 함수
+    public String deleteBracketAndStringInBracket(String text){
+        Pattern pattern_bracket = Pattern.compile("\\([^\\(\\)]+\\)");
+
+        Matcher matcher = pattern_bracket.matcher(text);
+        String pureText = text;
+        String removeText = new String();
+        while(matcher.find()){
+            int startIndex = matcher.start();
+            int endIndex = matcher.end();
+
+            removeText = pureText.substring(startIndex, endIndex);
+            pureText = pureText.replace(removeText, "");
+            matcher = pattern_bracket.matcher(pureText);
+        }
+        return pureText;
+    }
+
+    public String deleteEng(String pureTextContainKorEng){
+        String fnclty = pureTextContainKorEng.replaceAll("[a-zA-Z]", "");
+        return fnclty;
     }
 }
