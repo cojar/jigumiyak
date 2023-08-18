@@ -32,6 +32,8 @@ public class ProductController {
                               @RequestParam(value = "keyword", defaultValue = "") String keyword) {
         Page<Product> noticePaging = productService.getList(page, pageSize, keyword);
         model.addAttribute("paging", noticePaging);
+        List<NutrientCategory> categoryList = nutrientCategoryService.getList();
+        model.addAttribute("categoryList", categoryList);
         return "product_list";
     }
     @GetMapping("/{id}")
