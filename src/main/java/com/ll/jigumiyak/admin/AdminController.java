@@ -23,7 +23,7 @@ public class AdminController {
 
     @GetMapping("")
     public String main() {
-        return "administration";
+        return "/admin/administration";
     }
 
     @GetMapping("/board")
@@ -32,7 +32,7 @@ public class AdminController {
         Page<Board> paging = this.boardService.getList(page, kw);
         model.addAttribute("paging", paging);
         model.addAttribute("kw", kw);
-        return "admin_board";
+        return "/admin/admin_board";
     }
 
 }

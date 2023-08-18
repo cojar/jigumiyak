@@ -1,0 +1,34 @@
+<html layout:decorate="~{/admin/ad_navbar}">
+<head>
+  <title>ADMIN-BOARD</title>
+</head>
+<div layout:fragment="content" class="relative">
+  <div>우하하</div>
+  <table class="mx-auto" style="width:1500px">
+    <thead>
+    <tr class="border-b-4 border-double border-black">
+      <th class="w-24 bg-blue-100">게시글ID</th>
+      <th class="w-56 bg-red-100">제목</th>
+      <th>내용</th>
+      <th class="w-12 bg-blue-100">댓글</th>
+      <th>작성자</th>
+      <th class="w-32 bg-blue-100">작성일시</th>
+      <th class="w-32 bg-red-100">수정일시</th>
+      <th class="w-20 bg-blue-100">버튼</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="board, loop : ${paging}" class="border-b">
+      <td th:text="${board.id}" class="text-center"></td>
+      <td><a th:href="@{|/board/${board.id}|}" th:text="${board.subject}"></a></td>
+      <td><a th:href="@{|/board/${board.id}|}" th:text="${board.content}"></a></td>
+      <td class="w-12 bg-red-100 text-center"><a href="#" th:text="${#lists.size(board.commentList)}" class="bg-blue-100"></a></td>
+      <td><span th:if="${board.author != null}" th:text="${board.author.loginId}"></span></td>
+      <td th:text="${#temporals.format(board.createDate, 'yyMMdd HH:mm')}" class="text-center"></td>
+      <td th:text="${#temporals.format(board.modifyDate, 'yyMMdd HH:mm')}" class="text-center"></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</html>
