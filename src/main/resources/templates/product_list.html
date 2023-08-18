@@ -32,9 +32,74 @@
 <!--카테고리 선택 버튼-->
             <div class="w-full">
                 <ul class="grid grid-cols-4 md:grid-cols-7 xl:grid-cols-12 gap-2 p-8">
-                    <li th:each="category : ${categoryList}" class="group my-3">
-                        <a th:href="@{/product}" class="p-3 border rounded-2xl hover:bg-gray-200"
-                           th:text="${category.categoryName}" th:value="${category.categoryName}"></a>
+                    <li class="group my-3">
+                        <a href="#" class="p-3 border rounded-2xl hover:bg-gray-200">카테고리</a>
+                    </li>
+                    <li class="group my-3">
+                        <a href="#" class="p-3 border rounded-2xl hover:bg-gray-200">카테고리</a>
+                    </li>
+                    <li class="group my-3">
+                        <a href="#" class="p-3 border rounded-2xl hover:bg-gray-200">카테고리</a>
+                    </li>
+                    <li class="group my-3">
+                        <a href="#" class="p-3 border rounded-2xl hover:bg-gray-200">카테고리</a>
+                    </li>
+                    <li class="group my-3">
+                        <a href="#" class="p-3 border rounded-2xl hover:bg-gray-200">카테고리</a>
+                    </li>
+                    <li class="group my-3">
+                        <a href="#" class="p-3 border rounded-2xl hover:bg-gray-200">카테고리</a>
+                    </li>
+                    <li class="group my-3">
+                        <a href="#" class="p-3 border rounded-2xl hover:bg-gray-200">카테고리</a>
+                    </li>
+                    <li class="group my-3">
+                        <a href="#" class="p-3 border rounded-2xl hover:bg-gray-200">카테고리</a>
+                    </li>
+                    <li class="group my-3">
+                        <a href="#" class="p-3 border rounded-2xl hover:bg-gray-200">카테고리</a>
+                    </li>
+                    <li class="group my-3">
+                        <a href="#" class="p-3 border rounded-2xl hover:bg-gray-200">카테고리</a>
+                    </li>
+                    <li class="group my-3">
+                        <a href="#" class="p-3 border rounded-2xl hover:bg-gray-200">카테고리</a>
+                    </li>
+                    <li class="group my-3">
+                        <a href="#" class="p-3 border rounded-2xl hover:bg-gray-200">카테고리</a>
+                    </li>
+                    <li class="group my-3">
+                        <a href="#" class="p-3 border rounded-2xl hover:bg-gray-200">카테고리</a>
+                    </li>
+                    <li class="group my-3">
+                        <a href="#" class="p-3 border rounded-2xl hover:bg-gray-200">카테고리</a>
+                    </li>
+                    <li class="group my-3">
+                        <a href="#" class="p-3 border rounded-2xl hover:bg-gray-200">카테고리</a>
+                    </li>
+                    <li class="group my-3">
+                        <a href="#" class="p-3 border rounded-2xl hover:bg-gray-200">카테고리</a>
+                    </li>
+                    <li class="group my-3">
+                        <a href="#" class="p-3 border rounded-2xl hover:bg-gray-200">카테고리</a>
+                    </li>
+                    <li class="group my-3">
+                        <a href="#" class="p-3 border rounded-2xl hover:bg-gray-200">카테고리</a>
+                    </li>
+                    <li class="group my-3">
+                        <a href="#" class="p-3 border rounded-2xl hover:bg-gray-200">카테고리</a>
+                    </li>
+                    <li class="group my-3">
+                        <a href="#" class="p-3 border rounded-2xl hover:bg-gray-200">카테고리</a>
+                    </li>
+                    <li class="group my-3">
+                        <a href="#" class="p-3 border rounded-2xl hover:bg-gray-200">카테고리</a>
+                    </li>
+                    <li class="group my-3">
+                        <a href="#" class="p-3 border rounded-2xl hover:bg-gray-200">카테고리</a>
+                    </li>
+                    <li class="group my-3">
+                        <a href="#" class="p-3 border rounded-2xl hover:bg-gray-200">카테고리</a>
                     </li>
                 </ul>
             </div>
@@ -42,20 +107,49 @@
 <!--            상품 목록-->
             <div class="w-full">
                 <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 p-10">
-                    <li th:each="product : ${paging}" class="group">
-                        <a th:href="@{|/product/${product.id}|}" class="group-hover:underline">
-                            <div class="profile-img-box">
-                                <img th:if="${product.thumbnailImg != null}" th:attr="src=${@commonUtil.getFilePath(product.thumbnailImg.id)}" alt="">
-                                <img th:if="${product.thumbnailImg == null}" src="https://picsum.photos/id/237/752/442" alt="" class="w-32 h-24 object-cover">
-                            </div>
-                            <div class="font-bold pt-1 text-base" th:text="${product.name}"></div>
-                            <div class="text-gray-600 text-lg pt-1" th:text="${product.nutrientList[0].name}"></div>
+                    <li class="group">
+                        <a href="#" class="group-hover:underline">
+                            <img class="h-52 object-cover w-full " src="https://picsum.photos/id/237/752/442" alt="">
+                            <div class="font-bold pt-1 text-base">BIG이벤트</div>
+                            <div class="text-gray-600 text-lg pt-1">이벤트 어쩌구저쩌구 1번!</div>
+                            <div class="text-sm text-gray-600 pt-1">22.05.26 (목)~22.06.07 (화)</div>
+                        </a>
+
+                    </li>
+                    <li class="group">
+                        <a href="#" class="group-hover:underline">
+                            <img class="h-52 object-cover w-full" src="https://picsum.photos/id/231/802/442" alt="">
+                            <div class="font-bold pt-1 text-base">BIG이벤트</div>
+                            <div class="text-gray-600 text-lg pt-1">이벤트 어쩌구저쩌구 1번!</div>
+                            <div class="text-sm text-gray-600 pt-1">22.05.26 (목)~22.06.07 (화)</div>
+                        </a>
+                    </li>
+                    <li class="group">
+                        <a href="#" class="group-hover:underline">
+                            <img class="h-52 object-cover w-full" src="https://picsum.photos/id/100/752/302" alt="">
+                            <div class="font-bold pt-1 text-base">BIG이벤트</div>
+                            <div class="text-gray-600 text-lg pt-1">이벤트 어쩌구저쩌구 1번!</div>
+                            <div class="text-sm text-gray-600 pt-1">22.05.26 (목)~22.06.07 (화)</div>
+                        </a>
+                    </li>
+                    <li class="group">
+                        <a href="#" class="group-hover:underline">
+                            <img class="h-52 object-cover w-full" src="https://picsum.photos/id/231/802/442" alt="">
+                            <div class="font-bold pt-1 text-base">BIG이벤트</div>
+                            <div class="text-gray-600 text-lg pt-1">이벤트 어쩌구저쩌구 1번!</div>
+                            <div class="text-sm text-gray-600 pt-1">22.05.26 (목)~22.06.07 (화)</div>
+                        </a>
+                    </li>
+                    <li class="group">
+                        <a href="#" class="group-hover:underline">
+                            <img class="h-52 object-cover w-full" src="https://picsum.photos/id/231/802/442" alt="">
+                            <div class="font-bold pt-1 text-base">BIG이벤트</div>
+                            <div class="text-gray-600 text-lg pt-1">이벤트 어쩌구저쩌구 1번!</div>
+                            <div class="text-sm text-gray-600 pt-1">22.05.26 (목)~22.06.07 (화)</div>
                         </a>
                     </li>
                 </ul>
             </div>
-
-
 
             <!-- 페이징 -->
             <div class="w-full h-12 border">
