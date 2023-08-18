@@ -17,10 +17,10 @@ public class ProductForm {
     @NotEmpty
     private String description;
     @NotEmpty
-    private Integer price;
+    private String price;
     @NotEmpty
-    private Integer quantity;
-    @NotEmpty
+    private String quantity;
+
     private MultipartFile thumbnailImage;
     @NotEmpty
     private List<String> nutrientList;

@@ -5,6 +5,27 @@
   <title>Title</title>
 </head>
 <body>
-
+<form th:action="@{/product/create}" th:object="${productForm}" method="post"  enctype="multipart/form-data">
+  <input type="text" th:field="*{name}" placeholder="제품명">
+  <input type="text" th:field="*{description}" placeholder="설명">
+  <input type="text" th:field="*{price}" placeholder="가격">
+  <input type="text" th:field="*{quantity}" placeholder="수량">
+  <input type="file" th:value="${thumbnailImage}" th:field="*{thumbnailImage}"
+         placeholder="사진 업로드" th:onchange="_getFileName(this)">
+  <select th:field="*{nutrientList}" name="nutrientList" id="nutrientList">
+    <option value="">선택하세요</option>
+    <option th:each="nutrient : ${nutrientList}" th:value="${nutrient.name}" th:text="${nutrient.name}"></option>
+  </select>
+  <button type="submit">등록하기</button>
+  </form>
 </body>
+<script>
+function _getFileName(_this) {
+var fileValue = $(_this).val().split("\\");
+var fileName = fileValue[fileValue.length-1];
+
+$(_this).siblings("div.uploaded-file-name").html(fileName);
+$(_this).siblings("div.uploaded-file-name").addClass("active");
+}
+</script>
 </html>
