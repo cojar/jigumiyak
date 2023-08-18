@@ -19,7 +19,7 @@
     <div class="fixed h-screen flex flex-col justify-between items-center w-64 bg-white shadow p-6 z-50">
       <div class="w-52 inline-flex flex-col space-y-2">
 
-        <a href="#" class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
+        <a th:href="@{/admin}" class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
           <i class="fa-solid fa-house fa-lg" style="color: #A5CDCD; width:40px;"></i>
           <span class="font-medium select-none ">HOME</span>
         </a>
@@ -32,9 +32,9 @@
           <i class="fa-solid fa-bullhorn fa-lg" style="color: #A5CDCD; width:40px;"></i>
           <span class="font-medium select-none">Notice manager</span>
         </a>
-        <a href="#" class="flex items-center py-2 cursor-pointer  hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
+        <a th:href="@{/admin/board}" class="flex items-center py-2 cursor-pointer  hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
           <i class="fa-solid fa-newspaper fa-lg" style="color: #A5CDCD; width:40px;"></i>
-          <span class="font-medium select-none">Article manager</span>
+          <span class="font-medium select-none">Board manager</span>
         </a>
         <a href="#" class="flex items-center py-2 cursor-pointer  hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
           <i class="fa-solid fa-boxes-stacked fa-lg" style="color: #A5CDCD; width:40px;"></i>
@@ -51,6 +51,10 @@
         <a href="#" class="flex items-center py-2 cursor-pointer  hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
           <i class="fa-solid fa-comment-dots fa-lg" style="color: #A5CDCD; width:40px;"></i>
           <span class="font-medium select-none">Inquiry manager</span>
+        </a>
+        <a th:href="@{/index}" class="flex items-center py-2 cursor-pointer  hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
+          <i class="fa-solid fa-capsules fa-lg" style="color: #A5CDCD; width:40px;"></i>
+          <span class="font-medium select-none">JIGUMIYAK</span>
         </a>
       </div>
 
@@ -75,37 +79,5 @@
   </div>
 </div>
 
-<script>
-  function setSelectedLink(linkId) {
-    localStorage.setItem('selectedLink', linkId);
-  }
-
-  function getSelectedLink() {
-    return localStorage.getItem('selectedLink');
-  }
-
-  $(document).ready(function() {
-    const anchorLinks = $('.navbar-Container a');
-    const storedLinkId = getSelectedLink();
-
-    if (storedLinkId) {
-      anchorLinks.each(function() {
-        if ($(this).attr('id') === storedLinkId) {
-          $(this).addClass('selected');
-        }
-      });
-    }
-
-    anchorLinks.click(function(event) {
-      event.preventDefault();
-
-      anchorLinks.removeClass('selected');
-
-      $(this).addClass('selected');
-
-      setSelectedLink($(this).attr('id'));
-    });
-  });
-</script>
 </body>
 </html>

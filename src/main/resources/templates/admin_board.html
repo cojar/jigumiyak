@@ -1,0 +1,34 @@
+<html layout:decorate="~{ad_navbar}">
+<head>
+  <title>ADMIN-BOARD</title>
+</head>
+<div layout:fragment="content" class="relative">
+  <div>우하하</div>
+  <table class="w-full">
+    <thead>
+    <tr>
+      <th class="min-w-min">게시글ID</th>
+      <th>제목</th>
+      <th>내용</th>
+      <th>댓글</th>
+      <th>작성자</th>
+      <th>작성일시</th>
+      <th>수정일시</th>
+      <th>버튼</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="board, loop : ${paging}" class="border-b">
+      <td th:text="${board.id}"></td>
+      <td><a th:href="@{|/board/${board.id}|}" th:text="${board.subject}"></a></td>
+      <td><a th:href="@{|/board/${board.id}|}" th:text="${board.content}"></a></td>
+      <td><a href="#" th:text="${#lists.size(board.commentList)}"></a></td>
+      <td><span th:if="${board.author != null}" th:text="${board.author.loginId}"></span></td>
+      <td th:text="${#temporals.format(board.createDate, 'yyyy-MM-dd HH:mm')}"></td>
+      <td th:text="${#temporals.format(board.modifyDate, 'yyyy-MM-dd HH:mm')}"></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</html>

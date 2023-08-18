@@ -69,6 +69,13 @@ public class BoardService {
         return this.boardRepository.findAllByKeyword(kw, pageable);
     }
 
+    public Page<Board> getList(int page, String kw) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("createDate"));
+        Pageable pageable = PageRequest.of(page, 50, Sort.by(sorts));
+        return this.boardRepository.findAllByKeyword(kw, pageable);
+    }
+
     public void modify(Board board, String subject, String content) {
         board.setSubject(subject);
         board.setContent(content);

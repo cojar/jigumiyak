@@ -31,7 +31,6 @@ public class BoardController {
     private final BoardService boardService;
     private final UserService userService;
     private final BoardCommentService boardCommentService;
-    private final BoardRecommentService boardRecommentService;
 
     @GetMapping("")
     public String boardList(Model model, @RequestParam(value="page", defaultValue="0") int page,
