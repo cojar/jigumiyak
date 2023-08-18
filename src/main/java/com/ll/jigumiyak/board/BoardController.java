@@ -4,7 +4,6 @@ import com.ll.jigumiyak.board_comment.BoardComment;
 import com.ll.jigumiyak.board_comment.BoardCommentForm;
 import com.ll.jigumiyak.board_comment.BoardCommentService;
 import com.ll.jigumiyak.board_recomment.BoardRecommentForm;
-import com.ll.jigumiyak.board_recomment.BoardRecommentService;
 import com.ll.jigumiyak.user.SiteUser;
 import com.ll.jigumiyak.user.UserService;
 import jakarta.servlet.http.Cookie;
@@ -60,7 +59,7 @@ public class BoardController {
         }
         model.addAttribute("board", board);
 
-        Page<BoardComment> paging = this.boardCommentService.getList(board, cmtPage);
+        Page<BoardComment> paging = this.boardCommentService.getList(board, 5,cmtPage);
         model.addAttribute("paging", paging);
 
         return "board_detail";

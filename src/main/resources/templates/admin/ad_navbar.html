@@ -64,7 +64,10 @@
           <h3 class="text-gray-900 font-semibold">관리자 아이디</h3>
           <h4 class="text-sm text-gray-700 mt-1">관리자</h4>
         </div>
-        <a href="#">
+        <a sec:authorize="isAnonymous()" href="/user/login">
+          <i class="fa-solid fa-arrow-right-to-bracket fa-xl"></i>
+        </a>
+        <a sec:authorize="isAuthenticated()" href="/user/logout">
           <i class="fa-solid fa-arrow-right-from-bracket fa-xl"></i>
         </a>
       </div>
@@ -78,6 +81,9 @@
     </div>
   </div>
 </div>
+<script type="text/javascript" th:inline="javascript" th:src="@{/common.js}"></script>
+<!-- 자바스크립트 Start -->
+<th:block layout:fragment="script"></th:block>
 
 </body>
 </html>
