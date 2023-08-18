@@ -6,7 +6,6 @@ import com.ll.jigumiyak.user.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,13 +14,16 @@ import java.util.Optional;
 public class NoticeCommentService {
     private final NoticeCommentRepository noticeCommentRepository;
 
-    public NoticeComment create(Notice notice, String content, SiteUser siteUser) {
-        NoticeComment comment = new NoticeComment();
-        comment.setContent(content);
-        comment.setCreateDate(LocalDateTime.now());
-        comment.setNotice(notice);
-        comment.setAuthor(siteUser);
+    public NoticeComment create(Notice notice, String content, SiteUser author) {
+
+        NoticeComment comment = NoticeComment.builder()
+                .content(content)
+                .author(author)
+                .notice(notice)
+                .build();
+
         this.noticeCommentRepository.save(comment);
+
         return comment;
     }
 
@@ -35,8 +37,11 @@ public class NoticeCommentService {
     }
 
     public void modify(NoticeComment comment, String content) {
-        comment.setContent(content);
-        comment.setModifyDate(LocalDateTime.now());
+
+        comment = comment.toBuilder()
+                .content(content)
+                .build();
+
         this.noticeCommentRepository.save(comment);
     }
 

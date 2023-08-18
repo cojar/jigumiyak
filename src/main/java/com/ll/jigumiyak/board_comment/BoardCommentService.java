@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,13 +20,15 @@ public class BoardCommentService {
     private final BoardCommentRepository boardCommentRepository;
 
     public BoardComment create(Board board, String content, SiteUser author) {
-        BoardComment comment = new BoardComment();
-        comment.setContent(content);
-        comment.setCreateDate(LocalDateTime.now());
-        comment.setModifyDate(LocalDateTime.now());
-        comment.setAuthor(author);
-        comment.setBoard(board);
+
+        BoardComment comment = BoardComment.builder()
+                .content(content)
+                .author(author)
+                .board(board)
+                .build();
+
         this.boardCommentRepository.save(comment);
+
         return comment;
     }
 
@@ -41,8 +42,11 @@ public class BoardCommentService {
     }
 
     public void modify(BoardComment comment, String content) {
-        comment.setContent(content);
-        comment.setModifyDate(LocalDateTime.now());
+
+        comment = comment.toBuilder()
+                .content(content)
+                .build();
+
         this.boardCommentRepository.save(comment);
     }
 

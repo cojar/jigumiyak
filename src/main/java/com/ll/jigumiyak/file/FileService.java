@@ -71,14 +71,13 @@ public class FileService {
         file.transferTo(new File(saveFilePath));
         log.info(saveFilePath + " 파일 저장을 완료했습니다.");
 
-        GenFile genFile = new GenFile();
-
-        genFile.setPrimaryPath(primaryPath);
-        genFile.setSecondaryPath(secondaryPath);
-        genFile.setUploader(uploader);
-        genFile.setDate(date);
-        genFile.setExt(ext);
-        genFile.setCreateDate(LocalDateTime.now());
+        GenFile genFile = GenFile.builder()
+                .primaryPath(primaryPath)
+                .secondaryPath(secondaryPath)
+                .uploader(uploader)
+                .date(date)
+                .ext(ext)
+                .build();
 
         this.fileRepository.save(genFile);
 

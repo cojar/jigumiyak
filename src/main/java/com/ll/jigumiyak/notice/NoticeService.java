@@ -11,19 +11,19 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class NoticeService {
     private final NoticeRepository noticeRepository;
+
     public Page<Notice> getNoticeList(int page, int pageSize, String keywordCategory, String category, String keyword, String order) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id"));
 
         if (StringUtils.hasText(keyword) && StringUtils.hasText(keywordCategory) && StringUtils.hasText(category)) {
             return noticeRepository.searchByKeywordAndCategory(keyword, keywordCategory, category, pageable);
-        } else if(StringUtils.hasText(keyword) && StringUtils.hasText(keywordCategory)){
+        } else if (StringUtils.hasText(keyword) && StringUtils.hasText(keywordCategory)) {
             return noticeRepository.searchByKeyword(keyword, keywordCategory, pageable);
         } else if (StringUtils.hasText(category)) {
             return noticeRepository.searchByCategory(category, pageable);
@@ -33,22 +33,25 @@ public class NoticeService {
 
     public Notice getNotice(Long id) {
         Optional<Notice> notice = this.noticeRepository.findById(id);
-        if (notice.isPresent()){
+        if (notice.isPresent()) {
             return notice.get();
         } else {
             throw new DataNotFoundException("notice not found");
         }
     }
 
-    public Notice create(NoticeCategory category, String title, String content, SiteUser siteUser) {
-        Notice notice = new Notice();
-        notice.setCategory(category);
-        notice.setTitle(title);
-        notice.setContent(content);
-        notice.setCreateDate(LocalDateTime.now());
-        notice.setAuthor(siteUser);
-        notice.setHit(0L);
-        noticeRepository.save(notice);
+    public Notice create(NoticeCategory category, String title, String content, SiteUser author) {
+
+        Notice notice = Notice.builder()
+                .category(category)
+                .title(title)
+                .content(content)
+                .author(author)
+                .hit(0L)
+                .build();
+
+        this.noticeRepository.save(notice);
+
         return notice;
     }
 
@@ -57,36 +60,47 @@ public class NoticeService {
     }
 
     public Notice modify(Notice notice, String title, String content, NoticeCategory category) {
-        notice.setTitle(title);
-        notice.setContent(content);
-        notice.setModifyDate(LocalDateTime.now());
-        notice.setCategory(category);
+
+        notice = notice.toBuilder()
+                .category(category)
+                .title(title)
+                .content(content)
+                .build();
+
         this.noticeRepository.save(notice);
+
         return notice;
     }
 
     public Notice hit(Long id) {
         Notice notice = this.getNotice(id);
-        notice.setHit(notice.getHit() + 1);
+
+        notice = notice.toBuilder()
+                .hit(notice.getHit() + 1)
+                .build();
+
         this.noticeRepository.save(notice);
+
         return notice;
     }
+
     public long maxId() {
         return noticeRepository.findMaxId();
     }
 
-    public Notice getPreviousNotice(Long id){
+    public Notice getPreviousNotice(Long id) {
         Optional<Notice> preNotice = this.noticeRepository.findPreviousNotice(id);
-        if (preNotice.isPresent()){
+        if (preNotice.isPresent()) {
             return preNotice.get();
         } else {
             // thymeleaf null 처리를 위해 null return
             return null;
         }
     }
-    public Notice getNextNotice(Long id){
+
+    public Notice getNextNotice(Long id) {
         Optional<Notice> nextNotice = this.noticeRepository.findNextNotice(id);
-        if (nextNotice.isPresent()){
+        if (nextNotice.isPresent()) {
             return nextNotice.get();
         } else {
             // thymeleaf null 처리를 위해 null return

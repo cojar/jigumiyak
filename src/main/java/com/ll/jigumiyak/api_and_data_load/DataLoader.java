@@ -7,10 +7,9 @@ import com.ll.jigumiyak.nutrient_category.NutrientCategoryRepository;
 import com.ll.jigumiyak.nutrient_caution.NutrientCaution;
 import com.ll.jigumiyak.nutrient_caution.NutrientCautionRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
@@ -28,23 +27,32 @@ public class DataLoader implements CommandLineRunner {
             String nutrientCategories = "눈 체력 체지방 뼈 항산화 간 혈액 순환 장 위 스트레스 갱년기 피부 혈압 수면 면역력 관절 혈당 뇌 전립선 위배뇨 근력 기타";
             String[] categories = nutrientCategories.split(" ");
             for (String category : categories) {
-                NutrientCategory nutrientCategory = new NutrientCategory();
-                nutrientCategory.setCategoryName(category);
-                System.out.println(category);
-                nutrientCategoryRepository.save(nutrientCategory);
+
+                NutrientCategory nutrientCategory = NutrientCategory.builder()
+                        .categoryName(category)
+                        .build();
+
+                log.info("category: ", category);
+
+                this.nutrientCategoryRepository.save(nutrientCategory);
             }
         } else {
             log.info("영양성분은 이미 생성 되어있습니다");
         }
 
         if(noticeCategoryRepository.findAll().isEmpty()){
-            NoticeCategory noticeCategory1 = new NoticeCategory();
-            noticeCategory1.setName("공지사항");
-            noticeCategoryRepository.save(noticeCategory1);
 
-            NoticeCategory noticeCategory2 = new NoticeCategory();
-            noticeCategory2.setName("이벤트");
-            noticeCategoryRepository.save(noticeCategory2);
+            NoticeCategory noticeCategory1 = NoticeCategory.builder()
+                    .name("공지사항")
+                    .build();
+
+            this.noticeCategoryRepository.save(noticeCategory1);
+
+            NoticeCategory noticeCategory2 = NoticeCategory.builder()
+                    .name("이벤트")
+                    .build();
+
+            this.noticeCategoryRepository.save(noticeCategory2);
         }
         else {
             log.info("공지사항 카테고리는 이미 생성되어 있습니다");
@@ -55,10 +63,14 @@ public class DataLoader implements CommandLineRunner {
             String cautions = "유아 영아 노약자 심약자 임산부 수유부 알레르기";
             String[] cautionList = cautions.split(" ");
             for (String caution : cautionList) {
-                NutrientCaution nutrientCaution = new NutrientCaution();
-                nutrientCaution.setCaution(caution);
-                log.info(caution);
-                nutrientCautionRepository.save(nutrientCaution);
+
+                NutrientCaution nutrientCaution = NutrientCaution.builder()
+                        .caution(caution)
+                        .build();
+
+                log.info("caution: ", caution);
+
+                this.nutrientCautionRepository.save(nutrientCaution);
             }
         } else {
             log.info("영양성분 주의사항은 이미 생성 되어있습니다");

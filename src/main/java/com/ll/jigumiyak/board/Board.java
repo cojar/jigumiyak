@@ -1,36 +1,29 @@
 package com.ll.jigumiyak.board;
 
+import com.ll.jigumiyak.base.BaseEntity;
 import com.ll.jigumiyak.board_comment.BoardComment;
 import com.ll.jigumiyak.user.SiteUser;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.Cascade;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-@Entity
 @Getter
-@Setter
-public class Board {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@SuperBuilder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+public class Board extends BaseEntity {
 
     @Column(length = 300)
     private String subject;
 
     @Column(columnDefinition = "TEXT")
     private String content;
-
-    @Column
-    private LocalDateTime createDate;
-
-    @Column
-    private LocalDateTime modifyDate;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
     private List<BoardComment> commentList;
