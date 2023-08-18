@@ -1,0 +1,40 @@
+<html layout:decorate="~{layout}">
+<head>
+  <title>JIGUMIYAK</title>
+</head>
+<div layout:fragment="content" class="test-Container">
+  <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
+  <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
+    <h5 class="border-b border-gray-400 text-2xl pt-5">마이페이지</h5>
+    <div class="border-b border-gray-400 h-64 w-full flex items-center">
+      <div class="h-24 w-full flex items-center flex-wrap">
+        <div class="text-4xl font-bold pl-10">
+          <span th:text="${user.loginId}"></span>
+          <span> 님</span>
+        </div>
+        <div class="text-sm self-end mb-2 pl-5 text-gray-500">소셜 연동여부?</div>
+        <div class="w-full pl-10" th:text="${user.email}"></div>
+      </div>
+      <div class="bg-gray-100 w-full p-5 flex flex-wrap">
+        <div class="flex items-center">
+          <div class="text-lg font-bold">회원정보</div>
+          <a href="/user/modify" class="text-sm text-gray-500 px-3" >정보수정 ></a>
+        </div>
+        <div class="w-full text-lg text-gray-600">
+          <div>
+            <span>회원 유형 : </span>
+            <span th:text="${user.getAuthoritiesInline}"></span>
+          </div>
+          <div>
+            <span>주소 : </span>
+            <span th:text="|(${user.address.zoneCode}) ${user.address.mainAddress}|"></span>
+          </div>
+          <div>무슨 정보</div>
+          <div>어떤 정보</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</html>

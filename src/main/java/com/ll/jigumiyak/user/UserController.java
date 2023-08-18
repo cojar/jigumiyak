@@ -52,7 +52,7 @@ public class UserController {
         model.addAttribute("user", user);
 
 
-        return "mypage";
+        return "user_modify";
     }
 
     @GetMapping("/login")

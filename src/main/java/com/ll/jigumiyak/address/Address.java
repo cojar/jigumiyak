@@ -1,7 +1,6 @@
 package com.ll.jigumiyak.address;
 
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
