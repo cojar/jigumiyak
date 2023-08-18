@@ -3,6 +3,7 @@ package com.ll.jigumiyak.nutrient;
 import com.ll.jigumiyak.nutrient_category.NutrientCategory;
 import com.ll.jigumiyak.nutrient_category.NutrientCategoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,4 +18,7 @@ public class NutrientService {
         nutrientRepository.save(nutrient);
     }
 
+    public List<Nutrient> getList() {
+        return nutrientRepository.findAll();
+    }
 }
