@@ -72,7 +72,7 @@ public class BoardService {
     public Page<Board> getList(int page, String kw) {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createDate"));
-        Pageable pageable = PageRequest.of(page, 50, Sort.by(sorts));
+        Pageable pageable = PageRequest.of(page, 30, Sort.by(sorts));
         return this.boardRepository.findAllByKeyword(kw, pageable);
     }
 

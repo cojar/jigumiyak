@@ -3,27 +3,37 @@
   <title>ADMIN-BOARD</title>
 </head>
 <div layout:fragment="content" class="relative">
-  <div>우하하</div>
-  <table class="mx-auto" style="width:1500px">
+  <div class="search-area w-full h-24 border-b border-gray-300 flex justify-center items-center flex-wrap">
+    <div class="search-box border border-gray-300 rounded-lg h-10 w-2/3 flex items-center">
+      <input type="text" id="search_kw" class="inline-block h-full w-9/12 bg-transparent" th:value="${kw}">
+      <button class="h-full w-3/12 inline-block border-l" type="button" id="btn_search">찾기</button>
+    </div>
+  </div>
+  <form th:action="@{/admin/board}" method="get" id="searchForm">
+    <input type="hidden" id="kw" name="kw" th:value="${kw}">
+    <input type="hidden" id="page" name="page" th:value="${paging.number}">
+  </form>
+
+  <table class="w-11/12 mx-auto" style="min-width:1500px">
     <thead>
-    <tr class="border-b-4 border-double border-black">
-      <th class="w-24 bg-blue-100">게시글ID</th>
-      <th class="w-56 bg-red-100">제목</th>
+    <tr class="border-b-4 border-double border-black h-12">
+      <th class="w-24">게시글ID</th>
+      <th class="w-56">제목</th>
       <th>내용</th>
-      <th class="w-12 bg-blue-100">댓글</th>
+      <th class="w-12">댓글</th>
       <th>작성자</th>
-      <th class="w-32 bg-blue-100">작성일시</th>
-      <th class="w-32 bg-red-100">수정일시</th>
-      <th class="w-20 bg-blue-100">버튼</th>
+      <th class="w-32">작성일시</th>
+      <th class="w-32">수정일시</th>
+      <th class="w-20">버튼</th>
     </tr>
     </thead>
 
     <tbody>
-    <tr th:each="board, loop : ${paging}" class="border-b">
+    <tr th:each="board, loop : ${paging}" class="border-b h-8">
       <td th:text="${board.id}" class="text-center"></td>
       <td><a th:href="@{|/board/${board.id}|}" th:text="${board.subject}"></a></td>
       <td><a th:href="@{|/board/${board.id}|}" th:text="${board.content}"></a></td>
-      <td class="w-12 bg-red-100 text-center"><a href="#" th:text="${#lists.size(board.commentList)}" class="bg-blue-100"></a></td>
+      <td class="w-12 text-center"><a href="#" th:text="${#lists.size(board.commentList)}"></a></td>
       <td><span th:if="${board.author != null}" th:text="${board.author.loginId}"></span></td>
       <td th:text="${#temporals.format(board.createDate, 'yyMMdd HH:mm')}" class="text-center"></td>
       <td th:text="${#temporals.format(board.modifyDate, 'yyMMdd HH:mm')}" class="text-center"></td>
@@ -49,4 +59,21 @@
     </ul>
   </div>
 </div>
+
+<script>
+const page_elements = document.getElementsByClassName("page-link");
+    Array.from(page_elements).forEach(function(element) {
+        element.addEventListener('click', function() {
+            document.getElementById('page').value = this.dataset.page;
+            document.getElementById('searchForm').submit();
+        });
+    });
+
+    const btn_search = document.getElementById("btn_search");
+    btn_search.addEventListener('click', function() {
+        document.getElementById('kw').value = document.getElementById('search_kw').value;
+        document.getElementById('page').value = 0;  // 검색버튼을 클릭할 경우 0페이지부터 조회한다.
+        document.getElementById('searchForm').submit();
+    });
+</script>
 </html>
