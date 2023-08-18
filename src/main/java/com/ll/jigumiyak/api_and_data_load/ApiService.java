@@ -9,9 +9,6 @@ import com.ll.jigumiyak.nutrient_caution.NutrientCautionRepository;
 import com.ll.jigumiyak.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,13 +42,16 @@ public class ApiService {
     }
 
     public void saveNutrient(String name, String efficacy, String dailyIntake, List<NutrientCategory> nutrientCategoryList, List<NutrientCaution> cautionList) {
-        Nutrient nutrient = new Nutrient();
-        nutrient.setName(name);
-        nutrient.setEfficacy(efficacy);
-        nutrient.setDailyIntake(dailyIntake);
-        nutrient.setCategoryList(nutrientCategoryList);
-        nutrient.setCautionList(cautionList);
-        nutrientRepository.save(nutrient);
+
+        Nutrient nutrient = Nutrient.builder()
+                .name(name)
+                .efficacy(efficacy)
+                .dailyIntake(dailyIntake)
+                .categoryList(nutrientCategoryList)
+                .cautionList(cautionList)
+                .build();
+
+        this.nutrientRepository.save(nutrient);
     }
 
 //    public String extractDailyIntake(String dayIntkCn){

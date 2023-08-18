@@ -11,10 +11,11 @@ public class AddressService {
 
     public Address create(Integer zoneCode, String mainAddress, String subAddress) {
 
-        Address address = new Address();
-        address.setZoneCode(zoneCode);
-        address.setMainAddress(mainAddress);
-        address.setSubAddress(subAddress);
+        Address address = Address.builder()
+                .zoneCode(zoneCode)
+                .mainAddress(mainAddress)
+                .subAddress(subAddress)
+                .build();
 
         this.addressRepository.save(address);
 

@@ -20,10 +20,12 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class ProductService {
+
     private final ProductRepository productRepository;
     private final FileService fileService;
 
     public Product create(String name, String description, int price, int quantity, MultipartFile file, List<Nutrient> nutrientList) throws IOException {
+
         GenFile thumbnailImg = this.fileService.upload(file, "product", "thumbnailImage", name);
 
         Product product = Product.builder()
@@ -35,7 +37,9 @@ public class ProductService {
                 .nutrientList(nutrientList)
                 .hit(0L)
                 .build();
+
         this.productRepository.save(product);
+
         return product;
     }
 

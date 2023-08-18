@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ll.jigumiyak.nutrient.Nutrient;
 import com.ll.jigumiyak.nutrient_category.NutrientCategory;
 import com.ll.jigumiyak.nutrient_caution.NutrientCaution;
-import groovy.transform.AutoImplement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -57,8 +55,10 @@ public class ApiCaller {
                 // JSON 배열을 하나씩 처리
                 // 현재 dataNode가 영양제성분 객체로 사용될 거임
                 for (JsonNode dataNode : rowNode) {
-                    Nutrient nutrient = new Nutrient();
-                    nutrient.setName(dataNode.get("APLC_RAWMTRL_NM").asText());
+
+                    Nutrient nutrient = Nutrient.builder()
+                            .name(dataNode.get("APLC_RAWMTRL_NM").asText())
+                            .build();
 
                     String prmsDt = dataNode.get("PRMS_DT").asText();
                     String dayIntkCn = dataNode.get("DAY_INTK_CN").asText();
@@ -150,7 +150,7 @@ public class ApiCaller {
                 // JSON 배열을 하나씩 처리
                 // 현재 dataNode가 영양제성분 객체로 사용될 거임
                 for (JsonNode dataNode : rowNode) {
-                    Nutrient nutrient = new Nutrient();
+                    Nutrient nutrient = Nutrient.builder().build();
 
                     String prdctNm = dataNode.get("PRDCT_NM").asText();
                     String caution = dataNode.get("IFTKN_ATNT_MATR_CN").asText();
@@ -217,7 +217,7 @@ public class ApiCaller {
                 // JSON 배열을 하나씩 처리
                 // 현재 dataNode가 영양제성분 객체로 사용될 거임
                 for (JsonNode dataNode : rowNode) {
-                    Nutrient nutrient = new Nutrient();
+                    Nutrient nutrient = Nutrient.builder().build();
 
                     String prdctNm = dataNode.get("PRDCT_NM").asText();
                     String caution = dataNode.get("IFTKN_ATNT_MATR_CN").asText();

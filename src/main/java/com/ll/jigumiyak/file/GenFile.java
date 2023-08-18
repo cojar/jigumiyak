@@ -1,22 +1,18 @@
 package com.ll.jigumiyak.file;
 
+import com.ll.jigumiyak.base.BaseEntity;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
-
-@Entity
 @Getter
-@Setter
-public class GenFile {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@SuperBuilder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+public class GenFile extends BaseEntity {
 
     private String primaryPath;
 
@@ -27,7 +23,4 @@ public class GenFile {
     private String date;
 
     private String ext;
-
-    @CreatedDate
-    private LocalDateTime createDate;
 }
