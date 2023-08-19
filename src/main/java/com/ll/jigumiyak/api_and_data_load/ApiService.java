@@ -1,5 +1,6 @@
 package com.ll.jigumiyak.api_and_data_load;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.ll.jigumiyak.nutrient.Nutrient;
 import com.ll.jigumiyak.nutrient.NutrientRepository;
 import com.ll.jigumiyak.nutrient_category.NutrientCategory;
@@ -42,23 +43,27 @@ public class ApiService {
     }
 
     public void saveNutrient(String name, String efficacy, String dailyIntake, List<NutrientCategory> nutrientCategoryList, List<NutrientCaution> cautionList) {
+        // 중복 여부를 데이터베이스에서 확인
+        boolean isDuplicate = checkIfNutrientExists(name);
 
-        Nutrient nutrient = Nutrient.builder()
-                .name(name)
-                .efficacy(efficacy)
-                .dailyIntake(dailyIntake)
-                .categoryList(nutrientCategoryList)
-                .cautionList(cautionList)
-                .build();
+        if (!isDuplicate) {
+            Nutrient nutrient = Nutrient.builder()
+                    .name(name)
+                    .efficacy(efficacy)
+                    .dailyIntake(dailyIntake)
+                    .categoryList(nutrientCategoryList)
+                    .cautionList(cautionList)
+                    .build();
 
-        this.nutrientRepository.save(nutrient);
+            this.nutrientRepository.save(nutrient);
+        } else {
+            System.out.println("이미 중복된 데이터입니다: " + name);
+        }
     }
 
-//    public String extractDailyIntake(String dayIntkCn){
-//        String[] param = dayIntkCn.split("\\/");
-//        String dailyIntake = param[0].replaceAll("[^0-9, ^mg, ^g, ^kg, ^~ ^.]", "").trim().replaceAll(" ", "");
-//        return dailyIntake;
-//    }
+    private boolean checkIfNutrientExists(String name) {
+        return nutrientRepository.existsByName(name);
+    }
 
     public List<NutrientCaution> extractCautionList(String iftknAtntMatrCn) {
         List<NutrientCaution> cautionList = new ArrayList<>();
@@ -96,4 +101,36 @@ public class ApiService {
         String fnclty = pureTextContainKorEng.replaceAll("[a-zA-Z]", "");
         return fnclty;
     }
+
+    public void processNutrientData1(JsonNode rowNode) {
+        for (JsonNode dataNode : rowNode) {
+            String aplcRawmtrlNm = dataNode.get("APLC_RAWMTRL_NM").asText();
+            String fncltyCn = dataNode.get("FNCLTY_CN").asText();
+            String dayIntkCn = dataNode.get("DAY_INTK_CN").asText();
+            String iftknAtntMatrCn = dataNode.get("IFTKN_ATNT_MATR_CN").asText();
+
+            List<NutrientCategory> nutrientCategoryList = extractEfficacyList(fncltyCn);
+            List<NutrientCaution> cautionList = extractCautionList(iftknAtntMatrCn);
+
+            saveNutrient(aplcRawmtrlNm, fncltyCn, dayIntkCn, nutrientCategoryList, cautionList);
+        }
+    }
+
+    public void processNutrientData2(JsonNode dataNode) {
+        String prdctNm = dataNode.get("PRDCT_NM").asText();
+        String caution = dataNode.get("IFTKN_ATNT_MATR_CN").asText();
+        String primaryFnclty = dataNode.get("PRIMARY_FNCLTY").asText();
+        String dayIntkLowlimit = dataNode.get("DAY_INTK_LOWLIMIT").asText();
+        String dayIntkHighlimit = dataNode.get("DAY_INTK_HIGHLIMIT").asText();
+        String intkUnit = dataNode.get("INTK_UNIT").asText();
+
+        String nutrientNm = deleteBracketAndStringInBracket(prdctNm);
+        String efficacy_del_bracket = deleteBracketAndStringInBracket(primaryFnclty);
+        String efficacy = deleteEng(efficacy_del_bracket);
+        List<NutrientCategory> nutrientCategoryList = extractEfficacyList(efficacy);
+        List<NutrientCaution> cautionList = extractCautionList(caution);
+
+        saveNutrient(nutrientNm, efficacy, dayIntkLowlimit + "~" + dayIntkHighlimit + intkUnit, nutrientCategoryList, cautionList);
+    }
+
 }
