@@ -8,4 +8,6 @@ import java.util.Optional;
 @Repository
 public interface NutrientRepository extends JpaRepository<Nutrient, Long> {
     Optional<Nutrient> findByName(String name);
+
+    boolean existsByName(String name);
 }
