@@ -5,14 +5,9 @@ import com.ll.jigumiyak.social_account.SocialAccountRepository;
 import com.ll.jigumiyak.social_account.SocialInfo;
 import com.ll.jigumiyak.user.SiteUser;
 import com.ll.jigumiyak.user.UserRepository;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,11 +17,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.net.http.HttpRequest;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -52,7 +43,37 @@ public class CustomSecurityService extends DefaultOAuth2UserService implements U
         Map<String, String> attributes = new SocialInfo(userRequest, oAuth2User).getAttributes();
 
         SocialAccount socialAccount = this.socialAccountRepository.findByProviderId(attributes.get("providerId"))
-                .orElseThrow(() -> new InternalAuthenticationServiceException("통합회원 가입 또는 로그인 후 소셜 계정 연결을 진행해주세요"));
+                .orElse(null);
+
+        if (socialAccount == null) {
+
+            SiteUser user = this.userRepository.findByEmail(attributes.get("email"))
+                    .orElse(null);
+
+            if (user == null) {
+
+                user = SiteUser.builder().build();
+                this.userRepository.save(user);
+
+                user = user.toBuilder()
+                        .authority(CustomRole.USER.getDecCode())
+                        .loginId(userRequest.getClientRegistration().getRegistrationId() + "_" + user.getId())
+                        .password("")
+                        .email(attributes.get("email"))
+                        .build();
+
+                this.userRepository.save(user);
+            }
+
+            socialAccount = SocialAccount.builder()
+                    .providerId(attributes.get("providerId"))
+                    .email(attributes.get("email"))
+                    .name(attributes.get("name"))
+                    .parent(user)
+                    .build();
+
+            this.socialAccountRepository.save(socialAccount);
+        }
 
         return new CustomDetails(socialAccount.getParent());
     }

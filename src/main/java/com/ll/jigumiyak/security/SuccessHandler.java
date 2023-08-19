@@ -29,14 +29,16 @@ public class SuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
 
+        log.info("loginId: " + authentication.getName());
+
         // last login date update
         SiteUser user = this.userRepository.findByLoginId(authentication.getName()).orElse(null);
 
-        SiteUser loginedUser = user.toBuilder()
+        user = user.toBuilder()
                 .lastLoginDate(LocalDateTime.now())
                 .build();
 
-        this.userRepository.save(loginedUser);
+        this.userRepository.save(user);
 
         // refererUri check
         String refererUri = (String) request.getSession().getAttribute("refererUri");
