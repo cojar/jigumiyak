@@ -26,6 +26,8 @@ public class SiteUser extends BaseEntity {
 
     private Integer authority;
 
+    private boolean isTemp;
+
     @Column(unique = true)
     private String loginId;
 
