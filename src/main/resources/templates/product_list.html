@@ -11,6 +11,8 @@
 
 
 
+
+
     </style>
     <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
     <!--  상단배너 -->
@@ -41,7 +43,8 @@
                 <ul class="grid grid-cols-4 md:grid-cols-7 xl:grid-cols-12 gap-2 p-8">
                     <li th:each="category : ${categoryList}" class="group my-3">
                         <button type="button" class="w-full h-full p-3 border rounded-2xl hover:bg-gray-200"
-                                th:attr="data-category=${category.categoryName}" id="productCategory" onclick="selectCategory(this)">
+                                th:attr="data-category=${category.categoryName}" id="productCategory"
+                                onclick="selectCategory(this)">
                             <span th:text="${category.categoryName}"></span>
                         </button>
                     </li>
@@ -65,13 +68,42 @@
                     </li>
                 </ul>
             </div>
+        <!-- 페이징 -->
+        <div th:if="${!paging.isEmpty()}" class="w-full flex justify-center mt-5">
+            <ul class="w-full flex justify-center items-center">
+                <li th:classappend="${!paging.hasPrevious} ? 'disabled'" class="py-3 px-1">
+                    <a class="page-link" href="javascript:void(0)" th:data-page="${0}"><span><<</span></a>
+                </li>
 
-            <!-- 페이징 -->
-            <div class="w-full h-12 border">
-                페이징 자리
-            </div>
+                <li th:classappend="${!paging.hasPrevious} ? 'disabled'" class="py-3 px-1">
+                    <a class="page-link" href="javascript:void(0)" th:data-page="${paging.number-1}"><span>이전</span></a>
+                </li>
+
+                <li th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}"
+                    th:if="${page >= paging.number-5 and page <= paging.number+5}"
+                    th:classappend="${page == paging.number} ? 'active'">
+                    <a th:text="${page+1}" class="page-link p-3 mx-1 border rounded-lg hover:bg-gray-300"
+                       th:href="@{/product(keyword=${keyword},
+                       category=${category},
+                       page=${page},
+                       pageSize=${pageSize}
+                       )}">
+                    </a>
+                </li>
+
+                <li th:classappend="${!paging.hasNext} ? 'disabled'" class="py-3 px-1">
+                    <a class="page-link" href="javascript:void(0)" th:data-page="${paging.number+1}"><span>다음</span></a>
+                </li>
+
+                <li th:classappend="${!paging.hasNext} ? 'disabled'" class="py-3 px-1">
+                    <a class="page-link" href="javascript:void(0)" th:data-page="${paging.totalPages - 1}">
+                        <span>>></span>
+                    </a>
+                </li>
+            </ul>
         </div>
-
+        <!-- 페이징 끝-->
+        </div>
         <form th:action="@{/product}" method="get" id="parameterForm">
             <input type="hidden" id="page" name="page" th:value="${page}">
             <input type="hidden" id="pageSize" name="pageSize" th:value="${pageSize}">
@@ -110,6 +142,15 @@
             keywordSearch(); // 검색 함수 호출
         }
     }
+
+    const page_elements = document.getElementsByClassName("page-link");
+    Array.from(page_elements).forEach(function(element) {
+        element.addEventListener('click', function() {
+            document.getElementById('page').value = this.dataset.page;
+            document.getElementById('parameterForm').submit();
+        });
+    });
+
     </script>
 </div>
 </html>
