@@ -31,8 +31,8 @@ public class ProductController {
                               @RequestParam(value = "pageSize", defaultValue = "8") int pageSize,
                               @RequestParam(value = "keyword", defaultValue = "") String keyword,
                               @RequestParam(value = "category", defaultValue = "") String category) {
-        Page<Product> noticePaging = productService.getList(page, pageSize, keyword, category);
-        model.addAttribute("paging", noticePaging);
+        Page<Product> productPaging = productService.getList(page, pageSize, keyword, category);
+        model.addAttribute("paging", productPaging);
 
         List<NutrientCategory> categoryList = nutrientCategoryService.getList();
         model.addAttribute("categoryList", categoryList);
