@@ -29,9 +29,19 @@ public class ProductController {
     public String productList(Model model,
                               @RequestParam(value = "page", defaultValue = "0") int page,
                               @RequestParam(value = "pageSize", defaultValue = "8") int pageSize,
-                              @RequestParam(value = "keyword", defaultValue = "") String keyword) {
-        Page<Product> noticePaging = productService.getList(page, pageSize, keyword);
+                              @RequestParam(value = "keyword", defaultValue = "") String keyword,
+                              @RequestParam(value = "category", defaultValue = "") String category) {
+        Page<Product> noticePaging = productService.getList(page, pageSize, keyword, category);
         model.addAttribute("paging", noticePaging);
+
+        List<NutrientCategory> categoryList = nutrientCategoryService.getList();
+        model.addAttribute("categoryList", categoryList);
+
+        // 검색 값 유지를 위한 modeling
+        model.addAttribute("page", page);
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("category", category);
         return "product_list";
     }
     @GetMapping("/{id}")

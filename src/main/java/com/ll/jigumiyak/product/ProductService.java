@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -43,8 +44,13 @@ public class ProductService {
         return product;
     }
 
-    public Page<Product> getList(int page, int pageSize, String keyword) {
+    public Page<Product> getList(int page, int pageSize, String keyword, String category) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+        if (StringUtils.hasText(keyword) && StringUtils.hasText(category)) {
+            return productRepository.findByCategoryNameAndKeyword(keyword, category, pageable);
+        } else if (StringUtils.hasText(category)) {
+            return productRepository.findByNutrientCategoryName(category, pageable);
+        }
         return this.productRepository.findAllByKeyword(keyword, pageable);
     }
 
