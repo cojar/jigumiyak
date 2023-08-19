@@ -7,7 +7,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
@@ -47,7 +46,7 @@ public class SuccessHandler implements AuthenticationSuccessHandler {
         String redirectUri = savedRequest != null ? savedRequest.getRedirectUrl() : null;
         log.info(redirectUri);
 
-        if (user.getAuthorities().contains(new SimpleGrantedAuthority(CustomRole.TEMP_USER.getType()))) {
+        if (user.isTemp()) {
             log.info("Temp user login request");
             response.sendRedirect("/user/modify");
         } else if (redirectUri != null) {
