@@ -12,7 +12,10 @@
                     <span th:text="${user.loginId}"></span>
                     <span> 님</span>
                 </div>
-                <div class="text-sm self-end mb-2 pl-5 text-gray-500">소셜 연동여부?</div>
+                <div class="text-sm self-end mb-2 pl-5 text-gray-500 flex">
+                    <span th:if="${@commonUtil.isLinked('kakao', #authentication)}"><img th:src="@{/image/login_kakao.png}" class="h-5 rounded-md mr-2" alt=""></span>
+                    <span th:if="${@commonUtil.isLinked('google', #authentication)}"><img th:src="@{/image/login_google.png}" class="h-5 rounded-md mr-2" alt=""></span>
+                </div>
                 <div class="w-full pl-10" th:text="${user.email}"></div>
             </div>
             <div class="bg-gray-100 w-full p-5 flex flex-wrap">
