@@ -1,13 +1,14 @@
 package com.ll.jigumiyak.user;
 
 import com.ll.jigumiyak.address.Address;
+import com.ll.jigumiyak.base.BaseEntity;
 import com.ll.jigumiyak.security.CustomRole;
 import com.ll.jigumiyak.social_account.SocialAccount;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -18,15 +19,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-@Setter
+@SuperBuilder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-public class SiteUser {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class SiteUser extends BaseEntity {
 
     private Integer authority;
+
+    private boolean isTemp;
 
     @Column(unique = true)
     private String loginId;
@@ -41,12 +42,6 @@ public class SiteUser {
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE)
     private List<SocialAccount> socialAccountList;
-
-    @CreatedDate
-    private LocalDateTime createDate;
-
-    @LastModifiedDate
-    private LocalDateTime modifyDate;
 
     private LocalDateTime lastLoginDate;
 

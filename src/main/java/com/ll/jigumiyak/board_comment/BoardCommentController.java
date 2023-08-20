@@ -73,7 +73,7 @@ public class BoardCommentController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/delete/{id}")
-    public String answerDelete(Principal principal, @PathVariable("id") Long id) {
+    public String commentDelete(Principal principal, @PathVariable("id") Long id) {
         BoardComment boardComment = this.boardCommentService.getBoardComment(id);
         if (!boardComment.getAuthor().getLoginId().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제권한이 없습니다.");
@@ -84,10 +84,16 @@ public class BoardCommentController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/vote/{id}")
-    public String boardCommentVote(Principal principal, @PathVariable("id") Long id) {
+    public String boardCommentVote(Model model, Principal principal, @PathVariable("id") Long id) {
         BoardComment boardComment = this.boardCommentService.getBoardComment(id);
         SiteUser siteUser = this.userService.getUserByLoginId(principal.getName());
+
+        if (boardComment.getAuthor().getLoginId().equals(siteUser.getLoginId())) {
+            throw new RuntimeException("본인이 작성한 글은 추천할 수 없습니다.");
+        }
+
         this.boardCommentService.vote(boardComment, siteUser);
-        return String.format("redirect:/board/%s#comment_%s", boardComment.getBoard().getId(), boardComment.getId());
+        model.addAttribute("comment", boardComment);
+        return String.format("redirect:/board/%s#comment_%s :: #board_detail", boardComment.getBoard().getId(), boardComment.getId());
     }
 }

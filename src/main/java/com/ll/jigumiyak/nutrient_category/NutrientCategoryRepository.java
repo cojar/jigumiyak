@@ -1,6 +1,8 @@
 package com.ll.jigumiyak.nutrient_category;
 
-import com.ll.jigumiyak.nutrient_category.NutrientCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
 public interface NutrientCategoryRepository extends JpaRepository<NutrientCategory, Long> {
 }

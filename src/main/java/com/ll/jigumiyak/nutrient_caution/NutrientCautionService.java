@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class NutrientCautionService {
+
     private final NutrientCautionRepository nutrientCautionRepository;
 
 }

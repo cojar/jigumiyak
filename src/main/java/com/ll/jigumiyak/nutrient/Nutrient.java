@@ -1,23 +1,30 @@
 package com.ll.jigumiyak.nutrient;
 
+import com.ll.jigumiyak.base.BaseEntity;
 import com.ll.jigumiyak.nutrient_category.NutrientCategory;
 import com.ll.jigumiyak.nutrient_caution.NutrientCaution;
+import com.ll.jigumiyak.product.Product;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
-@Entity
 @Getter
-@Setter
-public class Nutrient {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@SuperBuilder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+public class Nutrient extends BaseEntity {
+
     private String name;
+
     private String efficacy;
+
     private String dailyIntake;
+
     @ManyToMany
     @JoinTable(name = "nutrient_category_mapping",
             joinColumns = @JoinColumn(name = "nutrient_id"),
@@ -29,4 +36,7 @@ public class Nutrient {
             joinColumns = @JoinColumn(name = "nutrient_id"),
             inverseJoinColumns = @JoinColumn(name = "caution_id"))
     private List<NutrientCaution> cautionList;
+
+    @ManyToMany(mappedBy = "nutrientList")
+    private List<Product> productList;
 }

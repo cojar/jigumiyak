@@ -1,6 +1,10 @@
 package com.ll.jigumiyak.board;
 
+import com.ll.jigumiyak.board_comment.BoardComment;
 import com.ll.jigumiyak.board_comment.BoardCommentForm;
+import com.ll.jigumiyak.board_comment.BoardCommentService;
+import com.ll.jigumiyak.board_recomment.BoardRecommentForm;
+import com.ll.jigumiyak.board_recomment.BoardRecommentService;
 import com.ll.jigumiyak.user.SiteUser;
 import com.ll.jigumiyak.user.UserService;
 import jakarta.servlet.http.Cookie;
@@ -26,6 +30,8 @@ public class BoardController {
 
     private final BoardService boardService;
     private final UserService userService;
+    private final BoardCommentService boardCommentService;
+    private final BoardRecommentService boardRecommentService;
 
     @GetMapping("")
     public String boardList(Model model, @RequestParam(value="page", defaultValue="0") int page,
@@ -43,8 +49,9 @@ public class BoardController {
     }
 
     @GetMapping("/{id}")
-    public String detail(Model model, @PathVariable("id") Long id, BoardCommentForm boardCommentForm,
-                         HttpServletRequest request, HttpServletResponse response) {
+    public String detail(Model model, @PathVariable("id") Long id, BoardCommentForm boardCommentForm, BoardRecommentForm boardRecommentForm,
+                         HttpServletRequest request, HttpServletResponse response,
+                         @RequestParam(value = "cmtPage", defaultValue = "0") int cmtPage) {
 
         Board board;
         if (hitCountJudge(id, request, response)) {
@@ -52,8 +59,11 @@ public class BoardController {
         } else {
             board = this.boardService.getBoard(id);
         }
-
         model.addAttribute("board", board);
+
+        Page<BoardComment> paging = this.boardCommentService.getList(board, cmtPage);
+        model.addAttribute("paging", paging);
+
         return "board_detail";
     }
 
@@ -116,12 +126,19 @@ public class BoardController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/vote/{id}")
-    public String boardVote(Principal principal, @PathVariable("id") Long id) {
+    public String boardVote(Model model, Principal principal, @PathVariable("id") Long id) {
         Board board = this.boardService.getBoard(id);
         SiteUser siteUser = this.userService.getUserByLoginId(principal.getName());
+
+        if (board.getAuthor().getLoginId().equals(siteUser.getLoginId())) {
+            throw new RuntimeException("본인이 작성한 글은 추천할 수 없습니다.");
+        }
+
         this.boardService.vote(board, siteUser);
         this.boardService.updateVote(board);
-        return String.format("redirect:/board/%s", id);
+
+        model.addAttribute("board", board);
+        return "board_detail :: #board_detail";
     }
 
     private boolean hitCountJudge(Long id, HttpServletRequest request, HttpServletResponse response) {

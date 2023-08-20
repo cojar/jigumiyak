@@ -1,32 +1,27 @@
 package com.ll.jigumiyak.board_comment;
 
+import com.ll.jigumiyak.base.BaseEntity;
 import com.ll.jigumiyak.board.Board;
 import com.ll.jigumiyak.board_recomment.BoardRecomment;
 import com.ll.jigumiyak.user.SiteUser;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-@Entity
 @Getter
-@Setter
-public class BoardComment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@SuperBuilder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+public class BoardComment extends BaseEntity {
 
     @Column(columnDefinition = "TEXT")
     private String content;
-
-    @Column
-    private LocalDateTime createDate;
-
-    @Column
-    private LocalDateTime modifyDate;
 
     @ManyToOne
     private Board board;
