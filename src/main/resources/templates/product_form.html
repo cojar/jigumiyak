@@ -1,31 +1,96 @@
-<!DOCTYPE html>
-<html lang="en">
+<html layout:decorate="~{layout}">
 <head>
-  <meta charset="UTF-8">
-  <title>Title</title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>BOARD-FORM</title>
 </head>
-<body>
-<form th:action="@{/product/create}" th:object="${productForm}" method="post"  enctype="multipart/form-data">
-  <input type="text" th:field="*{name}" placeholder="제품명">
-  <input type="text" th:field="*{description}" placeholder="설명">
-  <input type="text" th:field="*{price}" placeholder="가격">
-  <input type="text" th:field="*{quantity}" placeholder="수량">
-  <input type="file" th:value="${thumbnailImage}" th:field="*{thumbnailImage}"
-         placeholder="사진 업로드" th:onchange="_getFileName(this)">
-  <select th:field="*{nutrientList}" name="nutrientList" id="nutrientList">
-    <option value="">선택하세요</option>
-    <option th:each="nutrient : ${nutrientList}" th:value="${nutrient.name}" th:text="${nutrient.name}"></option>
-  </select>
-  <button type="submit">등록하기</button>
-  </form>
-</body>
-<script>
-function _getFileName(_this) {
-var fileValue = $(_this).val().split("\\");
-var fileName = fileValue[fileValue.length-1];
+<div layout:fragment="content" class="test-Container">
+    <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
+    <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
+        <form th:action="@{/product/create}" th:object="${productForm}" method="post" enctype="multipart/form-data">
+            <input type="text" th:field="*{name}" placeholder="제품명">
+            <input type="text" th:field="*{description}" placeholder="설명">
+            <input type="text" th:field="*{price}" placeholder="가격">
+            <input type="text" th:field="*{quantity}" placeholder="수량">
+            <input type="text" th:field="*{inventory}" placeholder="재고">
+            <input type="file" th:value="${thumbnailImage}" th:field="*{thumbnailImage}"
+                   placeholder="사진 업로드" th:onchange="_getFileName(this)">
 
-$(_this).siblings("div.uploaded-file-name").html(fileName);
-$(_this).siblings("div.uploaded-file-name").addClass("active");
+            <div>
+                <input type="text" th:field="*{nutrientList}" id="searchWord" name="searchWord" size="100"
+                       autocomplete="off">
+                <input type="hidden" id="serchWordHidden" style="display: none;">
+                <button type="button" class="add-option-button" onclick="addNutrientOption()">옵션 추가</button>
+            </div>
+            <div id="displayList"
+                 style="border: solid 1px gray; height: 100px; overflow: auto; margin-left: 77px; margin-top; -1px; border-top: 0px;">
+            </div>
+            <button type="submit">등록하기</button>
+        </form>
+    </div>
+    <script type="text/javascript" th:inline="javascript" th:src="@{/common.js}"></script>
+    <script layout:fragment="script" type="text/javascript">
+    function _getFileName(_this) {
+    var fileValue = $(_this).val().split("\\");
+    var fileName = fileValue[fileValue.length-1];
+
+    $(_this).siblings("div.uploaded-file-name").html(fileName);
+    $(_this).siblings("div.uploaded-file-name").addClass("active");
+    }
+
+function addNutrientOption() {
+    var selectElement = document.querySelector('#searchWord');
+    var newSelectElement = selectElement.cloneNode(true);
+
+    newSelectElement.value = "";
+    newSelectElement.selectedIndex = 0; // 선택된 옵션 초기화
+    selectElement.parentNode.appendChild(newSelectElement);
 }
-</script>
+
+$(document).ready(function() {
+    $("#displayList").hide();
+
+    $("#searchWord").on('keyup', function() {
+        var wordLength = $("#searchWord").val().trim().length;
+
+        if (wordLength == 0) {
+            $("#displayList").hide();
+        } else {
+            $.ajax({
+                url: "/product/wordSearchShow.action",
+                type: "get",
+                data: { "searchWord": $("#searchWord").val() },
+                dataType: "json",
+                success: function(json) {
+                    if (json.length > 0) {
+                        var html = "";
+                        $.each(json, function(index, item) {
+                            var word = item.word;
+                            var index = word.toLowerCase().indexOf($("#searchWord").val().toLowerCase());
+                            var len = $("#searchWord").val().length;
+                            var result = word.substr(0, index) + "<span style='color:blue;'>" + word.substr(index, len) + "</span>" + word.substr(index + len);
+                            html += "<span class='result' style='cursor:pointer;'>" + result + "</span><br>";
+                        });
+
+                        var input_width = $("#searchWord").css("width");
+                        $("#displayList").css({ "width": input_width });
+                        $("#displayList").html(html);
+                        $("#displayList").show();
+                    }
+                },
+                error: function(request, status, error) {
+                    console.log("code: " + request.status + "\n" + "message: " + request.responseText + "\n" + "error: " + error);
+                }
+            });
+        }
+    });
+
+    $(document).on('click', ".result", function() {
+        var word = $(this).text();
+        $("#searchWord").val(word);
+        $("#displayList").hide();
+    });
+});
+    </script>
+</div>
 </html>

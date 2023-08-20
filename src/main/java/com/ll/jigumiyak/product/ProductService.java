@@ -15,13 +15,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
 @Service
 @RequiredArgsConstructor
 public class ProductService {
-
     private final ProductRepository productRepository;
     private final FileService fileService;
 
