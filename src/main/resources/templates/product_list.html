@@ -8,9 +8,14 @@
       float: right;
       padding-right:15px;
     }
-  </style>
+
+
+
+
+
+    </style>
     <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
-<!--  상단배너 -->
+    <!--  상단배너 -->
     <div class="w-screen bg-gray-300" style="margin-top:128px; background:#EEEFF4;">
         <div class="test-con mx-auto pr-1 h-full text-right flex justify-around items-center">
             <div class="text-center ml-48">
@@ -21,32 +26,41 @@
                  alt="product" style="height:500px;" class="mr-32">
         </div>
     </div>
-<!--    카테고리-->
+    <!--    카테고리-->
     <div class="test-con mx-auto pr-1 flex">
         <div class="w-full">
-<!--            버튼-->
-            <div class="h-10 w-full">
-                <div class="sortBtns border border-black w-64 h-full ml-auto">정렬버튼들</div>
+            <!--            버튼-->
+            <div class="search-box">
+                <input type="text" id="productKeyword" name="productKeyword" th:value="${keyword}"
+                       placeholder="제품명을 검색하세요" onkeydown="handleKeyDown(event)">
+                <button type="button" id="btn_search"
+                        class="ml-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                        onclick="keywordSearch()"></button>
             </div>
 
-<!--카테고리 선택 버튼-->
+            <!--카테고리 선택 버튼-->
             <div class="w-full">
                 <ul class="grid grid-cols-4 md:grid-cols-7 xl:grid-cols-12 gap-2 p-8">
                     <li th:each="category : ${categoryList}" class="group my-3">
-                        <a th:href="@{/product}" class="p-3 border rounded-2xl hover:bg-gray-200"
-                           th:text="${category.categoryName}" th:value="${category.categoryName}"></a>
+                        <button type="button" class="w-full h-full p-3 border rounded-2xl hover:bg-gray-200"
+                                th:attr="data-category=${category.categoryName}" id="productCategory"
+                                onclick="selectCategory(this)">
+                            <span th:text="${category.categoryName}"></span>
+                        </button>
                     </li>
                 </ul>
             </div>
 
-<!--            상품 목록-->
+            <!--            상품 목록-->
             <div class="w-full">
                 <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 p-10">
                     <li th:each="product : ${paging}" class="group">
                         <a th:href="@{|/product/${product.id}|}" class="group-hover:underline">
                             <div class="profile-img-box">
-                                <img th:if="${product.thumbnailImg != null}" th:attr="src=${@commonUtil.getFilePath(product.thumbnailImg.id)}" alt="">
-                                <img th:if="${product.thumbnailImg == null}" src="https://picsum.photos/id/237/752/442" alt="" class="w-32 h-24 object-cover">
+                                <img th:if="${product.thumbnailImg != null}"
+                                     th:attr="src=${@commonUtil.getFilePath(product.thumbnailImg.id)}" alt="">
+                                <img th:if="${product.thumbnailImg == null}" src="https://picsum.photos/id/237/752/442"
+                                     alt="" class="w-32 h-24 object-cover">
                             </div>
                             <div class="font-bold pt-1 text-base" th:text="${product.name}"></div>
                             <div class="text-gray-600 text-lg pt-1" th:text="${product.nutrientList[0].name}"></div>
@@ -54,38 +68,89 @@
                     </li>
                 </ul>
             </div>
+        <!-- 페이징 -->
+        <div th:if="${!paging.isEmpty()}" class="w-full flex justify-center mt-5">
+            <ul class="w-full flex justify-center items-center">
+                <li th:classappend="${!paging.hasPrevious} ? 'disabled'" class="py-3 px-1">
+                    <a class="page-link" href="javascript:void(0)" th:data-page="${0}"><span><<</span></a>
+                </li>
 
+                <li th:classappend="${!paging.hasPrevious} ? 'disabled'" class="py-3 px-1">
+                    <a class="page-link" href="javascript:void(0)" th:data-page="${paging.number-1}"><span>이전</span></a>
+                </li>
 
+                <li th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}"
+                    th:if="${page >= paging.number-5 and page <= paging.number+5}"
+                    th:classappend="${page == paging.number} ? 'active'">
+                    <a th:text="${page+1}" class="page-link p-3 mx-1 border rounded-lg hover:bg-gray-300"
+                       th:href="@{/product(keyword=${keyword},
+                       category=${category},
+                       page=${page},
+                       pageSize=${pageSize}
+                       )}">
+                    </a>
+                </li>
 
-            <!-- 페이징 -->
-            <div class="w-full h-12 border">
-                페이징 자리
-            </div>
+                <li th:classappend="${!paging.hasNext} ? 'disabled'" class="py-3 px-1">
+                    <a class="page-link" href="javascript:void(0)" th:data-page="${paging.number+1}"><span>다음</span></a>
+                </li>
+
+                <li th:classappend="${!paging.hasNext} ? 'disabled'" class="py-3 px-1">
+                    <a class="page-link" href="javascript:void(0)" th:data-page="${paging.totalPages - 1}">
+                        <span>>></span>
+                    </a>
+                </li>
+            </ul>
         </div>
-
+        <!-- 페이징 끝-->
+        </div>
+        <form th:action="@{/product}" method="get" id="parameterForm">
+            <input type="hidden" id="page" name="page" th:value="${page}">
+            <input type="hidden" id="pageSize" name="pageSize" th:value="${pageSize}">
+            <input type="hidden" id="keyword" name="keyword" th:value="${keyword}">
+            <input type="hidden" id="category" name="category" th:value="${category}">
+        </form>
 
     </div>
+    <script type="text/javascript" th:inline="javascript" th:src="@{/common.js}"></script>
+    <script layout:fragment="script" type="text/javascript">
+    // 키워드 검색
+    function keywordSearch() {
+        var keyword = document.getElementById('productKeyword').value;
+        var category = document.getElementById('category').value;
+
+        document.getElementById('keyword').value = keyword;
+        document.getElementById('category').value = category;
+        document.getElementById('page').value = 0;
+        document.getElementById('parameterForm').submit();
+    }
+    // 카테고리 클릭 검색
+     function selectCategory(button) {
+        var keyword = document.getElementById('productKeyword').value;
+        var categoryName = button.getAttribute('data-category');
+
+        document.getElementById('keyword').value = keyword;
+        document.getElementById('category').value = categoryName;
+        document.getElementById('page').value = 0;
+        document.getElementById('parameterForm').submit();
+    }
+
+    // 엔터키로 검색
+    function handleKeyDown(event) {
+        if (event.key === "Enter") {
+            event.preventDefault(); // 기본 동작인 폼 제출 방지
+            keywordSearch(); // 검색 함수 호출
+        }
+    }
+
+    const page_elements = document.getElementsByClassName("page-link");
+    Array.from(page_elements).forEach(function(element) {
+        element.addEventListener('click', function() {
+            document.getElementById('page').value = this.dataset.page;
+            document.getElementById('parameterForm').submit();
+        });
+    });
+
+    </script>
 </div>
-<script layout:fragment="script" type="text/javascript">
-  function _faqBoxInit() {
-    $(".category-box > li").click(function() {
-      $(this).siblings(".hover").find(" > .isec-category").stop().slideUp(300);
-      $(this).siblings(".hover").removeClass("hover");
-
-      if ($(this).hasClass("hover")) {
-        $(this).find(" > .sec-category").stop().slideUp(300);
-        $(this).removeClass("hover");
-      }
-      else {
-        $(this).find(" > .sec-category").stop().slideDown(300);
-        $(this).addClass("hover");
-      }
-    });
-
-    $(".sec-category").click(function() {
-      return false;
-    });
-  }
-  _faqBoxInit();
-</script>
 </html>
