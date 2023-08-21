@@ -48,7 +48,7 @@
       <div class="py-3 border-b mt-3">
         <div th:text="${board.subject}" class="text-3xl font-bold"></div>
         <div class="flex justify-between my-3 text-gray-500">
-          <div class="flex items=center">
+          <div class="flex items-center">
             <div th:if="${board.author != null}" th:text="|작성자 : ${board.author.loginId}|"></div>
             <div class="mx-3 flex items-center">
               <a th:href="@{|/board/modify/${board.id}|}" class="px-1 border-b border-gray-600 border-opacity-0 hover:border-opacity-100"

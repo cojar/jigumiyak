@@ -1,0 +1,72 @@
+<html layout:decorate="~{/admin/ad_navbar}">
+<head>
+  <title>JIGUMIYAK_ADMIN</title>
+</head>
+<div layout:fragment="content" class="relative">
+  <table class="w-11/12 mx-auto" style="min-width:1500px">
+    <thead>
+    <tr class="border-b-4 border-double border-black h-12">
+      <th class="w-24">댓글ID</th>
+      <th>내용</th>
+      <th class="w-12">댓글</th>
+      <th class="w-36">작성자</th>
+      <th class="w-32">작성일시</th>
+      <th class="w-32">수정일시</th>
+      <th class="w-20">버튼</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="comment, loop : ${paging}" class="border-b h-8">
+      <td th:text="${comment.id}" class="text-center"></td>
+      <td><a th:href="@{|/board/${board.id}|}" th:text="${comment.content}"></a></td>
+      <td class="w-12 text-center text-blue-700"><a th:href="@{|/admin/comment/${comment.id}|}" th:text="${#lists.size(comment.recommentList)}"></a></td>
+      <td><span th:if="${comment.author != null}" th:text="${comment.author.loginId}"></span></td>
+      <td th:text="${#temporals.format(comment.createDate, 'yyMMdd HH:mm')}" class="text-center"></td>
+      <td th:text="${#temporals.format(comment.modifyDate, 'yyMMdd HH:mm')}" class="text-center"></td>
+      <td class="text-center py-2">
+        <a href="javascript:void(0);" th:data-uri="@{|/admin/comment/delete/${comment.id}|}" sec:authorize="isAuthenticated()"
+           class="delete border rounded-lg p-1 hover:bg-gray-200" th:text="삭제"></a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- 페이징 -->
+  <div th:if="${!paging.isEmpty()}" class="w-full flex justify-center mt-5">
+    <ul class="w-full flex justify-center items-center">
+      <li th:classappend="${!paging.hasPrevious} ? 'disabled'" class="py-3 px-1">
+        <a class="page-link" href="javascript:void(0)" th:data-page="${paging.number-1}"><span>이전</span></a>
+      </li>
+
+      <li th:each="cmtPage: ${#numbers.sequence(0, paging.totalPages-1)}" th:if="${cmtPage >= paging.number-5 and cmtPage <= paging.number+5}"
+          th:classappend="${cmtPage == paging.number} ? 'active'">
+        <a th:text="${cmtPage+1}" class="page-link p-3 mx-1 border rounded-lg hover:bg-gray-300" th:href="@{|?cmtPage=${cmtPage}|}"></a>
+      </li>
+
+      <li th:classappend="${!paging.hasNext} ? 'disabled'" class="py-3 px-1">
+        <a class="page-link" href="javascript:void(0)" th:data-page="${paging.number+1}"><span>다음</span></a>
+      </li>
+    </ul>
+  </div>
+</div>
+<script layout:fragment="script" type='text/javascript'>
+const page_elements = document.getElementsByClassName("page-link");
+Array.from(page_elements).forEach(function(element) {
+    element.addEventListener('click', function() {
+        console.log("Page link clicked");
+        document.getElementById('page').value = this.dataset.page;
+    });
+});
+
+const delete_elements = document.getElementsByClassName("delete");
+Array.from(delete_elements).forEach(function(element) {
+    element.addEventListener('click', function() {
+        if(confirm("정말로 삭제하시겠습니까?")) {
+            location.href = this.dataset.uri;
+        };
+    });
+});
+</script>
+</html>
+
