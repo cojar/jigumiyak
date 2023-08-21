@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
+
     Page<Board> findAll(Pageable pageable);
 
     Page<Board> findAll(Specification<Board> spec, Pageable pageable);

@@ -92,6 +92,12 @@ public class NoticeController {
         // 디테일페이지 마지막페이지일 경우 처리하기 위함
         Long maxId = noticeService.maxId();
         model.addAttribute("maxId", maxId);
+
+        // 이전 다음글 modeling
+        Notice preNotice = noticeService.getPreviousNotice(id);
+        Notice nextNotice = noticeService.getNextNotice(id);
+        model.addAttribute("preNotice", preNotice);
+        model.addAttribute("nextNotice", nextNotice);
         return "notice_detail";
     }
 

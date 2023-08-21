@@ -94,8 +94,9 @@
     </div>
 
     <div class="m-8 text-center">
-      <a th:if="${notice.id > 1}" th:href="@{/notice/{id}(id=${notice.id - 1})}" class="py-3 px-5 text-xl rounded-xl" style="background:#E9B384;">이전</a>
-      <a th:if="${notice.id < maxId}" th:href="@{/notice/{id}(id=${notice.id + 1})}" class="py-3 px-5 text-xl rounded-xl" style="background:#E9B384;">다음</a>
+      <a th:if="${preNotice != null}" th:href="@{|/notice/${preNotice.id}|}" class="py-3 px-5 text-xl rounded-xl" style="background:#E9B384;">이전</a>
+      <a th:href="@{/notice}" class="py-3 px-5 text-xl rounded-xl" style="background:#E9B384;">목록</a>
+      <a th:if="${nextNotice != null}" th:href="@{|/notice/${nextNotice.id}|}" class="py-3 px-5 text-xl rounded-xl" style="background:#E9B384;">다음</a>
     </div>
   </div>
 </div>

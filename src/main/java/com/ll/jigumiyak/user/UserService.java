@@ -6,12 +6,10 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -24,14 +22,14 @@ public class UserService {
 
     public SiteUser create(String loginId, String password, String email, Address address) {
 
-        SiteUser user = new SiteUser();
-
-        user.setAuthority(CustomRole.USER.getDecCode());
-        user.setLoginId(loginId);
-        user.setPassword(passwordEncoder.encode(password));
-        user.setEmail(email);
-        user.setAddress(address);
-        user.setCreateDate(LocalDateTime.now());
+        SiteUser user = SiteUser.builder()
+                .authority(CustomRole.USER.getDecCode())
+                .isTemp(false)
+                .loginId(loginId)
+                .password(passwordEncoder.encode(password))
+                .email(email)
+                .address(address)
+                .build();
 
         this.userRepository.save(user);
 
@@ -109,11 +107,10 @@ public class UserService {
 
     public void modifyPassword(SiteUser user, String password) {
 
-        if (!user.getAuthorities().contains(new SimpleGrantedAuthority("temp_user"))) {
-            user.setAuthority(user.getAuthority() + CustomRole.TEMP_USER.getDecCode());
-        }
-        user.setPassword(passwordEncoder.encode(password));
-        user.setModifyDate(LocalDateTime.now());
+        user = user.toBuilder()
+                .isTemp(true)
+                .password(passwordEncoder.encode(password))
+                .build();
 
         this.userRepository.save(user);
     }

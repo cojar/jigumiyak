@@ -87,3 +87,20 @@ html > body {
     color:gray;
     pointer-events:none;
 }
+
+
+
+.sidebar-Container {
+    width:100px;
+    height:310px;
+    position:fixed;
+    top:65%;
+    left:90%;
+    transform: translate(-50%, 0);
+}
+
+@media ( max-width:1600px ) {
+  .sidebar-Container{
+    left:93%;
+  }
+}
