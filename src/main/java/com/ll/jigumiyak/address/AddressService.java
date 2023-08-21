@@ -21,4 +21,15 @@ public class AddressService {
 
         return address;
     }
+
+    public void modify(Address address, Integer zoneCode, String mainAddress, String subAddress) {
+
+        address = address.toBuilder()
+                .zoneCode(zoneCode)
+                .mainAddress(mainAddress)
+                .subAddress(subAddress)
+                .build();
+
+        this.addressRepository.save(address);
+    }
 }

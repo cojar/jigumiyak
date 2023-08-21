@@ -241,7 +241,7 @@ public class UserController {
     @PostMapping("/find/password")
     @ResponseBody
     public ResponseEntity findPassword(@RequestParam("loginId") String loginId,
-                                      @RequestParam("email") String email) {
+                                       @RequestParam("email") String email) {
 
         log.info("loginId: " + loginId);
         log.info("email: " + email);
@@ -366,5 +366,33 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new RsData<>("S-1", "비밀번호가 일치합니다", ""));
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/modify/address")
+    @ResponseBody
+    public ResponseEntity modifyAddress(@RequestParam(value = "zoneCode", defaultValue = "-1") Integer zoneCode,
+                                        @RequestParam(value = "mainAddress", defaultValue = "") String mainAddress,
+                                        @RequestParam("subAddress") String subAddress,
+                                        Principal principal) {
+
+        if (zoneCode == -1 || mainAddress.equals("")) {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new RsData<>("S-1", "저장을 완료했습니다", "/user/mypage"));
+        }
+
+        SiteUser user = this.userService.getUserByLoginId(principal.getName());
+
+        Address address = user.getAddress();
+
+        if (address != null) {
+            this.addressService.modify(address, zoneCode, mainAddress, subAddress);
+        } else {
+            address = this.addressService.create(zoneCode, mainAddress, subAddress);
+            this.userService.saveAddress(user, address);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new RsData<>("S-1", "저장을 완료했습니다", "/user/mypage"));
     }
 }

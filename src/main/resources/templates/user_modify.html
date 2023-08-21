@@ -88,23 +88,26 @@
           <span class="label-text">주소</span>
         </div>
         <div class="flex gap-2">
-          <input type="text" th:value="${user.address.zoneCode}" disabled placeholder="우편번호" class="zoneCode input input-bordered flex-[0_0_40%]" th:onclick="_zoneCode()">
+          <input type="text" th:value="${user.address != null} ? ${user.address.zoneCode} : ''" id="zoneCode" name="zoneCode"
+                 disabled placeholder="우편번호" class="zoneCode input input-bordered flex-[0_0_40%]" th:onclick="_zoneCode()">
           <button type="button" class="btn border-gray-300 bg-[#A5CDCD]" th:onclick="_zoneCode()">주소찾기</button>
         </div>
       </div>
       <div class="flex mt-3 items-center">
         <div class="flex-[0_0_15%]"></div>
         <div class="flex-auto">
-          <input type="text" th:value="${user.address.mainAddress}" disabled placeholder="주소" class="mainAddress input input-bordered w-full" th:onclick="_zoneCode()">
+          <input type="text" th:value="${user.address != null} ? ${user.address.mainAddress} : ''" id="mainAddress" name="mainAddress"
+                 disabled placeholder="주소" class="mainAddress input input-bordered w-full" th:onclick="_zoneCode()">
         </div>
       </div>
       <div class="flex mt-3 items-center">
         <div class="flex-[0_0_15%]"></div>
         <div class="flex-auto">
-          <input type="text" th:value="${user.address.subAddress}" placeholder="상세주소" class="subAddress input input-bordered w-full">
+          <input type="text" th:value="${user.address != null && user.address.subAddress != null} ? ${user.address.subAddress} : ''" id="subAddress" name="subAddress"
+                 placeholder="상세주소" class="subAddress input input-bordered w-full">
         </div>
       </div>
-      <button type="button" id="modify-btn" class="btn btn-block border-gray-300 bg-[#A5CDCD] gap-1 deactivated mt-5" th:onclick="_modify()">
+      <button type="button" id="modify-btn" class="btn btn-block border-gray-300 bg-[#A5CDCD] gap-1 deactivated mt-5" th:onclick="_modifyAddress()">
         <i class="fa-solid fa-user-pen"></i>
         <span>저장하기</span>
       </button>

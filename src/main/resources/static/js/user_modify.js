@@ -157,8 +157,35 @@ function _zoneCode() {
 
             $(".zoneCode").val(data.zonecode);
             $(".mainAddress").val(mainAddress);
-            $(".subAddress").val("");
             $(".subAddress").focus();
+            $(".subAddress").val("");
         }
     }).open();
+}
+
+function _modifyAddress() {
+    $("#zoneCode").prop("disabled", false);
+    $("#mainAddress").prop("disabled", false);
+    $.ajax({
+        url: "/user/modify/address",
+        type: "POST",
+        data: {
+            "zoneCode": $("#zoneCode").val(),
+            "mainAddress": $("#mainAddress").val(),
+            "subAddress": $("#subAddress").val()
+        },
+        beforeSend : function() {
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+        },
+        success: function(res) {
+            alert(res.message);
+            location.href = res.data;
+        },
+        error: function(res) {
+            $("#zoneCode").prop("disabled", true);
+            $("#mainAddress").prop("disabled", true);
+        }
+    })
 }

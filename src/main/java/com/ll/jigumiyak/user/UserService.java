@@ -114,4 +114,13 @@ public class UserService {
 
         this.userRepository.save(user);
     }
+
+    public void saveAddress(SiteUser user, Address address) {
+
+        user = user.toBuilder()
+                .address(address)
+                .build();
+
+        this.userRepository.save(user);
+    }
 }
