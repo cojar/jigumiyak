@@ -22,9 +22,9 @@
             <td><span th:if="${recomment.author != null}" th:text="${recomment.author.loginId}"></span></td>
             <td th:text="${#temporals.format(recomment.createDate, 'yyMMdd HH:mm')}" class="text-center"></td>
             <td th:text="${#temporals.format(recomment.modifyDate, 'yyMMdd HH:mm')}" class="text-center"></td>
-            <td class="text-center">
+            <td class="text-center py-2">
                 <a href="javascript:void(0);" th:data-uri="@{|/admin/recomment/delete/${recomment.id}|}" sec:authorize="isAuthenticated()"
-                   class="delete" th:text="삭제"></a>
+                   class="delete border rounded-lg p-1 hover:bg-gray-200" th:text="삭제"></a>
             </td>
         </tr>
         </tbody>

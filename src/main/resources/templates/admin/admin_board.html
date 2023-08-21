@@ -38,9 +38,9 @@
       <td><span th:if="${board.author != null}" th:text="${board.author.loginId}"></span></td>
       <td th:text="${#temporals.format(board.createDate, 'yyMMdd HH:mm')}" class="text-center"></td>
       <td th:text="${#temporals.format(board.modifyDate, 'yyMMdd HH:mm')}" class="text-center"></td>
-      <td class="text-center">
+      <td class="text-center py-2">
         <a href="javascript:void(0);" th:data-uri="@{|/admin/board/delete/${board.id}|}" sec:authorize="isAuthenticated()"
-           class="delete" th:text="삭제"></a>
+           class="delete border rounded-lg p-1 hover:bg-gray-200" th:text="삭제"></a>
       </td>
     </tr>
     </tbody>
