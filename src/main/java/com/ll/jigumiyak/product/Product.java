@@ -27,9 +27,10 @@ public class Product extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    private int price;
+    private Integer price;
 
     private Integer quantity;
+    private Long inventory;
 
     private Long hit;
 

@@ -20,7 +20,8 @@ public class ProductForm {
     private String price;
     @NotEmpty
     private String quantity;
-
+    @NotEmpty
+    private String inventory;
     private MultipartFile thumbnailImage;
     @NotEmpty
     private List<String> nutrientList;

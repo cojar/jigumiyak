@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -30,5 +31,9 @@ public class NutrientService {
         } else {
             throw new DataNotFoundException("nutrient not found");
         }
+    }
+
+    public List<String> containingNutrientName(Map<String, String> paraMap) {
+        return nutrientRepository.findNutrientByNutrientName(paraMap.get("searchWord"));
     }
 }
