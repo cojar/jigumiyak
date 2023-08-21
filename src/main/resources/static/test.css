@@ -10,6 +10,7 @@ html > body {
 
 .test-Container {
   background-color:transparent;
+  z-index:0;
 }
 
 .test-con {
@@ -43,6 +44,12 @@ html > body {
     font-size : 16px;
   }
 }
+@media ( max-width: 1000px) {
+    .surveyBtn {
+        font-size :12px;
+        width:75px;
+    }
+}
 
 /* 탑바 */
 .top-bar {
@@ -52,6 +59,7 @@ html > body {
   top:0;
   left:0;
   width:100%;
+  z-index:999;
 }
 
 .top-bar.hover {
@@ -101,4 +109,8 @@ html > body {
   .sidebar-Container{
     left:93%;
   }
+}
+
+.surveyBtn {
+    right: 17%;
 }

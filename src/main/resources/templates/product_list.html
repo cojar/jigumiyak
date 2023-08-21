@@ -3,6 +3,8 @@
     <title>PRODUCT-LIST</title>
 </head>
 <div layout:fragment="content" class="test-Container">
+
+    <nav th:replace="~{sidebar :: sidebarFragment}"></nav>
     <style>
     .first-category::after {
       float: right;
@@ -63,41 +65,41 @@
                     </li>
                 </ul>
             </div>
-        <!-- 페이징 -->
-        <div th:if="${!paging.isEmpty()}" class="w-full flex justify-center mt-5">
-            <ul class="w-full flex justify-center items-center">
-                <li th:classappend="${!paging.hasPrevious} ? 'disabled'" class="py-3 px-1">
-                    <a class="page-link" href="javascript:void(0)" th:data-page="${0}"><span><<</span></a>
-                </li>
+            <!-- 페이징 -->
+            <div th:if="${!paging.isEmpty()}" class="w-full flex justify-center mt-5">
+                <ul class="w-full flex justify-center items-center">
+                    <li th:classappend="${!paging.hasPrevious} ? 'disabled'" class="py-3 px-1">
+                        <a class="page-link" href="javascript:void(0)" th:data-page="${0}"><span><<</span></a>
+                    </li>
 
-                <li th:classappend="${!paging.hasPrevious} ? 'disabled'" class="py-3 px-1">
-                    <a class="page-link" href="javascript:void(0)" th:data-page="${paging.number-1}"><span>이전</span></a>
-                </li>
+                    <li th:classappend="${!paging.hasPrevious} ? 'disabled'" class="py-3 px-1">
+                        <a class="page-link" href="javascript:void(0)" th:data-page="${paging.number-1}"><span>이전</span></a>
+                    </li>
 
-                <li th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}"
-                    th:if="${page >= paging.number-5 and page <= paging.number+5}"
-                    th:classappend="${page == paging.number} ? 'active'">
-                    <a th:text="${page+1}" class="page-link p-3 mx-1 border rounded-lg hover:bg-gray-300"
-                       th:href="@{/product(keyword=${keyword},
+                    <li th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}"
+                        th:if="${page >= paging.number-5 and page <= paging.number+5}"
+                        th:classappend="${page == paging.number} ? 'active'">
+                        <a th:text="${page+1}" class="page-link p-3 mx-1 border rounded-lg hover:bg-gray-300"
+                           th:href="@{/product(keyword=${keyword},
                        category=${category},
                        page=${page},
                        pageSize=${pageSize}
                        )}">
-                    </a>
-                </li>
+                        </a>
+                    </li>
 
-                <li th:classappend="${!paging.hasNext} ? 'disabled'" class="py-3 px-1">
-                    <a class="page-link" href="javascript:void(0)" th:data-page="${paging.number+1}"><span>다음</span></a>
-                </li>
+                    <li th:classappend="${!paging.hasNext} ? 'disabled'" class="py-3 px-1">
+                        <a class="page-link" href="javascript:void(0)" th:data-page="${paging.number+1}"><span>다음</span></a>
+                    </li>
 
-                <li th:classappend="${!paging.hasNext} ? 'disabled'" class="py-3 px-1">
-                    <a class="page-link" href="javascript:void(0)" th:data-page="${paging.totalPages - 1}">
-                        <span>>></span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <!-- 페이징 끝-->
+                    <li th:classappend="${!paging.hasNext} ? 'disabled'" class="py-3 px-1">
+                        <a class="page-link" href="javascript:void(0)" th:data-page="${paging.totalPages - 1}">
+                            <span>>></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <!-- 페이징 끝-->
         </div>
         <form th:action="@{/product}" method="get" id="parameterForm">
             <input type="hidden" id="page" name="page" th:value="${page}">

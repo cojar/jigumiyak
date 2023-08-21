@@ -4,8 +4,17 @@
 </head>
 <div layout:fragment="content" class="test-Container">
     <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
+
     <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
-    <h2>content 자리</h2>
+        <div class="relative h-full flex items-center">
+            <img src="https://img.freepik.com/free-photo/clipboard-with-pills-and-copy-space_23-2148551018.jpg?w=1380&t=st=1692000097~exp=1692000697~hmac=1d923ce3df5c1fb3cf158eceabd005b9953c3df269705b5646e7eb14e8864726" alt="survey">
+            <div class="absolute left-1/4 -m-10">
+                <div class="text-6xl font-bold">지금</div>
+                <div class="text-4xl font-bold my-5">내게 필요한</div>
+                <div class="text-5xl font-bold">영양제</div>
+            </div>
+            <a href="#" class="surveyBtn absolute w-32 text-2xl p-3 border border-gray-500 text-center">설문조사하러가기</a>
+        </div>
     </div>
 
 </div>
