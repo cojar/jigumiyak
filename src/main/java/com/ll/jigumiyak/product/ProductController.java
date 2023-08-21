@@ -74,6 +74,7 @@ public class ProductController {
         }
         List<Nutrient> nutrientList = new ArrayList<>();
         for (String name : productForm.getNutrientList()) {
+            System.out.println(name);
             nutrientList.add(nutrientService.findByName(name));
         }
         productService.create(productForm.getName(), productForm.getDescription(), Integer.parseInt(productForm.getPrice()), Integer.parseInt(productForm.getQuantity()), productForm.getThumbnailImage(), nutrientList);
