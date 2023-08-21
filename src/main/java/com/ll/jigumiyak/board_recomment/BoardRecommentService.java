@@ -6,6 +6,7 @@ import com.ll.jigumiyak.user.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -43,5 +44,9 @@ public class BoardRecommentService {
 
     public void delete(BoardRecomment boardRecomment) {
         this.boardRecommentRepository.delete(boardRecomment);
+    }
+
+    public List<BoardRecomment> getList(BoardComment boardComment) {
+        return this.boardRecommentRepository.findAllByComment(boardComment);
     }
 }

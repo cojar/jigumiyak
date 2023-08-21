@@ -63,10 +63,10 @@ public class BoardCommentService {
         this.boardCommentRepository.save(boardComment);
     }
 
-    public Page<BoardComment> getList(Board board, int page) {
+    public Page<BoardComment> getList(Board board, int size, int page ) {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createDate"));
-        Pageable pageable = PageRequest.of(page, 5, Sort.by(sorts));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sorts));
         return this.boardCommentRepository.findAllByBoard(board, pageable);
     }
 
