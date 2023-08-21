@@ -9,7 +9,6 @@
 </head>
 <body>
 <nav th:replace="~{navbar :: navbarFragment}"></nav>
-<nav th:replace="~{sidebar :: sidebarFragment}"></nav>
 <th:block layout:fragment="content"></th:block>
 <nav th:replace="~{footer :: footerFragment}"></nav>
 <script type="text/javascript" th:inline="javascript" th:src="@{/common.js}"></script>
