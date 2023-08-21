@@ -44,6 +44,12 @@ html > body {
     font-size : 16px;
   }
 }
+@media ( max-width: 1000px) {
+    .surveyBtn {
+        font-size :12px;
+        width:75px;
+    }
+}
 
 /* 탑바 */
 .top-bar {
@@ -103,4 +109,8 @@ html > body {
   .sidebar-Container{
     left:93%;
   }
+}
+
+.surveyBtn {
+    right: 17%;
 }
