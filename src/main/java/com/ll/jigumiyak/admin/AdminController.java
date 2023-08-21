@@ -28,7 +28,7 @@ public class AdminController {
     private final BoardRecommentService boardRecommentService;
 
     @GetMapping("")
-    public String main() {
+    public String admin() {
         return "/admin/administration";
     }
 
