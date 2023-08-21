@@ -1,7 +1,6 @@
 package com.ll.jigumiyak.social_account;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -20,6 +19,7 @@ public class SocialInfo {
         attributes = new HashMap<>();
 
         String provider = userRequest.getClientRegistration().getRegistrationId();
+        attributes.put("provider", provider);
 
         if (provider.equals("kakao")) {
 
