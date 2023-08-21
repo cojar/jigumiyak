@@ -1,0 +1,14 @@
+.input[disabled] {
+    border-color: #D1D5DB;
+    cursor: initial;
+}
+#modify-password-btn.deactivated {
+    background-color: white;
+    color: black;
+}
+#modify-password-btn.deactivated:hover {
+    background-color: white;
+    border-color: #D1D5DB;
+    color: black;
+    cursor: initial;
+}

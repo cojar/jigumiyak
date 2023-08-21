@@ -31,50 +31,6 @@ public class UserController {
     private final UserService userService;
     private final AddressService addressService;
 
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/mypage")
-    public String my(Model model, Principal principal) {
-
-        SiteUser user = this.userService.getUserByLoginId(principal.getName());
-
-        model.addAttribute("user", user);
-
-
-        return "mypage";
-    }
-
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/modify")
-    public String modify(Model model, Principal principal) {
-
-        SiteUser user = this.userService.getUserByLoginId(principal.getName());
-
-        model.addAttribute("user", user);
-
-
-        return "user_modify";
-    }
-
-    @GetMapping("/login")
-    public String login(Model model, HttpServletRequest request,
-                        @RequestParam(value = "error", defaultValue = "") String error,
-                        @RequestParam(value = "field", defaultValue = "") String field) {
-
-        String refererUri = request.getHeader("Referer");
-        log.info("referer: " + refererUri);
-
-        if (refererUri != null && !refererUri.contains("/user/login")
-                && !refererUri.contains("/user/signup") && !refererUri.contains("/user/find")) {
-            request.getSession().setAttribute("refererUri", refererUri);
-        }
-
-        Map<String, String> errors = new HashMap<>();
-        errors.put(field, error);
-        model.addAttribute("errors", errors);
-
-        return "login";
-    }
-
     @GetMapping("/signup")
     public String signup(UserSignupForm userSignupForm) {
         return "signup";
@@ -230,9 +186,29 @@ public class UserController {
                 .body(new RsData<>("S-1", "이메일 인증이 완료되었습니다", ""));
     }
 
+    @GetMapping("/login")
+    public String login(Model model, HttpServletRequest request,
+                        @RequestParam(value = "error", defaultValue = "") String error,
+                        @RequestParam(value = "field", defaultValue = "") String field) {
+
+        String refererUri = request.getHeader("Referer");
+        log.info("referer: " + refererUri);
+
+        if (refererUri != null && !refererUri.contains("/user/login")
+                && !refererUri.contains("/user/signup") && !refererUri.contains("/user/find")) {
+            request.getSession().setAttribute("refererUri", refererUri);
+        }
+
+        Map<String, String> errors = new HashMap<>();
+        errors.put(field, error);
+        model.addAttribute("errors", errors);
+
+        return "login";
+    }
+
     @GetMapping("/find")
     public String findUser() {
-        return "find_user";
+        return "user_find";
     }
 
     @GetMapping("/find/loginId")
@@ -316,9 +292,79 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }
 
-        this.userService.modifyPassword(user, codeBits[0]);
+        this.userService.modifyPassword(user, codeBits[0], true);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new RsData<>("S-1", "입력한 이메일로 임시비밀번호를 발송하였습니다", ""));
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/mypage")
+    public String my(Model model, Principal principal) {
+
+        SiteUser user = this.userService.getUserByLoginId(principal.getName());
+
+        model.addAttribute("user", user);
+
+
+        return "mypage";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/modify")
+    public String modify(Model model, Principal principal,
+                         UserModifyPasswordForm userModifyPasswordForm) {
+
+        SiteUser user = this.userService.getUserByLoginId(principal.getName());
+
+        model.addAttribute("user", user);
+
+        return "user_modify";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/modify/password")
+    @ResponseBody
+    public ResponseEntity modifyPassword(@Valid UserModifyPasswordForm userModifyPasswordForm, BindingResult bindingResult, Principal principal) {
+
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-1", "바인딩 에러", ""));
+        }
+
+        SiteUser user = this.userService.getUserByLoginId(principal.getName());
+
+        if (!this.userService.isMatched(userModifyPasswordForm.getOldPassword(), user.getPassword())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-2", "기존 비밀번호 매칭 에러", ""));
+        }
+
+        if (!userModifyPasswordForm.getNewPassword().equals(userModifyPasswordForm.getNewPasswordConfirm())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-3", "신규 비밀번호 매칭 에러", ""));
+        }
+
+        this.userService.modifyPassword(user, userModifyPasswordForm.getNewPassword(), false);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new RsData<>("S-1", "비밀번호 변경이 완료되었습니다.\n로그인을 다시 진행해주세요.", "/user/logout"));
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/modify/oldPassword")
+    @ResponseBody
+    public ResponseEntity checkOldPassword(@RequestParam("oldPassword") String oldPassword, Principal principal) {
+
+        log.info("oldPassword", oldPassword);
+
+        SiteUser user = this.userService.getUserByLoginId(principal.getName());
+
+        if (!this.userService.isMatched(oldPassword, user.getPassword())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-1", "비밀번호가 일치하지 않습니다", ""));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new RsData<>("S-1", "비밀번호가 일치합니다", ""));
     }
 }
