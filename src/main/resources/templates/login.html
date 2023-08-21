@@ -15,6 +15,7 @@
 
 <!-- 데이지 UI 불러오기 -->
 <link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.5/dist/full.css" rel="stylesheet" type="text/css" />
+
 <!-- 테일윈드 불러오기 -->
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" type="text/css" th:href="@{/css/login.css}">
@@ -44,7 +45,7 @@
             </div>
 
             <button type="button" id="login-btn" th:onclick="_login()"
-                    class="btn btn-block border-gray-300 gap-1 bg-[color:#A5CDCD] deactivated">
+                    class="btn btn-block border-gray-300 gap-1 bg-[#A5CDCD] deactivated">
                 <i class="fa-solid fa-right-to-bracket"></i>
                 <span>로그인</span>
             </button>

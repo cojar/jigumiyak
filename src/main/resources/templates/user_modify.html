@@ -1,0 +1,137 @@
+<html layout:decorate="~{layout}">
+<head>
+  <meta name="_csrf" th:content="${_csrf.token}">
+  <meta name="_csrf_header" th:content="${_csrf.headerName}">
+  <title>JIGUMIYAK</title>
+
+  <!-- toastr 불러오기 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+  <link rel="stylesheet" href="https://jhs512.github.io/toastr/toastr.css">
+
+  <!-- 폰트어썸 아이콘 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- 아이콘 목록 : https://fontawesome.com/search?o=r&m=free -->
+
+  <!-- 데이지 UI 불러오기 -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.5/dist/full.css" rel="stylesheet" type="text/css" />
+
+  <!-- 테일윈드 불러오기 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- 주소 api 불러오기 -->
+  <script type="text/javascript" src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+  <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/user_modify.css}">
+</head>
+<div layout:fragment="content" class="test-Container">
+  <div class="test-con mx-auto pr-1 h-full mt-[128px]">
+    <h5 class="border-b-4 border-double border-gray-300 text-2xl pt-5">회원정보수정</h5>
+    <div class="h-auto max-w-2xl mx-auto px-4 my-[40px]">
+      <div class="flex mt-5 items-center">
+        <div class="flex-[0_0_15%]">
+          <span class="label-text">아이디</span>
+        </div>
+        <div class="flex-auto gap-2 flex">
+          <input type="text" class="input input-bordered flex-auto" disabled th:value="${user.loginId}">
+          <label for="modifyPasswordModal" class="btn border-gray-300 bg-[#A5CDCD] flex-[0_0_25%]">비밀번호변경</label>
+          <!-- 모달 영역 컨트롤 -->
+          <input type="checkbox" id="modifyPasswordModal" class="modal-toggle" />
+          <!-- 모달 영역 시작 -->
+          <div class="modal">
+            <div class="modal-box">
+              <h3 class="font-bold text-xl border-b-4 border-double border-gray-300">비밀번호 변경</h3>
+              <form th:object=${userModifyPasswordForm} method="post" id="userModifyPasswordForm">
+                <div class="form-control mt-[10px]">
+                  <label class="label">
+                    <span class="label-text">기존 비밀번호</span>
+                    <span class="alert-oldPassword label-text"></span>
+                  </label>
+                  <input type="password" th:field="*{oldPassword}" placeholder="기존 비밀번호" class="input input-bordered">
+                </div>
+
+                <div class="form-control mt-[10px]">
+                  <label class="label">
+                    <span class="label-text">신규 비밀번호</span>
+                    <span class="alert-newPassword label-text"></span>
+                  </label>
+                  <input type="password" th:field="*{newPassword}" placeholder="신규 비밀번호" class="input input-bordered">
+                </div>
+
+                <div class="form-control mt-[10px]">
+                  <label class="label">
+                    <span class="label-text">신규 비밀번호 확인</span>
+                    <span class="alert-newPasswordConfirm label-text"></span>
+                  </label>
+                  <input type="password" th:field="*{newPasswordConfirm}" placeholder="신규 비밀번호 확인" class="input input-bordered">
+                </div>
+              </form>
+              <div class="modal-action">
+                <button id="modify-password-btn" class="btn border-gray-300 bg-[#A5CDCD] deactivated" th:onclick="_modifyPassword()">변경하기</button>
+                <label for="modifyPasswordModal" class="btn border-gray-300 bg-gray-400">닫기</label>
+              </div>
+            </div>
+          </div>
+          <!-- 모달 영역 끝 -->
+        </div>
+      </div>
+      <div class="flex mt-5 items-center">
+        <div class="flex-[0_0_15%]">
+          <span class="label-text">이메일</span>
+        </div>
+        <div class="flex-auto gap-2 flex">
+          <input type="text" class="input input-bordered flex-auto" disabled th:value="${user.email}">
+        </div>
+      </div>
+
+      <div class="flex mt-5 items-center">
+        <div class="flex-[0_0_15%]">
+          <span class="label-text">소셜계정</span>
+        </div>
+        <div class="flex-auto gap-3 flex px-2">
+          <span id="kakao" class="opacity-50" th:classappend="${@commonUtil.isLinked('kakao', #authentication)} ? 'social-linked'"
+                th:attr="onclick=|_socialLink('카카오', 'kakao', '${@commonUtil.isLinked('kakao', #authentication)}')|">
+            <img th:src="@{/image/login_kakao.png}" class="h-7 rounded-md" alt="">
+          </span>
+          <span id="google" class="opacity-50" th:classappend="${@commonUtil.isLinked('google', #authentication)} ? 'social-linked'"
+                th:attr="onclick=|_socialLink('구글', 'google', '${@commonUtil.isLinked('google', #authentication)}')|">
+            <img th:src="@{/image/login_google.png}" class="h-7 rounded-md" alt="">
+          </span>
+        </div>
+      </div>
+
+      <div class="flex mt-5 items-center">
+        <div class="flex-[0_0_15%]">
+          <span class="label-text">주소</span>
+        </div>
+        <div class="flex gap-2">
+          <input type="text" th:value="${user.address != null} ? ${user.address.zoneCode} : ''" id="zoneCode" name="zoneCode"
+                 disabled placeholder="우편번호" class="zoneCode input input-bordered flex-[0_0_40%]" th:onclick="_zoneCode()">
+          <button type="button" class="btn border-gray-300 bg-[#A5CDCD]" th:onclick="_zoneCode()">주소찾기</button>
+        </div>
+      </div>
+      <div class="flex mt-3 items-center">
+        <div class="flex-[0_0_15%]"></div>
+        <div class="flex-auto">
+          <input type="text" th:value="${user.address != null} ? ${user.address.mainAddress} : ''" id="mainAddress" name="mainAddress"
+                 disabled placeholder="주소" class="mainAddress input input-bordered w-full" th:onclick="_zoneCode()">
+        </div>
+      </div>
+      <div class="flex mt-3 items-center">
+        <div class="flex-[0_0_15%]"></div>
+        <div class="flex-auto">
+          <input type="text" th:value="${user.address != null && user.address.subAddress != null} ? ${user.address.subAddress} : ''" id="subAddress" name="subAddress"
+                 placeholder="상세주소" class="subAddress input input-bordered w-full">
+        </div>
+      </div>
+      <button type="button" id="modify-btn" class="btn btn-block border-gray-300 bg-[#A5CDCD] gap-1 deactivated mt-5" th:onclick="_modifyAddress()">
+        <i class="fa-solid fa-user-pen"></i>
+        <span>저장하기</span>
+      </button>
+    </div>
+  </div>
+  <input type="hidden" id="isLinkSuccess" th:value="${isLinkSuccess}">
+  <input type="hidden" id="isLinkFail" th:value="${isLinkFail}">
+</div>
+<script layout:fragment="script" type="text/javascript" th:src="@{/js/user_modify.js}"></script>
+</html>

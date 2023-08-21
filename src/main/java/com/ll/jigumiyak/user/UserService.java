@@ -105,11 +105,20 @@ public class UserService {
         return this.userRepository.findByLoginIdAndEmail(loginId, email).orElse(null);
     }
 
-    public void modifyPassword(SiteUser user, String password) {
+    public void modifyPassword(SiteUser user, String password, boolean isTemp) {
 
         user = user.toBuilder()
-                .isTemp(true)
+                .isTemp(isTemp)
                 .password(passwordEncoder.encode(password))
+                .build();
+
+        this.userRepository.save(user);
+    }
+
+    public void saveAddress(SiteUser user, Address address) {
+
+        user = user.toBuilder()
+                .address(address)
                 .build();
 
         this.userRepository.save(user);

@@ -57,7 +57,7 @@ public class CustomSecurityService extends DefaultOAuth2UserService implements U
 
                 user = user.toBuilder()
                         .authority(CustomRole.USER.getDecCode())
-                        .loginId(userRequest.getClientRegistration().getRegistrationId() + "_" + user.getId())
+                        .loginId(attributes.get("provider") + "_" + user.getId())
                         .password("")
                         .email(attributes.get("email"))
                         .build();
@@ -66,6 +66,7 @@ public class CustomSecurityService extends DefaultOAuth2UserService implements U
             }
 
             socialAccount = SocialAccount.builder()
+                    .provider(attributes.get("provider"))
                     .providerId(attributes.get("providerId"))
                     .email(attributes.get("email"))
                     .name(attributes.get("name"))
