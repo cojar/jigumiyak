@@ -83,6 +83,23 @@
           <input type="text" class="input input-bordered flex-auto" disabled th:value="${user.email}">
         </div>
       </div>
+
+      <div class="flex mt-5 items-center">
+        <div class="flex-[0_0_15%]">
+          <span class="label-text">소셜계정</span>
+        </div>
+        <div class="flex-auto gap-3 flex px-2">
+          <span id="kakao" class="opacity-50" th:classappend="${@commonUtil.isLinked('kakao', #authentication)} ? 'social-linked'"
+                th:attr="onclick=|_socialLink('카카오', 'kakao', '${@commonUtil.isLinked('kakao', #authentication)}')|">
+            <img th:src="@{/image/login_kakao.png}" class="h-7 rounded-md" alt="">
+          </span>
+          <span id="google" class="opacity-50" th:classappend="${@commonUtil.isLinked('google', #authentication)} ? 'social-linked'"
+                th:attr="onclick=|_socialLink('구글', 'google', '${@commonUtil.isLinked('google', #authentication)}')|">
+            <img th:src="@{/image/login_google.png}" class="h-7 rounded-md" alt="">
+          </span>
+        </div>
+      </div>
+
       <div class="flex mt-5 items-center">
         <div class="flex-[0_0_15%]">
           <span class="label-text">주소</span>
@@ -113,6 +130,8 @@
       </button>
     </div>
   </div>
+  <input type="hidden" id="isLinkSuccess" th:value="${isLinkSuccess}">
+  <input type="hidden" id="isLinkFail" th:value="${isLinkFail}">
 </div>
 <script layout:fragment="script" type="text/javascript" th:src="@{/js/user_modify.js}"></script>
 </html>

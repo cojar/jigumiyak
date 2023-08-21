@@ -15,6 +15,8 @@ import lombok.experimental.SuperBuilder;
 @Entity
 public class SocialAccount extends BaseEntity {
 
+    private String provider;
+
     @Column(unique = true)
     private String providerId;
 

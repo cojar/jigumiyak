@@ -3,6 +3,15 @@ let isNewPasswordChecked = false;
 let isNewPasswordConfirmChecked = false;
 
 $(function() {
+
+    if ($("#isLinkSuccess").val().length !== 0) {
+        alert($("#isLinkSuccess").val());
+    }
+
+    if ($("#isLinkFail").val().length !== 0) {
+        alert($("#isLinkFail").val());
+    }
+
     $("#oldPassword").keyup(_checkOldPassword);
     $("#newPassword").keyup(_checkNewPassword);
     $("#newPasswordConfirm").keyup(_checkNewPasswordConfirm);
@@ -141,6 +150,47 @@ function _modifyPassword() {
             error: function(res) {
             }
         })
+    }
+}
+
+function _socialLink(providerKor, provider, isLinked) {
+    if (isLinked === 'true') {
+        if (confirm(providerKor + " 계정 연결을 해제하시겠습니까?")) {
+            $.ajax({
+                url: "/oauth2/unlink",
+                type: "POST",
+                data: {
+                    "provider": provider
+                },
+                beforeSend : function() {
+                    var token = $("meta[name='_csrf']").attr("content");
+                    var header = $("meta[name='_csrf_header']").attr("content");
+                    $(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+                },
+                success: function(res) {
+                    alert(res.message);
+                    $("#" + provider).removeClass("social-linked");
+                    $("#" + provider).attr("onclick", "_socialLink('" + providerKor + "', '" + provider + "', 'false')");
+                },
+                error: function(res) {
+                }
+            })
+        }
+    } else {
+        if (confirm(providerKor + " 계정 연결을 진행하시겠습니까?")) {
+            $.ajax({
+                url: "/oauth2/link",
+                type: "GET",
+                data: {
+                    "provider": provider
+                },
+                success: function(res) {
+                    location.href = res.data;
+                },
+                error: function(res) {
+                }
+            })
+        }
     }
 }
 
