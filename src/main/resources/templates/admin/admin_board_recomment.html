@@ -1,0 +1,44 @@
+<html layout:decorate="~{/admin/ad_navbar}">
+<head>
+    <title>ADMIN-RECOMMENT</title>
+</head>
+<div layout:fragment="content" class="relative">
+    <table class="w-11/12 mx-auto" style="min-width:1500px">
+        <thead>
+        <tr class="border-b-4 border-double border-black h-12">
+            <th class="w-24">대댓글ID</th>
+            <th>내용</th>
+            <th class="w-36">작성자</th>
+            <th class="w-32">작성일시</th>
+            <th class="w-32">수정일시</th>
+            <th class="w-20">버튼</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="recomment, loop : ${recommentList}" class="border-b h-8">
+            <td th:text="${recomment.id}" class="text-center"></td>
+            <td><a th:href="@{|/board/${comment.board.id}|}" th:text="${recomment.content}"></a></td>
+            <td><span th:if="${recomment.author != null}" th:text="${recomment.author.loginId}"></span></td>
+            <td th:text="${#temporals.format(recomment.createDate, 'yyMMdd HH:mm')}" class="text-center"></td>
+            <td th:text="${#temporals.format(recomment.modifyDate, 'yyMMdd HH:mm')}" class="text-center"></td>
+            <td class="text-center">
+                <a href="javascript:void(0);" th:data-uri="@{|/admin/recomment/delete/${recomment.id}|}" sec:authorize="isAuthenticated()"
+                   class="delete" th:text="삭제"></a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script layout:fragment="script" type='text/javascript'>
+const delete_elements = document.getElementsByClassName("delete");
+Array.from(delete_elements).forEach(function(element) {
+    element.addEventListener('click', function() {
+        if(confirm("정말로 삭제하시겠습니까?")) {
+            location.href = this.dataset.uri;
+        };
+    });
+});
+</script>
+</html>
+

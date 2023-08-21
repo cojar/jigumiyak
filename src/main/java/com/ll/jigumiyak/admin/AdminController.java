@@ -4,6 +4,8 @@ import com.ll.jigumiyak.board.Board;
 import com.ll.jigumiyak.board.BoardService;
 import com.ll.jigumiyak.board_comment.BoardComment;
 import com.ll.jigumiyak.board_comment.BoardCommentService;
+import com.ll.jigumiyak.board_recomment.BoardRecomment;
+import com.ll.jigumiyak.board_recomment.BoardRecommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @RequestMapping("/admin")
 @RequiredArgsConstructor
 @Controller
@@ -21,6 +25,7 @@ public class AdminController {
 
     private final BoardService boardService;
     private final BoardCommentService boardCommentService;
+    private final BoardRecommentService boardRecommentService;
 
     @GetMapping("")
     public String main() {
@@ -61,5 +66,24 @@ public class AdminController {
         BoardComment boardComment = this.boardCommentService.getBoardComment(id);
         this.boardCommentService.delete(boardComment);
         return String.format("redirect:/admin/board/%s", boardComment.getBoard().getId());
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/comment/{id}")
+    public String recomment(Model model, @PathVariable("id") Long id) {
+        BoardComment boardComment = this.boardCommentService.getBoardComment(id);
+        model.addAttribute("comment", boardComment);
+
+        List<BoardRecomment> recommentList = this.boardRecommentService.getList(boardComment);
+        model.addAttribute("recommentList", recommentList);
+        return "/admin/admin_board_recomment";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/recomment/delete/{id}")
+    public String recommentDelete( @PathVariable("id") Long id) {
+        BoardRecomment boardRecomment = this.boardRecommentService.getBoareRecomment(id);
+        this.boardRecommentService.delete(boardRecomment);
+        return String.format("redirect:/admin/comment/%s", boardRecomment.getComment().getId());
     }
 }

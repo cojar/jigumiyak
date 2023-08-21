@@ -22,7 +22,7 @@
       <th class="w-56">제목</th>
       <th>내용</th>
       <th class="w-12">댓글</th>
-      <th>작성자</th>
+      <th class="w-36">작성자</th>
       <th class="w-32">작성일시</th>
       <th class="w-32">수정일시</th>
       <th class="w-20">버튼</th>
@@ -34,7 +34,7 @@
       <td th:text="${board.id}" class="text-center"></td>
       <td><a th:href="@{|/board/${board.id}|}" th:text="${board.subject}"></a></td>
       <td><a th:href="@{|/board/${board.id}|}" th:text="${board.content}"></a></td>
-      <td class="w-12 text-center"><a th:href="@{|/admin/board/${board.id}|}" th:text="${#lists.size(board.commentList)}"></a></td>
+      <td class="w-12 text-center text-blue-700"><a th:href="@{|/admin/board/${board.id}|}" th:text="${#lists.size(board.commentList)}"></a></td>
       <td><span th:if="${board.author != null}" th:text="${board.author.loginId}"></span></td>
       <td th:text="${#temporals.format(board.createDate, 'yyMMdd HH:mm')}" class="text-center"></td>
       <td th:text="${#temporals.format(board.modifyDate, 'yyMMdd HH:mm')}" class="text-center"></td>
