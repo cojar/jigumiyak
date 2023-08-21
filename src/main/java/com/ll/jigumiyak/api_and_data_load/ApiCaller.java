@@ -2,9 +2,6 @@ package com.ll.jigumiyak.api_and_data_load;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ll.jigumiyak.nutrient.Nutrient;
-import com.ll.jigumiyak.nutrient_category.NutrientCategory;
-import com.ll.jigumiyak.nutrient_caution.NutrientCaution;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
