@@ -82,7 +82,7 @@ public class ProductController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/wordSearchShow.action", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")
+    @RequestMapping(value = "/searchNutrient_ajax", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")
     public String wordSearchShow(HttpServletRequest request) {
 
         String searchWord = request.getParameter("searchWord");

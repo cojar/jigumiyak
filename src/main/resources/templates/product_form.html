@@ -48,7 +48,7 @@
             $("#displayList").hide();
         } else {
             $.ajax({
-                url: "/product/wordSearchShow.action",
+                url: "/product/searchNutrient_ajax",
                 type: "get",
                 data: { "searchWord": element.val() },
                 dataType: "json",
@@ -98,7 +98,6 @@
             $("#searchWordSelected").val("");
         });
     });
-
 </script>
 </div>
 </html>
