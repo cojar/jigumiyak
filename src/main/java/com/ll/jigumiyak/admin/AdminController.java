@@ -38,7 +38,7 @@ public class AdminController {
         Page<Board> paging = this.boardService.getList(page, kw);
         model.addAttribute("paging", paging);
         model.addAttribute("kw", kw);
-        return "/admin/admin_board";
+        return "admin/admin_board";
     }
 
     @GetMapping("/board/{id}")
@@ -49,7 +49,7 @@ public class AdminController {
 
         Page<BoardComment> paging = this.boardCommentService.getList(board, 20,cmtPage);
         model.addAttribute("paging", paging);
-        return "/admin/admin_board_comment";
+        return "admin/admin_board_comment";
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -76,7 +76,7 @@ public class AdminController {
 
         List<BoardRecomment> recommentList = this.boardRecommentService.getList(boardComment);
         model.addAttribute("recommentList", recommentList);
-        return "/admin/admin_board_recomment";
+        return "admin/admin_board_recomment";
     }
 
     @PreAuthorize("isAuthenticated()")
