@@ -29,7 +29,7 @@ public class AdminController {
 
     @GetMapping("")
     public String admin() {
-        return "/admin/administration";
+        return "admin/administration";
     }
 
     @GetMapping("/board")
