@@ -1,8 +1,7 @@
-package com.ll.jigumiyak.inquiry;
+package com.ll.jigumiyak.faq;
 
 import com.ll.jigumiyak.base.BaseEntity;
-import com.ll.jigumiyak.user.SiteUser;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,12 +12,11 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Inquiry extends BaseEntity {
+public class Faq extends BaseEntity {
 
     private String question;
 
-    private String content;
+    private String answer;
 
-    @ManyToOne
-    private SiteUser inquirer;
+    private String category;
 }

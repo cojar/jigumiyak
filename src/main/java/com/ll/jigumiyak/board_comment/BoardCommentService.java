@@ -17,6 +17,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class BoardCommentService {
+
     private final BoardCommentRepository boardCommentRepository;
 
     public BoardComment create(Board board, String content, SiteUser author) {

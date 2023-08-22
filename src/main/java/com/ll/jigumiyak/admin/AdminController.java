@@ -6,6 +6,8 @@ import com.ll.jigumiyak.board_comment.BoardComment;
 import com.ll.jigumiyak.board_comment.BoardCommentService;
 import com.ll.jigumiyak.board_recomment.BoardRecomment;
 import com.ll.jigumiyak.board_recomment.BoardRecommentService;
+import com.ll.jigumiyak.faq.Faq;
+import com.ll.jigumiyak.faq.FaqService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,12 +28,14 @@ public class AdminController {
     private final BoardService boardService;
     private final BoardCommentService boardCommentService;
     private final BoardRecommentService boardRecommentService;
+    private final FaqService faqService;
 
     @GetMapping("")
     public String admin() {
         return "admin/administration";
     }
 
+    // 커뮤니티 구간
     @GetMapping("/board")
     public String board(Model model, @RequestParam(value="page", defaultValue="0") int page,
                         @RequestParam(value = "kw", defaultValue = "") String kw) {
@@ -85,5 +89,18 @@ public class AdminController {
         BoardRecomment boardRecomment = this.boardRecommentService.getBoareRecomment(id);
         this.boardRecommentService.delete(boardRecomment);
         return String.format("redirect:/admin/comment/%s", boardRecomment.getComment().getId());
+    }
+
+    // 문의
+    @GetMapping("/inquiry")
+    public String inquiry() {
+        return "admin/admin_inquiry";
+    }
+
+    @GetMapping("/faq")
+    public String faq(Model model) {
+        List<Faq> faqList = this.faqService.getList();
+        model.addAttribute("faqList", faqList);
+        return "admin/admin_faq";
     }
 }
