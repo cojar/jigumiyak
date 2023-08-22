@@ -10,13 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class InquiryController {
 
+    private final InquiryService inquiryService;
+
     @GetMapping("")
     public String inquiry() {
-        return "inquiry_main";
+        return "inquiry/inquiry_main";
     }
 
-    @GetMapping("/list")
-    public String inquiryList() {
-        return "inquiry_list";
-    }
 }

@@ -1,0 +1,29 @@
+<html layout:decorate="~{admin/ad_navbar}">
+<head>
+  <title>ADMIN-FAQ</title>
+</head>
+<div layout:fragment="content" class="relative">
+  <a th:href="@{/faq/create}" class="cursor-pointer block text-center w-32 rounded-xl p-1 m-5 border">추가하기</a>
+  <table class="w-11/12 mx-auto" style="min-width:1500px">
+    <thead>
+    <tr class="border-b-4 border-double border-black h-12">
+      <th class="w-24">게시글ID</th>
+      <th class="w-36">카테고리</th>
+      <th>질문</th>
+      <th>답변</th>
+      <th class="w-20">버튼</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="faq, loop : ${faqList}" class="border-b h-8">
+      <td th:text="${faq.id}" class="text-center"></td>
+      <td th:text="${faq.category}" class="text-center"></td>
+      <td th:text="${faq.question}"></td>
+      <td th:text="${faq.answer}" class="pl-5"></td>
+      <td></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</html>
