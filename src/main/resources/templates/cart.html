@@ -1,0 +1,40 @@
+<html layout:decorate="~{layout}">
+<head>
+    <title>CART-LIST</title>
+</head>
+<div layout:fragment="content" class="test-Container">
+    <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
+    <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
+        <form th:action="@{/??}" method="post">
+            <table class="w-full">
+                <thead>
+                <tr class="border-b">
+                    <th class="py-3"></th>
+                    <th class="py-3">상품번호</th>
+                    <th>상품명</th>
+                    <th>금액</th>
+                </tr>
+                </thead>
+                <tbody class="w-full">
+                <tr th:each="cartItem, loop : ${cartItemList}" class="border-b">
+                    <td><input type="checkbox"></td>
+                    <td>
+                        <div class="profile-img-box">
+                            <img th:if="${cartItem.product.thumbnailImg != null}"
+                                 th:attr="src=${@commonUtil.getFilePath(cartItem.product.thumbnailImg.id)}" alt="">
+                            <img th:if="${cartItem.product.thumbnailImg == null}"
+                                 src="https://picsum.photos/id/237/752/442"
+                                 alt="" class="w-32 h-24 object-cover">
+                        </div>
+                    </td>
+                    <td th:text="${cartItem.id}"></td>
+                    <td th:text="${cartItem.product.name}"></td>
+                    <td th:text="${cartItem.product.price}"></td>
+                </tr>
+                </tbody>
+            </table>
+            <button type="submit">주문??????????????</button>
+        </form>
+    </div>
+</div>
+</html>

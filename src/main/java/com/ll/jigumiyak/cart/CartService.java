@@ -5,11 +5,11 @@ import com.ll.jigumiyak.cart_item.CartItemForm;
 import com.ll.jigumiyak.cart_item.CartItemRepository;
 import com.ll.jigumiyak.cart_item.CartItemService;
 import com.ll.jigumiyak.product.Product;
-import com.ll.jigumiyak.product.ProductRepository;
 import com.ll.jigumiyak.user.SiteUser;
-import com.ll.jigumiyak.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +30,7 @@ public class CartService {
             addCount(savedCartItem, Integer.valueOf(cartItemForm.getCount()));
             return savedCartItem.getId();
         } else {
-            CartItem cartItem = cartItemService.createCartItem(cart, product, Integer.parseInt(cartItemForm.getCount()));
+            CartItem cartItem = cartItemService.createCartItem(cart, product, cartItemForm.getCount());
             return cartItem.getId();
         }
     }
@@ -46,5 +46,9 @@ public class CartService {
                 .count(cartItem.getCount() + count)
                 .build();
         cartItemRepository.save(cartItem);
+    }
+
+    public List<CartItem> getCartList(Long purchaserId) {
+        return cartRepository.findItemListByPurchaserId(purchaserId);
     }
 }
