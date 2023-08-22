@@ -21,7 +21,8 @@
                     <td>
                         <div class="profile-img-box">
                             <img th:if="${cartItem.product.thumbnailImg != null}"
-                                 th:attr="src=${@commonUtil.getFilePath(cartItem.product.thumbnailImg.id)}" alt="">
+                                 th:attr="src=${@commonUtil.getFilePath(cartItem.product.thumbnailImg.id)}" alt=""
+                                 style="max-width: 100px; max-height: 75px;">
                             <img th:if="${cartItem.product.thumbnailImg == null}"
                                  src="https://picsum.photos/id/237/752/442"
                                  alt="" class="w-32 h-24 object-cover">
