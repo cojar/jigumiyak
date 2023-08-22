@@ -2,6 +2,7 @@ package com.ll.jigumiyak.notice;
 
 import com.ll.jigumiyak.board.Board;
 import com.ll.jigumiyak.board.BoardForm;
+import com.ll.jigumiyak.cart_item.CartItemService;
 import com.ll.jigumiyak.notice_category.NoticeCategory;
 import com.ll.jigumiyak.notice_category.NoticeCategoryService;
 import com.ll.jigumiyak.notice_comment.NoticeCommentForm;
