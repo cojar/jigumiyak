@@ -17,6 +17,14 @@ public interface FaqRepository extends JpaRepository<Faq, Long> {
             + "distinct f "
             + "from Faq f "
             + "where "
-            + "   f.category = :category")
-    List<Faq> findAllByCategory(@Param("category") String category);
+            + "   f.question like %:kw% ")
+    List<Faq> findAllByKeywordInAllCategories(@Param("kw") String kw);
+
+    @Query("select "
+            + "distinct f "
+            + "from Faq f "
+            + "where "
+            + "   f.category = :category"
+            + "   and f.question like %:kw% ")
+    List<Faq> findAllByCategoryAndKeyword(@Param("category") String category, @Param("kw") String kw);
 }

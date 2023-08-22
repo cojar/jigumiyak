@@ -18,9 +18,16 @@ public class FaqController {
     private final FaqService faqService;
 
     @GetMapping("")
-    public String faqList(Model model, @RequestParam(value = "category", defaultValue = "order") String category){
-        List<Faq> faqList = this.faqService.getList(category);
-        model.addAttribute("faqList", faqList);
+    public String faqList(Model model, @RequestParam(value = "category", defaultValue = "") String category,
+                          @RequestParam(value = "kw", defaultValue = "") String kw){
+        if (category.equals("")) {
+            List<Faq> faqList = this.faqService.getList(kw);
+            model.addAttribute("faqList", faqList);
+        } else {
+            List<Faq> faqList = this.faqService.getList(category, kw);
+            model.addAttribute("faqList", faqList);
+        }
+
         return "faq/faq";
     }
 

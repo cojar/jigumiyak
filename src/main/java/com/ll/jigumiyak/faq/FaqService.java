@@ -21,9 +21,12 @@ public class FaqService {
     public List<Faq> getList() {
         return this.faqRepository.findAll();
     }
+    public List<Faq> getList(String kw) {
+        return this.faqRepository.findAllByKeywordInAllCategories(kw);
+    }
 
-    public List<Faq> getList(String category) {
-            return this.faqRepository.findAllByCategory(category);
+    public List<Faq> getList(String category, String kw) {
+            return this.faqRepository.findAllByCategoryAndKeyword(category, kw);
     }
 
     public Faq getFaq(Long id) {
