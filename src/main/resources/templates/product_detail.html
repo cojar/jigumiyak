@@ -1,6 +1,9 @@
 <html layout:decorate="~{layout}">
 <head>
     <title>PRODUCT-DETAIL</title>
+    <meta id="_csrf" name="_csrf" th:content="${_csrf.token}" />
+    <meta id="_csrf_header" name="_csrf_header"
+          th:content="${_csrf.headerName}" />
 </head>
 <div layout:fragment="content" class="test-Container">
     <nav th:replace="~{sidebar :: sidebarFragment}"></nav>
