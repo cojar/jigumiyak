@@ -91,7 +91,12 @@ public class AdminController {
         return String.format("redirect:/admin/comment/%s", boardRecomment.getComment().getId());
     }
 
-    // 자주묻는질문
+    // 문의
+    @GetMapping("/inquiry")
+    public String inquiry() {
+        return "admin/admin_inquiry";
+    }
+
     @GetMapping("/faq")
     public String faq(Model model) {
         List<Faq> faqList = this.faqService.getList();

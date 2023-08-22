@@ -11,7 +11,7 @@
       <th class="w-36">카테고리</th>
       <th>질문</th>
       <th>답변</th>
-      <th class="w-20">버튼</th>
+      <th class="w-24">버튼</th>
     </tr>
     </thead>
 
@@ -20,10 +20,25 @@
       <td th:text="${faq.id}" class="text-center"></td>
       <td th:text="${faq.category}" class="text-center"></td>
       <td th:text="${faq.question}"></td>
-      <td th:text="${faq.answer}" class="pl-5"></td>
-      <td></td>
+      <td th:text="${faq.answer}" class="px-5"></td>
+      <td>
+        <a th:href="@{|/faq/modify/${faq.id}|}" class="border rounded-lg p-1 hover:bg-gray-200"
+           sec:authorize="isAuthenticated()" th:text="수정"></a>
+        <a href="javascript:void(0);" th:data-uri="@{|/faq/delete/${faq.id}|}" sec:authorize="isAuthenticated()"
+           class="delete border rounded-lg p-1 hover:bg-gray-200" th:text="삭제"></a>
+      </td>
     </tr>
     </tbody>
   </table>
 </div>
+<script layout:fragment="script" type='text/javascript'>
+const delete_elements = document.getElementsByClassName("delete");
+Array.from(delete_elements).forEach(function(element) {
+    element.addEventListener('click', function() {
+        if(confirm("정말로 삭제하시겠습니까?")) {
+            location.href = this.dataset.uri;
+        };
+    });
+});
+</script>
 </html>

@@ -1,12 +1,16 @@
 package com.ll.jigumiyak.faq;
 
+import com.ll.jigumiyak.DataNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -17,11 +21,18 @@ public class FaqService {
     public List<Faq> getList() {
         return this.faqRepository.findAll();
     }
-    public Page<Faq> getList(int page, String  kw) {
 
-        Pageable pageable = PageRequest.of(page, 10);
+    public List<Faq> getList(String category) {
+            return this.faqRepository.findAllByCategory(category);
+    }
 
-        return this.faqRepository.findAll(pageable);
+    public Faq getFaq(Long id) {
+        Optional<Faq> faq = this.faqRepository.findById(id);
+        if (faq.isPresent()) {
+            return faq.get();
+        } else {
+            throw new DataNotFoundException("faq not found");
+        }
     }
 
     public Faq create(String question, String answer, String category) {
