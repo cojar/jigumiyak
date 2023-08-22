@@ -25,7 +25,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final FileService fileService;
 
-    public Product create(String name, String description, int price, int quantity, MultipartFile file, List<Nutrient> nutrientList) throws IOException {
+    public Product create(String name, String description, int price, int quantity, Long inventory, MultipartFile file, List<Nutrient> nutrientList) throws IOException {
 
         GenFile thumbnailImg = this.fileService.upload(file, "product", "thumbnailImage", name);
 
@@ -34,6 +34,7 @@ public class ProductService {
                 .description(description)
                 .price(price)
                 .quantity(quantity)
+                .inventory(inventory)
                 .thumbnailImg(thumbnailImg)
                 .nutrientList(nutrientList)
                 .hit(0L)
