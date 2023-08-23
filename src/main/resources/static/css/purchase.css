@@ -1,0 +1,4 @@
+.input[disabled] {
+    border-color: #D1D5DB;
+    cursor: initial;
+}

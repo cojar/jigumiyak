@@ -4,25 +4,48 @@ let tossPayments = TossPayments("test_ck_GePWvyJnrKbJWJDe6DqVgLzN97Eo");
 
 function pay(method, requestJson) {
 
-//    // 결제 전 주문 엔티티 생성 및 orderId 반환
-//    $.ajax {
+    // 결제 전 주문 엔티티 생성 및 orderId 반환
+    $("input[id='receiverAddress.zoneCode']").prop("disabled", false);
+    $("input[id='receiverAddress.mainAddress']").prop("disabled", false);
+    $.ajax({
+        url: "/purchase/payment/before",
+        type: "POST",
+        data: $("#purchaseForm").serialize(),
+        beforeSend : function() {
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+        },
+        success: function(res) {
+            $("input[id='receiverAddress.zoneCode']").prop("disabled", true);
+            $("input[id='receiverAddress.mainAddress']").prop("disabled", true);
+
+            alert(res.message);
+        },
+        error: function(res) {
+            let errorMsg = "";
+            $.each(res.responseJSON, function(key, value){
+                errorMsg += value + "\n";
+            });
+            alert(errorMsg);
+            $("input[id='receiverAddress.zoneCode']").prop("disabled", true);
+            $("input[id='receiverAddress.mainAddress']").prop("disabled", true);
+        }
+    })
+
+//    console.log(requestJson);
 //
-//    }
-
-    console.log(requestJson);
-
-    // 결제 진행
-    tossPayments.requestPayment(method, requestJson)
-    .catch(function (error) {
-
-//        // 에러 발생 시 주문 엔티티 삭제
-//        $.ajax {
+//    // 결제 진행
+//    tossPayments.requestPayment(method, requestJson)
+//    .catch(function (error) {
 //
-//        }
-
-
-
-    });
+////        // 에러 발생 시 주문 엔티티 삭제
+////        $.ajax {
+////
+////        }
+//
+//
+//    });
 }
 
 let path = "/purchase/payment/";
@@ -59,9 +82,27 @@ function _copyPurchaserInfo() {
 }
 
 function _isCustomRequest() {
-    if ($("#delivery-request option:selected").text() == "직접입력") {
+    if ($("#deliveryRequest option:selected").text() == "직접입력") {
         $("#custom-delivery-request").removeClass("hidden");
     } else {
         $("#custom-delivery-request").addClass("hidden");
     }
+}
+
+function _zoneCode() {
+    new daum.Postcode({
+        oncomplete: function (data) {
+            var mainAddress = "";
+
+            if (data.userSelectedType === "R") {
+                mainAddress = data.roadAddress;
+            } else {
+                mainAddress = data.jibunAddress;
+            }
+
+            $(".zoneCode").val(data.zonecode);
+            $(".mainAddress").val(mainAddress);
+            $(".subAddress").focus();
+        }
+    }).open();
 }

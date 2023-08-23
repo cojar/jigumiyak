@@ -8,13 +8,9 @@ import lombok.Setter;
 @Setter
 public class PurchaseForm {
 
-    private String purchaserLoginId;
-
-    private String purchaserEmail;
+    private String purchaserName;
 
     private String purchaserPhoneNumber;
-
-    private String purchaserName;
 
     private String receiverName;
 
@@ -22,7 +18,7 @@ public class PurchaseForm {
 
     private AddressForm receiverAddress;
 
-    private boolean isBasicAddress;
-
     private String deliveryRequest;
+
+    private String customDeliveryRequest;
 }

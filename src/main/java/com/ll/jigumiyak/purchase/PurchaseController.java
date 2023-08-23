@@ -45,8 +45,6 @@ public class PurchaseController {
                            Model model, Principal principal) {
 
         SiteUser purchaser = this.userService.getUserByLoginId(principal.getName());
-        purchaseForm.setPurchaserLoginId(purchaser.getLoginId());
-        purchaseForm.setPurchaserEmail(purchaser.getEmail());
 
         model.addAttribute("purchaser", purchaser);
         model.addAttribute("price", 5000);
@@ -59,7 +57,15 @@ public class PurchaseController {
     @ResponseBody
     public ResponseEntity beforePayment(@Valid PurchaseForm purchaseForm, BindingResult bindingResult, Principal principal) {
 
-
+        log.info("purchaserName: " + purchaseForm.getPurchaserName());
+        log.info("purchaserPhoneNumber: " + purchaseForm.getPurchaserPhoneNumber());
+        log.info("receiverName: " + purchaseForm.getReceiverName());
+        log.info("receiverPhoneNumber: " + purchaseForm.getReceiverPhoneNumber());
+        log.info("receiverAddress.zoneCode: " + purchaseForm.getReceiverAddress().getZoneCode());
+        log.info("receiverAddress.mainAddress: " + purchaseForm.getReceiverAddress().getMainAddress());
+        log.info("receiverAddress.subAddress: " + purchaseForm.getReceiverAddress().getSubAddress());
+        log.info("deliveryRequest: " + purchaseForm.getDeliveryRequest());
+        log.info("customDeliveryRequest: " + purchaseForm.getCustomDeliveryRequest());
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new RsData<>("S-1", "주문 ID를 생성했습니다", "orderId"));

@@ -10,6 +10,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- 토스 페이먼츠 API -->
     <script src="https://js.tosspayments.com/v1"></script>
+    <!-- 주소 api 불러오기 -->
+    <script type="text/javascript" src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/purchase.css}">
+
     <title>PURCHASE</title>
 </head>
 <div layout:fragment="content" class="test-Container">
@@ -23,8 +28,7 @@
                         <span class="label-text">아이디</span>
                     </div>
                     <div class="flex-auto gap-2 flex">
-                        <input type="text" class="input input-bordered flex-auto"
-                               disabled th:field="*{purchaserLoginId}" th:value="${purchaser.loginId}">
+                        <input type="text" class="input input-bordered flex-auto" disabled th:value="${purchaser.loginId}">
                     </div>
                 </div>
                 <div class="flex mt-5 items-center">
@@ -32,8 +36,7 @@
                         <span class="label-text">이메일</span>
                     </div>
                     <div class="flex-auto gap-2 flex">
-                        <input type="text" class="input input-bordered flex-auto"
-                               disabled th:field="*{purchaserEmail}" th:value="${purchaser.email}">
+                        <input type="text" class="input input-bordered flex-auto" disabled th:value="${purchaser.email}">
                     </div>
                 </div>
                 <div class="flex mt-5 items-center">
@@ -81,14 +84,38 @@
                 </div>
                 <div class="flex mt-5 items-center">
                     <div class="flex-[0_0_15%]">
+                        <span class="label-text">주소</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" th:field="*{receiverAddress.zoneCode}"
+                               disabled placeholder="우편번호" class="zoneCode input input-bordered flex-[0_0_40%]" th:onclick="_zoneCode()">
+                        <button type="button" class="btn border-gray-300 bg-[#A5CDCD]" th:onclick="_zoneCode()">주소찾기</button>
+                    </div>
+                </div>
+                <div class="flex mt-3 items-center">
+                    <div class="flex-[0_0_15%]"></div>
+                    <div class="flex-auto">
+                        <input type="text" th:field="*{receiverAddress.mainAddress}"
+                               disabled placeholder="주소" class="mainAddress input input-bordered w-full" th:onclick="_zoneCode()">
+                    </div>
+                </div>
+                <div class="flex mt-3 items-center">
+                    <div class="flex-[0_0_15%]"></div>
+                    <div class="flex-auto">
+                        <input type="text" th:field="*{receiverAddress.subAddress}"
+                               placeholder="상세주소" class="subAddress input input-bordered w-full">
+                    </div>
+                </div>
+                <div class="flex mt-5 items-center">
+                    <div class="flex-[0_0_15%]">
                         <span class="label-text">배송 요청사항</span>
                     </div>
                     <div class="flex-auto gap-2 flex">
-                        <select name="" id="delivery-request" class="select select-bordered w-full" th:onchange="_isCustomRequest()">
-                            <option disabled selected>배송 요청사항 선택</option>
+                        <select th:field="*{deliveryRequest}" class="select select-bordered w-full" th:onchange="_isCustomRequest()">
+                            <option value="" selected>배송 요청사항 선택</option>
                             <option value="경비실에 맡겨주세요">경비실에 맡겨주세요</option>
                             <option value="배송전에 미리 연락주세요">배송전에 미리 연락주세요</option>
-                            <option>직접입력</option>
+                            <option value="직접입력">직접입력</option>
                         </select>
                     </div>
                 </div>
@@ -97,7 +124,7 @@
                         <span class="label-text"></span>
                     </div>
                     <div class="flex-auto gap-2 flex">
-                        <input type="text" class="input input-bordered flex-auto">
+                        <input type="text" th:field="*{customDeliveryRequest}" class="input input-bordered flex-auto">
                     </div>
                 </div>
             </div>
