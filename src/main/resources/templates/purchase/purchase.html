@@ -79,6 +79,27 @@
                         <input type="text" class="input input-bordered w-4/6" placeholder="'-' 없이 휴대폰 번호 입력" th:field="*{receiverPhoneNumber}">
                     </div>
                 </div>
+                <div class="flex mt-5 items-center">
+                    <div class="flex-[0_0_15%]">
+                        <span class="label-text">배송 요청사항</span>
+                    </div>
+                    <div class="flex-auto gap-2 flex">
+                        <select name="" id="delivery-request" class="select select-bordered w-full" th:onchange="_isCustomRequest()">
+                            <option disabled selected>배송 요청사항 선택</option>
+                            <option value="경비실에 맡겨주세요">경비실에 맡겨주세요</option>
+                            <option value="배송전에 미리 연락주세요">배송전에 미리 연락주세요</option>
+                            <option>직접입력</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="custom-delivery-request" class="flex mt-3 items-center hidden">
+                    <div class="flex-[0_0_15%]">
+                        <span class="label-text"></span>
+                    </div>
+                    <div class="flex-auto gap-2 flex">
+                        <input type="text" class="input input-bordered flex-auto">
+                    </div>
+                </div>
             </div>
         </form>
     </div>

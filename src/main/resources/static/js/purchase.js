@@ -57,3 +57,11 @@ function _copyPurchaserInfo() {
     $("#receiverPhoneNumber").val($("#purchaserPhoneNumber").val());
     $("#receiverName").val($("#purchaserName").val());
 }
+
+function _isCustomRequest() {
+    if ($("#delivery-request option:selected").text() == "직접입력") {
+        $("#custom-delivery-request").removeClass("hidden");
+    } else {
+        $("#custom-delivery-request").addClass("hidden");
+    }
+}
