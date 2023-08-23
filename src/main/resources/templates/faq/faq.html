@@ -54,7 +54,7 @@
       <div class="w-full flex flex-wrap text-2xl text-gray-600 p-56" th:if="${#lists.size(faqList) == 0}">
         <div class="w-full text-center">검색 결과가 없습니다.</div>
         <div class="w-full text-center">
-          <a href="#" class="mt-5 mx-2 my-8 text-lg border-b border-green-600 border-opacity-0 hover:border-opacity-100" style="color:#5D9C59;">문의하기</a>
+          <a th:href="@{/inquiry/create}" class="mt-5 mx-2 my-8 text-lg border-b border-green-600 border-opacity-0 hover:border-opacity-100" style="color:#5D9C59;">문의하기</a>
           <span class="text-lg border"></span>
           <a href="#" class="mt-5 mx-2 my-8 text-lg border-b border-green-600 border-opacity-0 hover:border-opacity-100" style="color:#5D9C59;">채팅 상담</a>
         </div>

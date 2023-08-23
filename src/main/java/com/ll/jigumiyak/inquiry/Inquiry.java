@@ -23,6 +23,8 @@ public class Inquiry extends BaseEntity {
 
     private String category;
 
+    private boolean state;
+
     @ManyToOne
     private SiteUser inquirer;
 }
