@@ -3,7 +3,10 @@ package com.ll.jigumiyak.purchase;
 import com.ll.jigumiyak.base.BaseEntity;
 import com.ll.jigumiyak.purchase_detail.PurchaseDetail;
 import com.ll.jigumiyak.user.SiteUser;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,11 +21,15 @@ import java.util.List;
 @Entity
 public class Purchase extends BaseEntity {
 
-    @OneToMany(mappedBy = "purchase", cascade = CascadeType.REMOVE)
-    private List<PurchaseDetail> detailList;
+    private String purchaseId;
 
     @ManyToOne
     private SiteUser purchaser;
+
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.REMOVE)
+    private List<PurchaseDetail> detailList;
+
+    private PurchaseState purchaseState;
 }
 // 주소
 // 배송정보(준비 = 배송중 = 배송완료 = 구매확정)

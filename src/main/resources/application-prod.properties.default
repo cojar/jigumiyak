@@ -53,9 +53,13 @@ spring.security.oauth2.client.provider.kakao.user-name-attribute=id
 # GOOGLE
 spring.security.oauth2.client.registration.google.client-id={client-id}
 spring.security.oauth2.client.registration.google.client-secret={client-secret}
+spring.security.oauth2.client.registration.google.redirect-uri={redirect-uri}
 spring.security.oauth2.client.registration.google.scope=email, profile
 
 custom.google.authorization-uri=https://accounts.google.com/o/oauth2/v2/auth
 custom.google.redirect-uri-code={redirect-uri-code}
 custom.google.token-uri={token-uri}
 custom.google.user-info-uri=https://www.googleapis.com/userinfo/v2/me
+
+# TOSS PAYMENTS
+custom.toss.payments.secret-key={secret-key}
