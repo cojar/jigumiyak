@@ -47,11 +47,44 @@
             <div class="mt-5 text-gray-500">
                 <input type="checkbox" name="xxx" value="yyy" > 답변 알림 이메일로 받기
             </div>
-            <input type="submit" value="저장하기" class="block text-center w-32 rounded-xl p-3 my-5 cursor-pointer" style="background:#E9B384;">
+            <div class="flex justify-center">
+                <input type="submit" value="등록하기" class="block text-center w-32 rounded-xl p-3 my-5 mx-2 cursor-pointer" style="background:#E9B384;" id="saveButton">
+                <a href="javascript:void(0);" class="cancel text-center w-32 rounded-xl p-3 my-5 mx-2 cursor-pointer bg-gray-200">취소</a>
+            </div>
         </form>
-        <a th:href="@{/inquiry}">취소</a>
+
     </div>
 
 
 </div>
+<script layout:fragment="script" type='text/javascript'>
+    $(document).ready(function() {
+        var saveButton = $("#saveButton");
+        var categoryInput = $("#category");
+        var subjectInput = $("input[name='subject']");
+        var contentInput = $("textarea[name='content']");
+
+        function updateSaveButtonColor() {
+            if (categoryInput.val() && subjectInput.val() && contentInput.val()) {
+                saveButton.css("background", "#E9B384");  // Active color
+            } else {
+                saveButton.css("background", "#C0C0C0");  // Inactive color
+            }
+        }
+
+        categoryInput.on("input", updateSaveButtonColor);
+        subjectInput.on("input", updateSaveButtonColor);
+        contentInput.on("input", updateSaveButtonColor);
+
+        $(".cancel").on("click", function() {
+            var confirmed = window.confirm("Are you sure you want to cancel the inquiry?");
+            if (confirmed) {
+                window.location.href = "/inquiry";
+            }
+        });
+
+        // Initial button color update
+        updateSaveButtonColor();
+    });
+</script>
 </html>

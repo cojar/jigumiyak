@@ -114,3 +114,7 @@ html > body {
 .surveyBtn {
     right: 17%;
 }
+
+.disabled {
+    background:gray;
+}
