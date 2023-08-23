@@ -6,7 +6,24 @@
   <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
   <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
     <h5 class="border-b-4 border-double border-gray-300 text-2xl pt-5">문의내역</h5>
-
+    <div class="w-full text-center mt-10 mb-8">
+      <div class="inline-block border border-gray-500 py-4">
+        <a href="#" class="text-lg p-4 px-6">전체 기간</a>
+        <a href="#" class="text-lg border-r border-l border-gray-500 p-4 px-6">최근 1개월</a>
+        <a href="#" class="text-lg p-4 px-6">최근 3개월</a>
+      </div>
+    </div>
+    <div class="text-lg text-gray-400 py-1 border-b">개수</div>
+    <div class="w-full mb-8">
+      <a href="#" class="block border w-full mt-5 py-8 px-5 flex justify-between">
+        <div class="flex">
+          <div class="text-gray-500">[카테고리]</div>
+          <div class="mx-8">제목</div>
+          <div class="text-green-600">답변현황</div>
+        </div>
+        <div class="text-gray-500">작성일시</div>
+      </a>
+    </div>
   </div>
 </div>
 </html>
