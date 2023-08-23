@@ -55,6 +55,21 @@
                     </div>
                 </div>
             </div>
+            <div class="h-auto w-[70%] mr-auto px-4 py-4 my-[20px] shadow">
+                <h6 class="text-xl border-b-2 border-gray-300 relative">
+                    배송지 정보
+                    <button class="btn btn-sm absolute right-0 bottom-1 px-2 border-gray-300 bg-[#A5CDCD]"
+                            type="button" th:onclick="_copyPurchaserInfo()">주문 고객과 동일</button>
+                </h6>
+                <div class="flex mt-5 items-center">
+                    <div class="flex-[0_0_15%]">
+                        <span class="label-text">받는 분</span>
+                    </div>
+                    <div class="flex-auto gap-2 flex">
+                        <input type="text" class="input input-bordered flex-auto" th:field="*{receiverName}">
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
     <div class="hidden-parameters">
