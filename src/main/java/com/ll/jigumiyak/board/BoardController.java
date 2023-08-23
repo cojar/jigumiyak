@@ -78,7 +78,7 @@ public class BoardController {
             return "board_form";
         }
         SiteUser siteUser = this.userService.getUserByLoginId(principal.getName());
-        Board b = this.boardService.create(boardForm.getSubject(), boardForm.getContent(), siteUser);
+        Board b = this.boardService.create(boardForm.getSubject(),boardForm.getContent(), siteUser);
         return String.format("redirect:/board/%d", b.getId());
     }
 
