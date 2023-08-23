@@ -26,6 +26,12 @@ public class InquiryController {
         return "inquiry/inquiry_main";
     }
 
+   // @PreAuthorize("isAuthenticated()")
+    @GetMapping("/list")
+    public String inquiryList() {
+        return "inquiry/list";
+    }
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/create")
     public String inquiryCreate (InquiryForm inquiryForm) {
