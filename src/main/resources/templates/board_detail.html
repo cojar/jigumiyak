@@ -198,7 +198,7 @@
       <div th:if="${!paging.isEmpty()}" class="w-full flex justify-center mt-5">
         <ul class="w-full flex justify-center items-center">
           <li th:classappend="${!paging.hasPrevious} ? 'disabled'" class="py-3 px-1">
-            <a class="page-link" href="javascript:void(0)" th:data-page="${paging.number-1}"><span>이전</span></a>
+            <a class="page-link" href="javascript:void(0)" th:href="@{|?page=${paging.number-1}|}"><span>이전</span></a>
           </li>
 
           <li th:each="cmtPage: ${#numbers.sequence(0, paging.totalPages-1)}" th:if="${cmtPage >= paging.number-5 and cmtPage <= paging.number+5}"
@@ -207,7 +207,7 @@
           </li>
 
           <li th:classappend="${!paging.hasNext} ? 'disabled'" class="py-3 px-1">
-            <a class="page-link" href="javascript:void(0)" th:data-page="${paging.number+1}"><span>다음</span></a>
+            <a class="page-link" href="javascript:void(0)" th:href="@{|?cmtPage=${paging.number+1}|}"><span>다음</span></a>
           </li>
         </ul>
       </div>

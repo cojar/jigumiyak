@@ -17,4 +17,6 @@ public class InquiryForm {
     private String category;
 
     private boolean email;
+
+    private boolean state;
 }
