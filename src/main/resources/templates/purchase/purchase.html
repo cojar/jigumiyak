@@ -36,6 +36,14 @@
                                disabled th:field="*{purchaserEmail}" th:value="${purchaser.email}">
                     </div>
                 </div>
+                <div class="flex mt-5 items-center">
+                    <div class="flex-[0_0_15%]">
+                        <span class="label-text">보내는 분</span>
+                    </div>
+                    <div class="flex-auto gap-2 flex">
+                        <input type="text" class="input input-bordered flex-auto" th:field="*{purchaserName}" autofocus>
+                    </div>
+                </div>
             </div>
         </form>
     </div>
