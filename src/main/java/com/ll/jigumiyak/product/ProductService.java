@@ -3,6 +3,7 @@ package com.ll.jigumiyak.product;
 import com.ll.jigumiyak.file.FileService;
 import com.ll.jigumiyak.file.GenFile;
 import com.ll.jigumiyak.nutrient.Nutrient;
+import com.ll.jigumiyak.user.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -69,4 +70,12 @@ public class ProductService {
         return product;
     }
 
+    public void vote(Product product, SiteUser siteUser) {
+        if(product.getVoter().contains(siteUser)){
+            product.getVoter().remove(siteUser);
+        } else {
+            product.getVoter().add(siteUser);
+        }
+        this.productRepository.save(product);
+    }
 }

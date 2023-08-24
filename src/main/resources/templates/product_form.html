@@ -2,34 +2,34 @@
 <head>
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-    <title>BOARD-FORM</title>
+    <title>PRODUCT-FORM</title>
 </head>
 <div layout:fragment="content" class="test-Container">
     <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
-    <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
-        <form th:action="@{/product/create}" th:object="${productForm}" method="post" enctype="multipart/form-data">
-            <input type="text" th:field="*{name}" placeholder="제품명">
-            <input type="text" th:field="*{description}" placeholder="설명">
-            <input type="text" th:field="*{price}" placeholder="가격">
-            <input type="text" th:field="*{quantity}" placeholder="수량">
-            <input type="text" th:field="*{inventory}" placeholder="재고">
-            <input type="file" th:value="${thumbnailImage}" th:field="*{thumbnailImage}"
-                   placeholder="사진 업로드" th:onchange="_getFileName(this)">
+    <div class="h-screen flex items-center justify-center bg-gray-100">
+        <form th:action="@{/product/create}" th:object="${productForm}" method="post" enctype="multipart/form-data"
+              class="p-8 border bg-white rounded-lg shadow-md max-w-md w-full">
+            <input type="text" th:field="*{name}" placeholder="제품명" class="input-field border mb-2">
+            <input type="text" th:field="*{description}" placeholder="설명" class="input-field border mb-2">
+            <input type="text" th:field="*{price}" placeholder="가격" class="input-field border mb-2">
+            <input type="text" th:field="*{quantity}" placeholder="수량" class="input-field border mb-2">
+            <input type="text" th:field="*{inventory}" placeholder="재고" class="input-field border mb-2">
+            <input type="file" th:value="${thumbnailImage}" th:field="*{thumbnailImage}" class="input-field border mb-2"
+                   th:onchange="_getFileName(this)">
 
-            <div id="nutrientListContainer">
-                <input type="text" id="searchWord" name="searchWord" size="100"
-                       autocomplete="off" onkeyup="searchNutrient()">
-            </div>
-            <div id="displayList"
-                 style="border: solid 1px gray; height: 100px; overflow: auto; margin-left: 77px; margin-top; -1px; border-top: 0px;">
+            <div class="relative mb-2">
+                <input type="text" id="searchWord" name="searchWord" size="100" autocomplete="off"
+                       onkeyup="searchNutrient()" class="input-field border w-full">
+                <div id="displayList" class="absolute border bg-white border-gray-300 mt-1 p-2 hidden"></div>
             </div>
 
-            <div id="selectedDataContainer">
-<!--                보여주기 data-->
+            <div id="selectedDataContainer" class="mt-2">
+                <!-- 보여주기 data -->
             </div>
-            <button type="submit">등록하기</button>
+            <button type="submit" class="btn-primary mt-4">등록하기</button>
         </form>
     </div>
+
     <script type="text/javascript" th:inline="javascript" th:src="@{/common.js}"></script>
     <script layout:fragment="script" type="text/javascript">
     function _getFileName(_this) {

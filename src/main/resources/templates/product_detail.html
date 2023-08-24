@@ -1,9 +1,12 @@
 <html layout:decorate="~{layout}">
 <head>
     <title>PRODUCT-DETAIL</title>
-    <meta id="_csrf" name="_csrf" th:content="${_csrf.token}" />
+    <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
     <meta id="_csrf_header" name="_csrf_header"
-          th:content="${_csrf.headerName}" />
+          th:content="${_csrf.headerName}"/>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.5/dist/full.css" rel="stylesheet" type="text/css"/>
+    <!-- 테일윈드 불러오기 -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <div layout:fragment="content" class="test-Container">
     <nav th:replace="~{sidebar :: sidebarFragment}"></nav>
@@ -20,9 +23,10 @@
                          alt="">
                 </div>
                 <div class="tl-btm-area flex justify-between mt-10">
-                    <div class="text-2xl"><span>별점 평균</span><span class="mx-5 font-bold"
-                                                                  style="color:#5D9C59;">5.0</span><span
-                            class="text-lg">⭐⭐⭐⭐⭐</span></div>
+                    <div class="text-2xl"><span>별점 평균</span>
+                        <span class="mx-5 font-bold" style="color:#5D9C59;" th:text="${productAvg}"></span>
+                        <span class="text-lg">⭐⭐⭐⭐⭐</span>
+                    </div>
                     <div class="flex items-center"><a href="#" class="text-gray-600">REVIEW(123) >></a></div>
                 </div>
             </div>
@@ -36,11 +40,29 @@
                     </div>
                 </div>
                 <div class="w-full text-xl my-4 text-gray-600" th:text="${product.description}"></div>
-                <div>
-                    <button class="border-b border-opacity-0 hover:border-opacity-100 border-gray-500 mr-3"><i
-                            class="fa-solid fa-link fa-xl" style="color: #868E96;"></i></button>
-                    <button class="border-b border-opacity-0 hover:border-opacity-100 border-gray-500"><i
-                            class="fa-solid fa-heart fa-xl" style="color: #868E96;"></i></button>
+                <div class="flex items-center">
+                    <div id="vote-box" class="mr-4">
+                        <a class="py-2 px-4 text-xl rounded-full border-2 flex justify-center items-center bg-white hover:bg-gray-200 cursor-pointer"
+                           th:data-uri="@{|/product/vote/${product.id}|}" sec:authorize="isAuthenticated()"
+                           th:classappend="${#sets.contains(product.voter, @commonUtil.usernameToUser(#authentication.getPrincipal().getUsername())) ? 'recommended' : 'recommend'}"
+                           th:onclick="_vote(this)">
+                            <i class="fa-solid fa-heart fa-lg"
+                               th:style="${#sets.contains(product.voter, @commonUtil.usernameToUser(#authentication.getPrincipal().getUsername())) ? 'color: red;' : 'color: #868E96;'}"></i>
+                            <span class="pl-2 text-lg" th:text="${#lists.size(product.voter)}"></span>
+                        </a>
+                        <a class="py-2 px-4 text-xl rounded-full border-2 flex justify-center items-center bg-white hover:bg-gray-200 cursor-pointer"
+                           th:data-uri="@{|/product/vote/${product.id}|}" sec:authorize="isAnonymous()"
+                           th:attr="onclick=|_anonymous('/user/login', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}')|">
+                            <i class="fa-solid fa-heart fa-lg" style="color: #868E96;"></i>
+                            <span class="pl-2 text-lg" th:text="${#lists.size(product.voter)}"></span>
+                        </a>
+                    </div>
+                    <div id="link-box">
+                        <button class="border-b border-opacity-0 hover:border-opacity-100 border-gray-500"
+                                onclick="copy_link()">
+                            <i class="fa-solid fa-link fa-lg" style="color: #868E96;"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="text-2xl text-right my-3 pb-5 border-b"><span
                         class="text-sm mx-5 text-gray-400">상품 가격</span><span id="product_price" class="font-bold"
@@ -51,9 +73,7 @@
                         th:text="${product.inventory}"></span><span class="text-gray-500 mx-3">개</span></div>
                 <div>
                     <select type="text" id="option" class="w-full h-12 border">
-                        <option value="option1">써도되고</option>
-                        <option value="option2">안써도되고</option>
-                        <option value="option3">맘대루</option>
+                        <option value="option1">=== 선택사항 없음 ===</option>
                     </select>
                 </div>
 
@@ -70,10 +90,9 @@
                 </div>
 
                 <div class="flex">
-                    <button type="button" class="w-1/5 bg-white p-4 mt-5 border" th:attr="onclick=|_addCart('/user/login', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}', '${product.id}')|">
+                    <button type="button" class="w-1/5 bg-white p-4 mt-5 border"
+                            th:attr="onclick=|_addCart('/user/login', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}', '${product.id}')|">
                         <i class="fa-solid fa-cart-shopping fa-xl" style="color: #5d9c59;"></i>
-                        <p th:text="${#authentication.authorities}"></p>
-                        <p th:text="${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}"></p>
                     </button>
                     <button class="w-4/5 p-4 mt-5 bg-gray-500 text-white text-xl border">바로 구매하기</button>
                 </div>
@@ -108,29 +127,223 @@
 
         <!--  리뷰 외  -->
         <div class="bottom-area w-full mb-10">
-            <!--  리뷰  -->
-            <div class="mx-10">
-                <div class="mt-10 text-center text-4xl">고객 리뷰</div>
-                <div class="text-center text-lg text-gray-500">몇 개의 리뷰가 있ㅅ브니다</div>
-                <div class="bg-gray-100">리뷰 알아서 뚝딱</div>
+            <div class="bottom-area w-full mb-10">
+                <!--  리뷰  -->
+                <div class="mx-10">
+                    <div class="mt-10 text-center text-4xl">고객 리뷰</div>
+                    <div th:text="|댓글 ( ${#lists.size(product.reviewList)} )|" class="text-xl font-bold"></div>
+                    <div>
+                        <form th:action="@{|/review/create/${product.id}|}" th:object="${productReviewForm}"
+                              method="post"
+                              enctype="multipart/form-data" class="mt-5">
+                            <div class="w-full mb-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600 flex flex-col">
+                                <div class="rating ml-5" name="star_rating" id="star_rating">
+                                    <input type="radio" value="1" name="star_rating"
+                                           class="mask mask-star-2 bg-orange-400"/>
+                                    <input type="radio" value="2" name="star_rating"
+                                           class="mask mask-star-2 bg-orange-400"
+                                           checked/>
+                                    <input type="radio" value="3" name="star_rating"
+                                           class="mask mask-star-2 bg-orange-400"/>
+                                    <input type="radio" value="4" name="star_rating"
+                                           class="mask mask-star-2 bg-orange-400"/>
+                                    <input type="radio" value="5" name="star_rating"
+                                           class="mask mask-star-2 bg-orange-400"/>
+                                </div>
+                                <div class="flex-1 px-4 py-2 bg-white rounded-t-lg dark:bg-gray-800 flex">
+                                    <div id="img-preview" class="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden mr-4">
+                                        <img src="" alt="파일 등록">
+                                    </div>
+                                    <div id="review-box" class="flex-1"
+                                         th:attr="onclick=|_anonymous('/user/login', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}')|">
+                                    <textarea rows="4"
+                                              class="w-full px-0 text-sm text-gray-900 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400"
+                                              placeholder="Write a comment..." required
+                                              sec:authorize="isAnonymous()" disabled></textarea>
+                                        <textarea rows="4"
+                                                  class="w-full px-0 text-sm text-gray-900 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400"
+                                                  placeholder="Write a comment..." required
+                                                  sec:authorize="isAuthenticated()" th:field="*{content}"></textarea>
+                                    </div>
+                                </div>
+                                <div class="border-t dark:border-gray-600 flex items-start px-3 py-2">
+                                    <label for="fileInput"
+                                           class="ml-2 inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600">
+                                        <input type="file" id="fileInput" class="sr-only"
+                                               th:onchange="_getFileName(this)"
+                                               th:value="${reviewImage}" th:field="*{reviewImage}">
+                                        <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                             fill="none"
+                                             viewBox="0 0 12 20">
+                                            <path stroke="currentColor" stroke-linejoin="round" stroke-width="2"
+                                                  d="M1 6v8a5 5 0 1 0 10 0V4.5a3.5 3.5 0 1 0-7 0V13a2 2 0 0 0 4 0V6"/>
+                                        </svg>
+                                    </label>
+                                    <div class="flex-grow pl-0 space-x-1 sm:pl-2">
+                                        <button type="submit"
+                                                class="w-full sm:w-auto inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">
+                                            Post comment
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- 리뷰 목록 -->
+                <div id="c-vote-box" class="mx-10">
+                    <ul class="card border rounded-xl p-3 bg-gray-50 mt-5" th:each="review, loop : ${paging}">
+                        <a th:id="|review_${review.id}|"></a>
+                        <li class="card-body">
+                            <div>
+                                <span th:if="${review.star_rating == 1}">⭐</span>
+                                <span th:if="${review.star_rating == 2}">⭐⭐</span>
+                                <span th:if="${review.star_rating == 3}">⭐⭐⭐</span>
+                                <span th:if="${review.star_rating == 4}">⭐⭐⭐⭐</span>
+                                <span th:if="${review.star_rating == 5}">⭐⭐⭐⭐⭐</span>
+                            </div>
+                            <!--
+                            <div class="rating ml-5" name="star_rating">
+                                <span th:text="${review.star_rating}"></span>
+                                <input type="radio" value="1" name="star_rating" class="mask mask-star-2 bg-orange-400" th:checked="${review.star_rating == 1}">
+                                <input type="radio" value="2" name="star_rating" class="mask mask-star-2 bg-orange-400" th:checked="${review.star_rating == 2}">
+                                <input type="radio" value="3" name="star_rating" class="mask mask-star-2 bg-orange-400" th:checked="${review.star_rating == 3}">
+                                <input type="radio" value="4" name="star_rating" class="mask mask-star-2 bg-orange-400" th:checked="${review.star_rating == 4}">
+                                <input type="radio" value="5" name="star_rating" class="mask mask-star-2 bg-orange-400" th:checked="${review.star_rating == 5}">
+                            </div>
+                            -->
+                            <div class="flex justify-between items-center">
+                                <div class="flex">
+                                    <div th:if="${review.reviewer != null}"
+                                         th:text="|🗨️ ${review.reviewer.loginId}|"></div>
+                                    <div class="text-sm flex items-end">
+                                        <a th:href="@{|/review/modify/${review.id}|}"
+                                           class="px-1 border-b border-gray-600 border-opacity-0 hover:border-opacity-100"
+                                           sec:authorize="isAuthenticated()"
+                                           th:if="${review.reviewer != null and #authentication.getPrincipal().getUsername() == review.reviewer.loginId}"
+                                           th:text="수정"></a>
+
+                                        <a href="javascript:void(0);" th:data-uri="@{|/review/delete/${review.id}|}"
+                                           class="delete px-1 border-b border-gray-600 border-opacity-0 hover:border-opacity-100"
+                                           sec:authorize="isAuthenticated()"
+                                           th:if="${review.reviewer != null and #authentication.getPrincipal().getUsername() == review.reviewer.loginId}"
+                                           th:text="삭제"></a>
+                                    </div>
+                                </div>
+
+                                <div class="boardDate flex text-gray-500 text-sm">
+                                    <div th:if="${review.modifyDate != null}"
+                                         th:text="|수정 - ${#temporals.format(review.modifyDate, 'yyMMdd HH:mm')}|"></div>
+                                    <div th:text="|작성 - ${#temporals.format(review.createDate, 'yyMMdd HH:mm')}|"
+                                         class="pl-3"></div>
+                                </div>
+                            </div>
+
+                            <div class="flex-1 px-4 py-2 bg-white rounded-t-lg dark:bg-gray-800 flex">
+                                <div id="review-content" class="flex">
+                                    <div id="img-box" class="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden mr-4"
+                                         th:classappend="${review.reviewImg == null} ? 'hidden' : ''">
+                                        <img th:if="${review.reviewImg != null}"
+                                             th:attr="src=${@commonUtil.getFilePath(review.reviewImg.id)}" alt="">
+                                    </div>
+                                    <div th:text="${review.content}"></div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
+        <script layout:fragment="script" type="text/javascript" th:src="@{/js/product_detail.js}"></script>
+        <script layout:fragment="script" type="text/javascript">
+        function _getFileName(_this) {
+            var fileValue = $(_this).val().split("\\");
+            var fileName = fileValue[fileValue.length - 1];
+
+            if (fileName !== "") {  // 파일이 선택되었을 때에만 실행
+                $(_this).siblings("div.uploaded-file-name").html(fileName);
+                $(_this).siblings("div.uploaded-file-name").addClass("active");
+            }
+        }
+
+
+        $(document).ready(function() {
+            const countSelect = $('#countSelect');
+            const productPriceElement = $('#product_price');
+            const totalPriceDisplay = $('#totalPriceDisplay');
+
+            countSelect.on('input', function() {
+                const selectedCount = parseInt(countSelect.val());
+                const productPrice = parseInt(productPriceElement.text());
+                const totalPrice = productPrice * selectedCount;
+
+                totalPriceDisplay.text(totalPrice.toLocaleString());
+            });
+
+            $('#fileInput').change(function() {
+             var input = this;
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var imgPreview = $('#img-preview');
+                        imgPreview.html('<img src="' + e.target.result + '" class="w-full h-full object-cover" alt="Preview">');
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            });
+        });
+
+        function _vote(_this) {
+          var isVote;
+          if ($(_this).hasClass("recommended")) {
+            isVote = confirm("정말 추천을 취소하시겠습니까?");
+          } else {
+            isVote = confirm("정말 추천하시겠습니까?");
+          }
+          if (isVote) {
+            $.ajax({
+              url: _this.getAttribute("data-uri"),
+              type: "GET",
+              success: function() {
+                $('#vote-box').load(location.href+' #vote-box');
+                $('#c-vote-box').load(location.href+' #c-vote-box');
+                console.log("성공");
+              },
+              error: function(response) {
+                alert(response.responseJSON.message);
+                console.log(response);
+              }
+            });
+          }
+        }
+
+        function copy_link() {
+            const currentUrl = window.location.href;
+
+            // Create a temporary input element to copy the text to clipboard
+            const tempInput = document.createElement("input");
+            tempInput.value = currentUrl;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            alert("링크가 복사되었습니다: " + currentUrl);
+        }
+
+        function _anonymous(uri, isAuthenticated) {
+            if (isAuthenticated === 'false') {
+                if(confirm("로그인이 필요한 서비스입니다.\n확인을 누르시면 로그인 페이지로 이동합니다.")) {
+                    location.href = uri;
+                }
+            } else {
+                if (uri !== '/user/login') {
+                    location.href = uri;
+                }
+            }
+        }
+
+        </script>
     </div>
-    <script layout:fragment="script" type="text/javascript" th:src="@{/js/product_detail.js}"></script>
-    <script layout:fragment="script" type="text/javascript">
-    const countSelect = document.getElementById('countSelect');
-    const countInput = document.getElementById('count');
-    const productPriceElement = document.querySelector("#product_price");
-    const totalPriceDisplay = document.getElementById("totalPriceDisplay");
-
-    countSelect.addEventListener('input', function() {
-        const selectedCount = parseInt(countSelect.value);
-        countInput.value = selectedCount;
-
-        const productPrice = parseInt(productPriceElement.textContent);
-        const totalPrice = productPrice * selectedCount;
-        totalPriceDisplay.textContent = `${totalPrice.toLocaleString()}`;
-    });
-    </script>
-</div>
 </html>

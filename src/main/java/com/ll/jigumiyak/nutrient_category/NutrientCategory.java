@@ -23,4 +23,6 @@ public class NutrientCategory extends BaseEntity {
     //눈 체력 체지방 뼈 등등
     @ManyToMany(mappedBy = "categoryList")
     private List<Nutrient> nutrientList;
+
+
 }
