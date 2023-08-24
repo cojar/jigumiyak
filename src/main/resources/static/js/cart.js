@@ -1,3 +1,22 @@
+function _toggleAllItemSelect() {
+    if ($("#select-all:checked").length == 1) {
+        $("input.item-select").prop("checked", true);
+    } else {
+        $("input.item-select").prop("checked", false);
+    }
+}
+
+function _toggleItemSelect() {
+    let totalCount = $("input.item-select").length;
+    let checkedCount = $("input.item-select:checked").length;
+
+    if (totalCount != checkedCount) {
+        $("#select-all").prop("checked", false);
+    } else {
+        $("#select-all").prop("checked", true);
+    }
+}
+
 function _increaseCount(id) {
 
     let count = $("#" + id + "_count");
