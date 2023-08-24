@@ -56,7 +56,7 @@ public class InquiryAnswerController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
         inquiryAnswerForm.setContent(answer.getContent());
-        return "#";
+        return "admin/answer_form";
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -64,7 +64,7 @@ public class InquiryAnswerController {
     public String answerModify (@Valid InquiryAnswerForm inquiryAnswerForm, BindingResult bindingResult,
                                 @PathVariable("id") Long id, Principal principal) {
         if (bindingResult.hasErrors()) {
-            return null;
+            return "admin/answer_form";
         }
         InquiryAnswer answer = this.inquiryAnswerService.getAnswer(id);
         if (!answer.getAuthor().getLoginId().equals(principal.getName())) {
