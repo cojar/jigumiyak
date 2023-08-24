@@ -84,6 +84,28 @@ public class ProductController {
         return "redirect:/product";
     }
 
+    @GetMapping("/create/{id}")
+    public String createDetail(Model model, ProductDetailForm productDetailForm,
+                               @PathVariable("id") Long id){
+        Product product = productService.getProduct(id);
+        model.addAttribute("product", product);
+        return "product_detail_form";
+    }
+
+    @PostMapping("/create/{id}")
+    public String createDetail(@PathVariable("id") Long id,
+                               @Valid ProductDetailForm productDetailForm,
+                               BindingResult bindingResult, Model model) throws IOException {
+        if(bindingResult.hasErrors()){
+            return "product_detail_form";
+        }
+        Product product = productService.getProduct(id);
+        model.addAttribute("product", product);
+        productService.createDetailImg(product, productDetailForm.getDetailImg());
+        return String.format("redirect:/product/%s", product.getId());
+    }
+
+
     @ResponseBody
     @RequestMapping(value = "/searchNutrient_ajax", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")
     public String wordSearchShow(HttpServletRequest request) {

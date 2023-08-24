@@ -84,7 +84,13 @@
             <!--  상품 상세  -->
             <div class="mx-10">
                 <div class="pt-5 border-b border-gray-400 text-center text-xl">제품 상세</div>
-                <div class="bg-gray-100 h-96">상세 내용 자리 class 지우고 슥삭</div>
+                <div class="bg-gray-100 flex items-center justify-center">
+                    <img th:if="${product.detailImg != null}"
+                         th:attr="src=${@commonUtil.getFilePath(product.detailImg.id)}" alt=""
+                         class="object-cover w-full h-full">
+                    <img th:if="${product.detailImg == null}" src="https://picsum.photos/id/237/752/442"
+                         alt="" class="object-cover w-full h-full">
+                </div>
             </div>
 
             <!--  상품 정보  -->

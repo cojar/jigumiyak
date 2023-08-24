@@ -58,4 +58,15 @@ public class ProductService {
         return this.productRepository.findById(id)
                 .orElse(null);
     }
+
+    public Product createDetailImg(Product product, MultipartFile detailImg) throws IOException {
+        GenFile detailImage = fileService.upload(detailImg, "product", "detailImage", product.getName() + "_detail");
+
+        product = product.toBuilder()
+                .detailImg(detailImage)
+                .build();
+        productRepository.save(product);
+        return product;
+    }
+
 }

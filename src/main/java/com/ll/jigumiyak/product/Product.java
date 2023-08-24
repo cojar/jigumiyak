@@ -37,6 +37,9 @@ public class Product extends BaseEntity {
     @OneToOne
     private GenFile thumbnailImg;
 
+    @OneToOne
+    private GenFile detailImg;
+
     @ManyToOne
     private ProductCategory productCategory;
 
