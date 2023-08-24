@@ -39,12 +39,12 @@
                         <span th:text="${cartItem.product.name}" class="overflow-auto text-sm"></span>
                     </div>
                     <div class="border border-gray-300 rounded-lg mx-[6%] px-4 py-1 h-[40px] flex items-center">
-                        <button th:id="|${cartItem.id}_decrease|" th:attr="onclick=|_decreaseCount('${cartItem.id}')|"
+                        <button type="button" th:id="|${cartItem.id}_decrease|" th:attr="onclick=|_decreaseCount('${cartItem.id}')|"
                                 th:disabled="${cartItem.count == 1} ? 'disabled'">
                             <i class="fa-solid fa-minus"></i>
                         </button>
                         <span th:id="|${cartItem.id}_count|" th:text="${cartItem.count}" class="mx-5 text-sm"></span>
-                        <button th:attr="onclick=|_increaseCount('${cartItem.id}')|">
+                        <button type="button" th:attr="onclick=|_increaseCount('${cartItem.id}')|">
                             <i class="fa-solid fa-plus"></i>
                         </button>
                     </div>
