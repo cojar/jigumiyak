@@ -1,5 +1,7 @@
 package com.ll.jigumiyak.product;
 
+import com.ll.jigumiyak.cart_item.CartItem;
+import com.ll.jigumiyak.cart_item.CartItemForm;
 import com.ll.jigumiyak.nutrient.Nutrient;
 import com.ll.jigumiyak.nutrient.NutrientService;
 import com.ll.jigumiyak.nutrient_category.NutrientCategory;
@@ -53,7 +55,8 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public String detail(Model model,
-                         @PathVariable("id") Long id) {
+                         @PathVariable("id") Long id,
+                         CartItemForm cartItemForm) {
         Product product = productService.getProduct(id);
         model.addAttribute("product", product);
         return "product_detail";
@@ -77,7 +80,7 @@ public class ProductController {
             System.out.println(name);
             nutrientList.add(nutrientService.findByName(name));
         }
-        productService.create(productForm.getName(), productForm.getDescription(), Integer.parseInt(productForm.getPrice()), Integer.parseInt(productForm.getQuantity()), productForm.getThumbnailImage(), nutrientList);
+        productService.create(productForm.getName(), productForm.getDescription(), Integer.parseInt(productForm.getPrice()), Integer.parseInt(productForm.getQuantity()), Long.valueOf(productForm.getInventory()), productForm.getThumbnailImage(), nutrientList);
         return "redirect:/product";
     }
 

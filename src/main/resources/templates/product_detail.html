@@ -1,87 +1,133 @@
 <html layout:decorate="~{layout}">
 <head>
-  <title>PRODUCT-DETAIL</title>
+    <title>PRODUCT-DETAIL</title>
+    <meta id="_csrf" name="_csrf" th:content="${_csrf.token}" />
+    <meta id="_csrf_header" name="_csrf_header"
+          th:content="${_csrf.headerName}" />
 </head>
 <div layout:fragment="content" class="test-Container">
-  <nav th:replace="~{sidebar :: sidebarFragment}"></nav>
-  <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
-  <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
+    <nav th:replace="~{sidebar :: sidebarFragment}"></nav>
+    <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
+    <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
 
-<!--  상품 상단 box  -->
-    <div class="top-area border-b-4 border-double border-gray-400 w-full flex">
-      <div class="t-left-area w-full m-10">
-        <div class="tl-top-area">
-          <img src="https://img.freepik.com/free-photo/vitamin-c-injection-in-a-glass-bottle-vial-with-yellow-liquid_53876-97343.jpg?w=740&t=st=1692605784~exp=1692606384~hmac=f62bfc9ff4b6873266c34a136c352444ddaf6b814602b8e260bf2e661ff12f02" alt="약">
-        </div>
-        <div class="tl-btm-area flex justify-between mt-10">
-          <div class="text-2xl"><span>별점 평균</span><span class="mx-5 font-bold" style="color:#5D9C59;">5.0</span><span class="text-lg">⭐⭐⭐⭐⭐</span></div>
-          <div class="flex items-center"><a href="#" class="text-gray-600">REVIEW(123) >></a></div>
-        </div>
-      </div>
+        <!--  상품 상단 box  -->
+        <div class="top-area border-b-4 border-double border-gray-400 w-full flex">
+            <div class="t-left-area w-full m-10">
+                <div class="tl-top-area">
+                    <img th:if="${product.thumbnailImg != null}"
+                         th:attr="src=${@commonUtil.getFilePath(product.thumbnailImg.id)}" alt="">
+                    <img th:if="${product.thumbnailImg == null}" src="https://picsum.photos/id/237/752/442"
+                         alt="">
+                </div>
+                <div class="tl-btm-area flex justify-between mt-10">
+                    <div class="text-2xl"><span>별점 평균</span><span class="mx-5 font-bold"
+                                                                  style="color:#5D9C59;">5.0</span><span
+                            class="text-lg">⭐⭐⭐⭐⭐</span></div>
+                    <div class="flex items-center"><a href="#" class="text-gray-600">REVIEW(123) >></a></div>
+                </div>
+            </div>
 
-      <div class="t-right-area w-full h-full m-10">
-        <div class="w-full text-lg text-gray-400">카테고리 쓰던지</div>
-        <div class="w-full text-5xl my-4 font-bold">얌얌굿 영양제</div>
-        <div class="w-full text-2xl">제조사나 회사나 그 외</div>
-        <div class="w-full text-xl my-4 text-gray-600">이 영양제는 개쩌는 효과가 있씁니다. 진짜로. 게다가 가성비도 미텻습니다. 맛도 완저니 좋습미다.</div>
-        <div>
-          <button class="border-b border-opacity-0 hover:border-opacity-100 border-gray-500 mr-3"><i class="fa-solid fa-link fa-xl" style="color: #868E96;"></i></button>
-          <button class="border-b border-opacity-0 hover:border-opacity-100 border-gray-500"><i class="fa-solid fa-heart fa-xl" style="color: #868E96;"></i></button>
-        </div>
-        <div class="text-2xl text-right my-3 pb-5 border-b"><span class="text-sm mx-5 text-gray-400">100ml</span><span class="font-bold">39,900</span><span class="text-gray-500 mx-3">원</span></div>
-        <div class="text-xl text-right my-3"><span class="text-base mx-5" style="color:#5D9C59;">정기배송</span><span>30,000</span><span class="text-gray-500 mx-3">원</span></div>
-        <div>
-          <select type="text" id="option" class="w-full h-12 border">
-            <option value="option1">써도되고</option>
-            <option value="option2">안써도되고</option>
-            <option value="option3">맘대루</option>
-          </select>
+            <div class="t-right-area w-full h-full m-10">
+                <div class="w-full text-5xl my-4 font-bold" th:text="${product.name}"></div>
+                <div class="w-full text-lg flex">
+                    <div th:each="nutrient : ${product.nutrientList}"
+                         class="mr-2 bg-white rounded-lg border-gray-300 border p-1">
+                        <span th:text="${nutrient.name}"></span>
+                    </div>
+                </div>
+                <div class="w-full text-xl my-4 text-gray-600" th:text="${product.description}"></div>
+                <div>
+                    <button class="border-b border-opacity-0 hover:border-opacity-100 border-gray-500 mr-3"><i
+                            class="fa-solid fa-link fa-xl" style="color: #868E96;"></i></button>
+                    <button class="border-b border-opacity-0 hover:border-opacity-100 border-gray-500"><i
+                            class="fa-solid fa-heart fa-xl" style="color: #868E96;"></i></button>
+                </div>
+                <div class="text-2xl text-right my-3 pb-5 border-b"><span
+                        class="text-sm mx-5 text-gray-400">상품 가격</span><span id="product_price" class="font-bold"
+                                                                             th:text="${product.price}"></span><span
+                        class="text-gray-500 mx-3">원</span></div>
+                <div class="text-xl text-right my-3"><span class="text-base mx-5"
+                                                           style="color:#5D9C59;">남은 수량</span><span
+                        th:text="${product.inventory}"></span><span class="text-gray-500 mx-3">개</span></div>
+                <div>
+                    <select type="text" id="option" class="w-full h-12 border">
+                        <option value="option1">써도되고</option>
+                        <option value="option2">안써도되고</option>
+                        <option value="option3">맘대루</option>
+                    </select>
+                </div>
+
+                <div class="w-full bg-gray-100 mt-5">
+                    <div class="text-right border-b flex justify-between items-center border-b border-gray-300">
+                        <span class="mx-3">구매수량</span>
+                        <input type="number" name="countSelect" id="countSelect" min="1" max="9" placeholder="개수"
+                               class="w-24 h-8 my-3 border mx-3">
+                    </div>
+                    <div class="flex items-end text-2xl py-3"><span class="w-full mx-3"
+                                                                    style="color:#5D9C59;">상품금액 합계</span><span
+                            class="font-bold pr-5" id="totalPriceDisplay"></span><span class="text-xl mx-3">원</span>
+                    </div>
+                </div>
+
+                <div class="flex">
+                    <form th:action="@{|/cart/${product.id}|}" id="cartItemForm" th:object="${cartItemForm}" method="post">
+                    <input type="hidden" id="count" name="count" th:field="*{count}">
+                        <button type="button" class="w-1/5 bg-white p-4 mt-5 border" th:attr="onclick=|anonymous('/user/login', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}')|">
+                            <i class="fa-solid fa-cart-shopping fa-xl" style="color: #5d9c59;"></i>
+                            <p th:text="${#authentication.authorities}"></p>
+                            <p th:text="${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}"></p>
+                        </button>
+                    </form>
+                    <button class="w-4/5 p-4 mt-5 bg-gray-500 text-white text-xl border">바로 구매하기</button>
+                </div>
+            </div>
         </div>
 
-        <div class="w-full bg-gray-100 mt-5">
-          <div class="text-right border-b flex justify-between items-center border-b border-gray-300">
-            <span class="mx-3">구매수량</span>
-            <input type="number" name="favnum" min="1" max="9" placeholder="개수" class="w-24 h-8 my-3 border mx-3">
-          </div>
-          <div class="flex items-end text-2xl py-3"><span class="w-full mx-3" style="color:#5D9C59;">상품금액 합계</span><span class="font-bold pr-5">39,900</span><span class="text-xl mx-3">원</span></div>
+        <div class="middle-area w-full border-b-4 border-double border-gray-400">
+            <!--  상품 상세  -->
+            <div class="mx-10">
+                <div class="pt-5 border-b border-gray-400 text-center text-xl">제품 상세</div>
+                <div class="bg-gray-100 h-96">상세 내용 자리 class 지우고 슥삭</div>
+            </div>
+
+            <!--  상품 정보  -->
+            <div class="mx-10">
+                <div class="pt-5 border-b border-gray-400 text-center text-xl">제품 고시 내용</div>
+                <div class="bg-gray-100 h-96">상품 필수 기입 정보????</div>
+            </div>
+
+            <!--  상품 추천  -->
+            <div class="mx-10">
+                <div class="pt-5 text-3xl">이런 제품은 어떠세요?</div>
+                <div class="bg-gray-100 h-96">상품 추천 리스트 알아서 만들기</div>
+            </div>
         </div>
 
-        <div class="flex">
-          <button class="w-1/5 bg-white p-4 mt-5 border"><i class="fa-solid fa-cart-shopping fa-xl" style="color: #5d9c59;"></i></button>
-          <button class="w-4/5 p-4 mt-5 bg-gray-500 text-white text-xl border">바로 구매하기</button>
+        <!--  리뷰 외  -->
+        <div class="bottom-area w-full mb-10">
+            <!--  리뷰  -->
+            <div class="mx-10">
+                <div class="mt-10 text-center text-4xl">고객 리뷰</div>
+                <div class="text-center text-lg text-gray-500">몇 개의 리뷰가 있ㅅ브니다</div>
+                <div class="bg-gray-100">리뷰 알아서 뚝딱</div>
+            </div>
         </div>
-      </div>
     </div>
+    <script layout:fragment="script" type="text/javascript" th:src="@{/js/product.js}"></script>
+    <script layout:fragment="script" type="text/javascript">
+    const countSelect = document.getElementById('countSelect');
+    const countInput = document.getElementById('count');
+    const productPriceElement = document.querySelector("#product_price");
+    const totalPriceDisplay = document.getElementById("totalPriceDisplay");
 
-    <div class="middle-area w-full border-b-4 border-double border-gray-400">
-      <!--  상품 상세  -->
-      <div class="mx-10">
-        <div class="pt-5 border-b border-gray-400 text-center text-xl">제품 상세</div>
-        <div class="bg-gray-100 h-96">상세 내용 자리 class 지우고 슥삭</div>
-      </div>
+    countSelect.addEventListener('input', function() {
+        const selectedCount = parseInt(countSelect.value);
+        countInput.value = selectedCount;
 
-      <!--  상품 정보  -->
-      <div class="mx-10">
-        <div class="pt-5 border-b border-gray-400 text-center text-xl">제품 고시 내용</div>
-        <div class="bg-gray-100 h-96">상품 필수 기입 정보????</div>
-      </div>
-
-      <!--  상품 추천  -->
-      <div class="mx-10">
-        <div class="pt-5 text-3xl">이런 제품은 어떠세요?</div>
-        <div class="bg-gray-100 h-96">상품 추천 리스트 알아서 만들기</div>
-      </div>
-    </div>
-
-<!--  리뷰 외  -->
-    <div class="bottom-area w-full mb-10">
-      <!--  리뷰  -->
-      <div class="mx-10">
-        <div class="mt-10 text-center text-4xl">고객 리뷰</div>
-        <div class="text-center text-lg text-gray-500">몇 개의 리뷰가 있ㅅ브니다</div>
-        <div class="bg-gray-100">리뷰 알아서 뚝딱</div>
-      </div>
-    </div>
-  </div>
+        const productPrice = parseInt(productPriceElement.textContent);
+        const totalPrice = productPrice * selectedCount;
+        totalPriceDisplay.textContent = `${totalPrice.toLocaleString()}`;
+    });
+    </script>
 </div>
 </html>
