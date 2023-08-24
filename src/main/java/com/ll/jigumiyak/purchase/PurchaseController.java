@@ -25,7 +25,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @RequestMapping("/purchase")
@@ -47,7 +51,6 @@ public class PurchaseController {
         SiteUser purchaser = this.userService.getUserByLoginId(principal.getName());
 
         model.addAttribute("purchaser", purchaser);
-        model.addAttribute("price", 5000);
 
         return "purchase/purchase";
     }
@@ -67,20 +70,36 @@ public class PurchaseController {
         log.info("deliveryRequest: " + purchaseForm.getDeliveryRequest());
         log.info("customDeliveryRequest: " + purchaseForm.getCustomDeliveryRequest());
 
+        SiteUser purchaser = this.userService.getUserByLoginId(principal.getName());
+
+        Map<String, Object> purchaseAttributes = new HashMap<>();
+
+        String purchaseId = "jigumiyak_" + String.format("%010d", purchaser.getId()) + "_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_n"));
+        String purchaseName = "김상엽 처리의 건";
+
+        purchaseAttributes.put("amount", 50000);
+        purchaseAttributes.put("orderId", purchaseId);
+        purchaseAttributes.put("orderName", purchaseName);
+        purchaseAttributes.put("customerName", purchaseForm.getPurchaserName());
+
+        log.info("purchaseAttributes: {}", purchaseAttributes);
+
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new RsData<>("S-1", "주문 ID를 생성했습니다", "orderId"));
+                .body(new RsData<>("S-1", "주문 ID를 생성했습니다", purchaseAttributes));
     }
 
     @PreAuthorize("isAuthenticated")
     @PostMapping("/payment/cancel")
     @ResponseBody
-    public ResponseEntity cancelPayment(@RequestParam("orderId") String orderId, Principal principal) {
+    public ResponseEntity cancelPayment(@RequestParam("orderId") String purchaseId, Principal principal) {
+
+        log.info("payment cancel on purchaseId == " + purchaseId);
 
         SiteUser purchaser = this.userService.getUserByLoginId(principal.getName());
 
-        Purchase purchase = this.purchaseService.getPurchaseByPurchaserAndPurchaseId(purchaser, orderId);
-
-        this.purchaseService.deletePurchase(purchase);
+//        Purchase purchase = this.purchaseService.getPurchaseByPurchaserAndPurchaseId(purchaser, orderId);
+//
+//        this.purchaseService.deletePurchase(purchase);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new RsData<>("S-1", "해당 주문 ID를 삭제했습니다", ""));
@@ -89,7 +108,7 @@ public class PurchaseController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/payment/success")
     public String successPayment(Model model,
-                                 @RequestParam("orderId") String orderId,
+                                 @RequestParam("orderId") String purchaseId,
                                  @RequestParam("amount") Integer amount,
                                  @RequestParam("paymentKey") String paymentKey) throws Exception {
 
@@ -106,7 +125,7 @@ public class PurchaseController {
         connection.setRequestMethod("POST");
         connection.setDoOutput(true);
         JSONObject obj = new JSONObject();
-        obj.put("orderId", orderId);
+        obj.put("orderId", purchaseId);
         obj.put("amount", amount);
 
         OutputStream outputStream = connection.getOutputStream();
@@ -122,6 +141,8 @@ public class PurchaseController {
         JSONParser parser = new JSONParser();
         JSONObject jsonObject = (JSONObject) parser.parse(reader);
         responseStream.close();
+
+        log.info("payment success on purchaseId == " + purchaseId);
 
         // 필요 결제 정보 저장
         model.addAttribute("responseStr", jsonObject.toJSONString());
@@ -151,15 +172,15 @@ public class PurchaseController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/payment/fail")
     public String failPayment(Model model, Principal principal,
-                              @RequestParam("orderId") String orderId,
+                              @RequestParam("orderId") String purchaseId,
                               @RequestParam("message") String message,
                               @RequestParam("code") String code) throws Exception {
 
-        log.info("failed orderId: " + orderId);
+        log.info("payment fail on purchaseId == " + purchaseId);
 
         SiteUser purchaser = this.userService.getUserByLoginId(principal.getName());
 
-        Purchase purchase = this.purchaseService.getPurchaseByPurchaserAndPurchaseId(purchaser, orderId);
+        Purchase purchase = this.purchaseService.getPurchaseByPurchaserAndPurchaseId(purchaser, purchaseId);
 
         this.purchaseService.deletePurchase(purchase);
 

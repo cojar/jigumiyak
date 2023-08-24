@@ -19,8 +19,8 @@ import java.util.List;
 public class Cart extends BaseEntity {
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.REMOVE)
-    private List<CartItem> itemList;
+    private List<CartItem> cartItemList;
 
     @OneToOne
-    private SiteUser purchaser;
+    private SiteUser owner;
 }

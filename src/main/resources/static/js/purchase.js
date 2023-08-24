@@ -1,8 +1,10 @@
-let amount = 50000;
-
 let tossPayments = TossPayments("test_ck_GePWvyJnrKbJWJDe6DqVgLzN97Eo");
+let path = "/purchase/payment/";
+let successUrl = window.location.origin + path + "success";
+let failUrl = window.location.origin + path + "fail";
+let callbackUrl = window.location.origin + path + "va_callback";
 
-function pay(method, requestJson) {
+function _payment() {
 
     // 결제 전 주문 엔티티 생성 및 orderId 반환
     $("input[id='receiverAddress.zoneCode']").prop("disabled", false);
@@ -17,63 +19,60 @@ function pay(method, requestJson) {
             $(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
         },
         success: function(res) {
+            console.log(res.code + ": " + res.message);
             $("input[id='receiverAddress.zoneCode']").prop("disabled", true);
             $("input[id='receiverAddress.mainAddress']").prop("disabled", true);
 
-            alert(res.message);
+            let requestJson = {
+                "amount": res.data.amount,
+                "orderId": res.data.orderId,
+                "orderName": res.data.orderName,
+                "successUrl": successUrl,
+                "failUrl": failUrl,
+                "cardCompany": null,
+                "cardInstallmentPlan": null,
+                "maxCardInstallmentPlan": null,
+                "useCardPoint": false,
+                "customerName": res.data.customerName,
+                "customerEmail": null,
+                "customerMobilePhone": null,
+                "taxFreeAmount": null,
+                "useInternationalCardOnly": false,
+                "flowMode": "DEFAULT",
+                "discountCode": null,
+                "appScheme": null
+            }
+
+            tossPayments.requestPayment("카드", requestJson).catch(function (error) {
+                $.ajax({
+                    url: "/purchase/payment/cancel",
+                    type: "POST",
+                    data: {
+                        "orderId": res.data.orderId,
+                    },
+                    beforeSend : function() {
+                        var token = $("meta[name='_csrf']").attr("content");
+                        var header = $("meta[name='_csrf_header']").attr("content");
+                        $(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+                    },
+                    success: function(res) {
+                        console.log(res.code + ": " + res.message);
+                        if (error.code === "USER_CANCEL") {
+                            alert("사용자가 결제를 취소했습니다.");
+                        } else {
+                            alert(error.message);
+                        }
+                    },
+                    error: function(res) {
+                    }
+                })
+            });
         },
         error: function(res) {
-            let errorMsg = "";
-            $.each(res.responseJSON, function(key, value){
-                errorMsg += value + "\n";
-            });
-            alert(errorMsg);
             $("input[id='receiverAddress.zoneCode']").prop("disabled", true);
             $("input[id='receiverAddress.mainAddress']").prop("disabled", true);
         }
     })
-
-//    console.log(requestJson);
-//
-//    // 결제 진행
-//    tossPayments.requestPayment(method, requestJson)
-//    .catch(function (error) {
-//
-////        // 에러 발생 시 주문 엔티티 삭제
-////        $.ajax {
-////
-////        }
-//
-//
-//    });
-}
-
-let path = "/purchase/payment/";
-let successUrl = window.location.origin + path + "success";
-let failUrl = window.location.origin + path + "fail";
-let callbackUrl = window.location.origin + path + "va_callback";
-let orderId = new Date().getTime();
-
-let requestJson = {
-    "card": {
-        "amount": amount,
-        "orderId": "sample-" + orderId,
-        "orderName": "토스 티셔츠 외 2건",
-        "successUrl": successUrl,
-        "failUrl": failUrl,
-        "cardCompany": null,
-        "cardInstallmentPlan": null,
-        "maxCardInstallmentPlan": null,
-        "useCardPoint": false,
-        "customerName": "박토스",
-        "customerEmail": null,
-        "customerMobilePhone": null,
-        "taxFreeAmount": null,
-        "useInternationalCardOnly": false,
-        "flowMode": "DEFAULT",
-        "discountCode": null,
-        "appScheme": null
-    }
 }
 
 function _copyPurchaserInfo() {

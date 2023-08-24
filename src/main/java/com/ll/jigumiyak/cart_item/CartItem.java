@@ -15,9 +15,12 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Entity
 public class CartItem extends BaseEntity {
+
+    private Integer count;
+
     @ManyToOne
     private Cart cart;
+
     @ManyToOne
     private Product product;
-    private Integer count;
 }

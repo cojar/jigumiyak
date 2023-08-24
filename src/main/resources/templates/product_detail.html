@@ -70,14 +70,11 @@
                 </div>
 
                 <div class="flex">
-                    <form th:action="@{|/cart/${product.id}|}" id="cartItemForm" th:object="${cartItemForm}" method="post">
-                    <input type="hidden" id="count" name="count" th:field="*{count}">
-                        <button type="button" class="w-1/5 bg-white p-4 mt-5 border" th:attr="onclick=|anonymous('/user/login', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}')|">
-                            <i class="fa-solid fa-cart-shopping fa-xl" style="color: #5d9c59;"></i>
-                            <p th:text="${#authentication.authorities}"></p>
-                            <p th:text="${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}"></p>
-                        </button>
-                    </form>
+                    <button type="button" class="w-1/5 bg-white p-4 mt-5 border" th:attr="onclick=|_addCart('/user/login', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}', '${product.id}')|">
+                        <i class="fa-solid fa-cart-shopping fa-xl" style="color: #5d9c59;"></i>
+                        <p th:text="${#authentication.authorities}"></p>
+                        <p th:text="${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}"></p>
+                    </button>
                     <button class="w-4/5 p-4 mt-5 bg-gray-500 text-white text-xl border">바로 구매하기</button>
                 </div>
             </div>
@@ -113,7 +110,7 @@
             </div>
         </div>
     </div>
-    <script layout:fragment="script" type="text/javascript" th:src="@{/js/product.js}"></script>
+    <script layout:fragment="script" type="text/javascript" th:src="@{/js/product_detail.js}"></script>
     <script layout:fragment="script" type="text/javascript">
     const countSelect = document.getElementById('countSelect');
     const countInput = document.getElementById('count');
