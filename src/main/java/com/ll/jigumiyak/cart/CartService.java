@@ -32,23 +32,5 @@ public class CartService {
         return cart;
     }
 
-//    public Long addCart(CartItemForm cartItemForm, SiteUser owner, Product product){
-//
-//        CartItem savedCartItem = cartItemRepository.findByCartIdAndProductId(cart.getId(), product.getId());
-//
-//        if(savedCartItem != null){
-//            addCount(savedCartItem, Integer.valueOf(cartItemForm.getCount()));
-//            return savedCartItem.getId();
-//        } else {
-//            CartItem cartItem = cartItemService.createCartItem(cart, product, cartItemForm.getCount());
-//            return cartItem.getId();
-//        }
-//    }
-//
-//    private void addCount(CartItem cartItem, Integer count){
-//        cartItem.toBuilder()
-//                .count(cartItem.getCount() + count)
-//                .build();
-//        cartItemRepository.save(cartItem);
-//    }
+
 }
