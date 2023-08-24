@@ -26,7 +26,7 @@ public class CartItemService {
 
     public CartItem getCartItem(Long cartItemId) {
         return this.cartItemRepository.findById(cartItemId)
-                .orElse(null);햐
+                .orElse(null);
     }
 
     public CartItem getCartItemByProductAndCart(Product product, Cart cart) {
