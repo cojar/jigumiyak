@@ -2,6 +2,7 @@ package com.ll.jigumiyak.nutrient_category;
 
 import com.ll.jigumiyak.base.BaseEntity;
 import com.ll.jigumiyak.nutrient.Nutrient;
+import com.ll.jigumiyak.survey.Survey;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,5 +25,6 @@ public class NutrientCategory extends BaseEntity {
     @ManyToMany(mappedBy = "categoryList")
     private List<Nutrient> nutrientList;
 
-
+    @OneToMany(mappedBy = "nutrientCategory")
+    private List<Survey> surveyList;
 }

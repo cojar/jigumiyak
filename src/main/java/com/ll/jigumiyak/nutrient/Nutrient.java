@@ -4,6 +4,7 @@ import com.ll.jigumiyak.base.BaseEntity;
 import com.ll.jigumiyak.nutrient_category.NutrientCategory;
 import com.ll.jigumiyak.nutrient_caution.NutrientCaution;
 import com.ll.jigumiyak.product.Product;
+import com.ll.jigumiyak.surver_answer_score.SurveyAnswerScore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,4 +40,7 @@ public class Nutrient extends BaseEntity {
 
     @ManyToMany(mappedBy = "nutrientList")
     private List<Product> productList;
+
+    @ManyToMany(mappedBy = "nutrients")
+    private List<SurveyAnswerScore> surveyAnswerScoreList;
 }
