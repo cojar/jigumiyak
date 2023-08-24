@@ -130,9 +130,6 @@
             </div>
         </form>
     </div>
-    <div class="hidden-parameters">
-        <input type="hidden" th:value="${price}">
-    </div>
     <button class="button is-link" onclick="_payment();">결제하기</button>
 </div>
 <script layout:fragment="script" th:src="@{/js/purchase.js}"></script>

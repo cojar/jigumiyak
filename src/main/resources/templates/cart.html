@@ -1,42 +1,57 @@
 <html layout:decorate="~{layout}">
 <head>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
+
+    <!-- 데이지 UI 불러오기 -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.5/dist/full.css" rel="stylesheet" type="text/css" />
+    <!-- 테일윈드 불러오기 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/cart.css}">
+
     <title>CART-LIST</title>
 </head>
 <div layout:fragment="content" class="test-Container">
-    <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
-    <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
-        <form th:action="@{/??}" method="post">
-            <table class="w-full">
-                <thead>
-                <tr class="border-b">
-                    <th class="py-3">선택</th>
-                    <th class="py-3">상품이미지</th>
-                    <th class="py-3">상품명</th>
-                    <th class="py-3">수량</th>
-                    <th class="py-3">금액</th>
-                </tr>
-                </thead>
-                <tbody class="w-full">
-                <tr th:each="cartItem, loop : ${cartItemList}" class="border-b">
-                    <td><input type="checkbox"></td>
-                    <td>
-                        <div class="profile-img-box">
-                            <img th:if="${cartItem.product.thumbnailImg != null}"
-                                 th:attr="src=${@commonUtil.getFilePath(cartItem.product.thumbnailImg.id)}" alt=""
-                                 style="max-width: 100px; max-height: 75px;">
-                            <img th:if="${cartItem.product.thumbnailImg == null}"
-                                 src="https://picsum.photos/id/237/752/442"
-                                 alt="" class="w-32 h-24 object-cover">
-                        </div>
-                    </td>
-                    <td th:text="${cartItem.product.name}"></td>
-                    <td th:text="${cartItem.count}"></td>
-                    <td th:text="${cartItem.product.price}"></td>
-                </tr>
-                </tbody>
-            </table>
-            <a href="/purchase">주문하기</a>
-        </form>
+    <div class="test-con mx-auto pr-1 h-full mt-[128px]">
+        <h5 class="border-b-4 border-double border-gray-300 text-2xl pt-5">장바구니</h5>
+        <div class="h-auto w-[70%] mr-auto px-4 py-4 my-[20px]">
+            <div class="flex justify-between items-center border-b-2 border-gray-300 px-4 pb-2">
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="select-all" class="cursor-pointer accent-[#A5CDCD] h-4 w-4">
+                    <label for="select-all" class="cursor-pointer flex">전체선택</label>
+                </div>
+                <div class="cursor-pointer flex">선택 삭제</div>
+            </div>
+            <div th:each="cartItem, loop : ${cartItemList}" class="border-b border-gray-300 flex items-center gap-5 px-4 py-8">
+                <div>
+                    <input type="checkbox" th:id="${cartItem.id}" class="cursor-pointer accent-[#A5CDCD] h-4 w-4">
+                </div>
+                <div class="flex-[0_0_40%] flex items-center gap-5">
+                    <img th:if="${cartItem.product.thumbnailImg != null}"
+                         th:attr="src=${@commonUtil.getFilePath(cartItem.product.thumbnailImg.id)}" alt=""
+                         style="max-width: 100px; max-height: 75px;">
+                    <span th:text="${cartItem.product.name}" class="overflow-auto"></span>
+                </div>
+                <div class="border border-gray-300 rounded-lg mx-[6%] px-4 py-1 h-[40px] flex items-center">
+                    <button th:disabled="${cartItem.count == 1} ? 'disabled'">
+                        <i class="fa-solid fa-minus"></i>
+                    </button>
+                    <span th:text="${cartItem.count}" class="mx-5 text-sm"></span>
+                    <button>
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+                <div class="flex justify-end">
+                    <span th:text="|${cartItem.product.price}원|"></span>
+                </div>
+                <div class="border border-gray-300 rounded-lg ml-[4%] h-[40px] flex items-center justify-self-end">
+                    <button class="px-4 py-1 text-sm">바로구매</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+<script layout:fragment="script" th:src="@{/js/cart.js}"></script>
 </html>
