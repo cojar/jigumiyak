@@ -23,10 +23,11 @@
                            th:onclick="_toggleAllItemSelect()">
                     <label for="select-all" class="cursor-pointer flex text-sm">전체선택</label>
                 </div>
-                <div class="cursor-pointer flex text-sm">선택 삭제</div>
+                <div class="cursor-pointer flex text-sm" th:onclick="_selectDelete()">선택 삭제</div>
             </div>
-            <form id="selectPurchaseForm"  action="/purchase" method="get">
-                <div th:each="cartItem : ${cartItemList}" class="border-b border-gray-300 flex items-center gap-5 px-4 py-8">
+            <form id="selectPurchaseForm" action="/purchase" method="get">
+                <div th:each="cartItem : ${cartItemList}" th:id="|${cartItem.id}_dom|"
+                     class="border-b border-gray-300 flex items-center gap-5 px-4 py-8">
                     <div>
                         <input type="checkbox" checked th:id="${cartItem.id}" class="cursor-pointer accent-[#A5CDCD] h-4 w-4 item-select"
                                th:onclick="_toggleItemSelect(this)">
@@ -60,7 +61,7 @@
                 <span>가격: </span>
                 <span id="total-price"></span>
             </div>
-            <button onclick="_selectPurchase()">주문하기</button>
+            <button th:onclick="_selectPurchase()">주문하기</button>
         </div>
         <form id="directPurchaseForm" action="/purchase" method="get">
             <input type="hidden" id="cartItemId" name="cartItemId">

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -73,5 +74,25 @@ public class CartItemController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new RsData<>("S-1", "해당 아이템의 개수를 감소시켰습니다", cartItemAttributes));
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/delete")
+    @ResponseBody
+    public ResponseEntity deleteCartItem(@RequestParam List<Long> cartItemId) {
+
+        log.info("cartItem size: " + cartItemId.size());
+
+        Map<String, Object> deleteDomAttributes = new HashMap<>();
+
+        for (Long id : cartItemId) {
+            log.info("id: " + id);
+            CartItem cartItem = this.cartItemService.getCartItem(id);
+            this.cartItemService.deleteCartItem(cartItem);
+            deleteDomAttributes.put(id.toString(), String.format("#%s_dom", id));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new RsData<>("S-1", "선택한 아이템을 카트에서 제거했습니다", deleteDomAttributes));
     }
 }
