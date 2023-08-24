@@ -82,6 +82,7 @@ public class BoardController {
         return String.format("redirect:/board/%d", b.getId());
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/modify/{id}")
     public String boardModify(BoardForm boardForm, @PathVariable("id") Long id, Principal principal) {
         Board board = this.boardService.getBoard(id);
@@ -94,6 +95,7 @@ public class BoardController {
         return "board_form";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify/{id}")
     public String boardModify(@Valid BoardForm boardForm, BindingResult bindingResult, Principal principal, @PathVariable("id") Long id) {
         if (bindingResult.hasErrors()) {
