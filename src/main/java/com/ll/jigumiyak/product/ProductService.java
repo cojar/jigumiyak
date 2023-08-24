@@ -1,6 +1,5 @@
 package com.ll.jigumiyak.product;
 
-import com.ll.jigumiyak.DataNotFoundException;
 import com.ll.jigumiyak.file.FileService;
 import com.ll.jigumiyak.file.GenFile;
 import com.ll.jigumiyak.nutrient.Nutrient;
@@ -15,8 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 
 @Service
@@ -57,11 +54,8 @@ public class ProductService {
 
 
     public Product getProduct(Long id) {
-        Optional<Product> product = this.productRepository.findById(id);
-        if (product.isPresent()) {
-            return product.get();
-        } else {
-            throw new DataNotFoundException("product not found");
-        }
+
+        return this.productRepository.findById(id)
+                .orElse(null);
     }
 }

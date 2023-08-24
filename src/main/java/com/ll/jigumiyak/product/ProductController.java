@@ -1,7 +1,5 @@
 package com.ll.jigumiyak.product;
 
-import com.ll.jigumiyak.cart_item.CartItem;
-import com.ll.jigumiyak.cart_item.CartItemForm;
 import com.ll.jigumiyak.nutrient.Nutrient;
 import com.ll.jigumiyak.nutrient.NutrientService;
 import com.ll.jigumiyak.nutrient_category.NutrientCategory;
@@ -28,6 +26,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/product")
 public class ProductController {
+
     private final ProductService productService;
     private final NutrientService nutrientService;
     private final NutrientCategoryService nutrientCategoryService;
@@ -55,10 +54,11 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public String detail(Model model,
-                         @PathVariable("id") Long id,
-                         CartItemForm cartItemForm) {
+                         @PathVariable("id") Long id) {
+
         Product product = productService.getProduct(id);
         model.addAttribute("product", product);
+
         return "product_detail";
     }
 
