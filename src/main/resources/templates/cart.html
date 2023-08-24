@@ -20,9 +20,9 @@
             <div class="flex justify-between items-center border-b-2 border-gray-300 px-4 pb-2">
                 <div class="flex items-center gap-2">
                     <input type="checkbox" id="select-all" class="cursor-pointer accent-[#A5CDCD] h-4 w-4">
-                    <label for="select-all" class="cursor-pointer flex">전체선택</label>
+                    <label for="select-all" class="cursor-pointer flex text-sm">전체선택</label>
                 </div>
-                <div class="cursor-pointer flex">선택 삭제</div>
+                <div class="cursor-pointer flex text-sm">선택 삭제</div>
             </div>
             <div th:each="cartItem, loop : ${cartItemList}" class="border-b border-gray-300 flex items-center gap-5 px-4 py-8">
                 <div>
@@ -32,21 +32,22 @@
                     <img th:if="${cartItem.product.thumbnailImg != null}"
                          th:attr="src=${@commonUtil.getFilePath(cartItem.product.thumbnailImg.id)}" alt=""
                          style="max-width: 100px; max-height: 75px;">
-                    <span th:text="${cartItem.product.name}" class="overflow-auto"></span>
+                    <span th:text="${cartItem.product.name}" class="overflow-auto text-sm"></span>
                 </div>
                 <div class="border border-gray-300 rounded-lg mx-[6%] px-4 py-1 h-[40px] flex items-center">
-                    <button th:disabled="${cartItem.count == 1} ? 'disabled'">
+                    <button th:id="|${cartItem.id}_decrease|" th:attr="onclick=|_decreaseCount('${cartItem.id}')|"
+                            th:disabled="${cartItem.count == 1} ? 'disabled'">
                         <i class="fa-solid fa-minus"></i>
                     </button>
-                    <span th:text="${cartItem.count}" class="mx-5 text-sm"></span>
-                    <button>
+                    <span th:id="|${cartItem.id}_count|" th:text="${cartItem.count}" class="mx-5 text-sm"></span>
+                    <button th:attr="onclick=|_increaseCount('${cartItem.id}')|">
                         <i class="fa-solid fa-plus"></i>
                     </button>
                 </div>
                 <div class="flex justify-end">
-                    <span th:text="|${cartItem.product.price}원|"></span>
+                    <span th:id="|${cartItem.id}_price|" th:text="|${#numbers.formatInteger(cartItem.count*cartItem.product.price, 0, 'COMMA')}원|"></span>
                 </div>
-                <div class="border border-gray-300 rounded-lg ml-[4%] h-[40px] flex items-center justify-self-end">
+                <div class="border border-gray-300 rounded-lg ml-[4%] h-[40px] flex items-center justify-self-end hover:bg-[#252933] hover:border-[#252933] hover:text-white">
                     <button class="px-4 py-1 text-sm">바로구매</button>
                 </div>
             </div>

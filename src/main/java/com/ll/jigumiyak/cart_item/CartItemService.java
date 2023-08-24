@@ -24,6 +24,11 @@ public class CartItemService {
         return cartItem;
     }
 
+    public CartItem getCartItem(Long cartItemId) {
+        return this.cartItemRepository.findById(cartItemId)
+                .orElse(null);
+    }
+
     public CartItem getCartItemByProductAndCart(Product product, Cart cart) {
 
         CartItem cartItem = this.cartItemRepository.findByProductAndCart(product, cart)
@@ -45,4 +50,6 @@ public class CartItemService {
 
         this.cartItemRepository.save(cartItem);
     }
+
+
 }
