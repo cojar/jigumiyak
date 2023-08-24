@@ -16,6 +16,8 @@
       <th class="w-36">카테고리</th>
       <th class="w-48">제목</th>
       <th>내용</th>
+      <th class="w-36">작성자</th>
+      <th class="w-48">작성일시</th>
       <th class="w-24">답변</th>
       <th class="w-24">이메일</th>
       <th class="w-24">버튼</th>
@@ -32,10 +34,18 @@
         <div th:if="${inquiry.category == 'user'}">회원</div>
         <div th:if="${inquiry.category == 'other'}">사이트 이용/기타</div>
       </td>
-      <td th:text="${inquiry.subject}" class="w-1/4"></td>
-      <td th:text="${inquiry.content}" class="px-5"></td>
-      <td th:text="${inquiry.state}" class="text-center"></td>
-      <td th:text="${inquiry.email}" class="text-center"></td>
+      <td class="w-1/5"><a th:href="@{|/admin/inquiry/${inquiry.id}|}" th:text="${inquiry.subject}"></a></td>
+      <td class="px-5"><a th:href="@{|/admin/inquiry/${inquiry.id}|}" th:text="${inquiry.content}" ></a></td>
+      <td th:text="${inquiry.inquirer.loginId}"></td>
+      <td class="text-center" th:text="${#temporals.format(inquiry.createDate, 'yyyy-MM-dd HH:mm')}"></td>
+      <td class="text-center">
+        <div th:if="${inquiry.state == false}">답변대기</div>
+        <div th:if="${inquiry.state == true}">답변완료</div>
+      </td>
+      <td class="text-center">
+        <div th:if="${inquiry.email == false}">미신청</div>
+        <div th:if="${inquiry.email == true}">신청</div>
+      </td>
       <td class="text-center">
         <a href="javascript:void(0);" th:data-uri="@{|/inquiry/delete/${inquiry.id}|}" sec:authorize="isAuthenticated()"
            class="delete border rounded-lg p-1 hover:bg-gray-200" th:text="삭제"></a>

@@ -63,4 +63,11 @@ public class InquiryService {
     public void delete(Inquiry inquiry) {
         this.inquiryRepository.delete(inquiry);
     }
+
+    public void updateState (Inquiry inquiry, boolean state) {
+        inquiry = inquiry.toBuilder()
+                .state(state)
+                .build();
+        this.inquiryRepository.save(inquiry);
+    }
 }

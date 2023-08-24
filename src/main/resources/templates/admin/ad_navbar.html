@@ -15,53 +15,54 @@
   }
 </style>
 <div class="navbar-Container">
+  <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
   <div class="min-h-screen w-full flex justify-between">
     <div class="fixed h-screen flex flex-col justify-between items-center w-64 bg-white shadow p-6 z-50">
-      <div class="w-52 inline-flex flex-col space-y-2">
+      <div class="w-64 space-y-2 mx-auto">
 
         <a th:href="@{/admin}" class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
           <i class="fa-solid fa-house fa-lg" style="color: #A5CDCD; width:40px;"></i>
-          <span class="font-medium select-none ">HOME</span>
+          <span>HOME</span>
         </a>
 
-        <a href="#" class="flex items-center py-2 cursor-pointer  hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
+        <a href="#" class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
           <i class="fa-solid fa-users fa-lg" style="color: #A5CDCD; width:40px;"></i>
-          <span class="font-medium select-none">User manager</span>
+          <span>User manager</span>
         </a>
-        <a href="#" class="flex items-center py-2 cursor-pointer  hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
+        <a href="#" class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
           <i class="fa-solid fa-bullhorn fa-lg" style="color: #A5CDCD; width:40px;"></i>
-          <span class="font-medium select-none">Notice manager</span>
+          <span>Notice manager</span>
         </a>
-        <a th:href="@{/admin/board}" class="flex items-center py-2 cursor-pointer  hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
+        <a th:href="@{/admin/board}" class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
           <i class="fa-solid fa-newspaper fa-lg" style="color: #A5CDCD; width:40px;"></i>
-          <span class="font-medium select-none">Board manager</span>
+          <span>Board manager</span>
         </a>
-        <a href="#" class="flex items-center py-2 cursor-pointer  hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
+        <a href="#" class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
           <i class="fa-solid fa-boxes-stacked fa-lg" style="color: #A5CDCD; width:40px;"></i>
-          <span class="font-medium select-none">Product manager</span>
+          <span>Product manager</span>
         </a>
-        <a href="#" class="flex items-center py-2 cursor-pointer  hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
+        <a href="#" class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
           <i class="fa-solid fa-credit-card fa-lg" style="color: #A5CDCD; width:40px;"></i>
-          <span class="font-medium select-none">Payment manager</span>
+          <span>Payment manager</span>
         </a>
-        <a href="#" class="flex items-center py-2 cursor-pointer  hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
+        <a href="#" class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
           <i class="fa-solid fa-truck fa-lg" style="color: #A5CDCD; width:40px;"></i>
-          <span class="font-medium select-none">Deliver manager</span>
+          <span>Deliver manager</span>
         </a>
-        <a th:href="@{/admin/inquiry}" class="flex items-center py-2 cursor-pointer  hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
+        <a th:href="@{/admin/inquiry}" class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
           <i class="fa-solid fa-comment-dots fa-lg" style="color: #A5CDCD; width:40px;"></i>
-          <span class="font-medium select-none">Inquiry manager</span>
+          <span>Inquiry manager</span>
         </a>
-        <a th:href="@{/index}" class="flex items-center py-2 cursor-pointer  hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
+        <a th:href="@{/index}" class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
           <i class="fa-solid fa-capsules fa-lg" style="color: #A5CDCD; width:40px;"></i>
-          <span class="font-medium select-none">JIGUMIYAK</span>
+          <span>JIGUMIYAK</span>
         </a>
       </div>
 
 
       <div class="flex items-center justify-between w-full bg-gray-100 p-4 rounded-lg">
         <div>
-          <h3 class="text-gray-900 font-semibold" sec:authorize="isAuthenticated()"
+          <h3 class="text-gray-900" sec:authorize="isAuthenticated()"
               th:text="${#authentication.getPrincipal().getUsername()}"></h3>
           <h3 class="text-gray-900 font-semibold" sec:authorize="isAnonymous()">로그인 필요</h3>
           <h4 class="text-sm text-gray-700 mt-1">관리자</h4>
