@@ -97,14 +97,14 @@ public class AdminController {
     // 문의
     @GetMapping("/inquiry")
     public String inquiry(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
-        Page<Inquiry> paging = this.inquiryService.getList(30, false);
+        Page<Inquiry> paging = this.inquiryService.getList(page, false);
         model.addAttribute("paging", paging);
         return "admin/admin_inquiry";
     }
 
     @GetMapping("/inquiry/done")
     public String inquiryDone(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
-        Page<Inquiry> paging = this.inquiryService.getList(30,true);
+        Page<Inquiry> paging = this.inquiryService.getList(page,true);
         model.addAttribute("paging", paging);
         return "admin/inquiry_done";
     }

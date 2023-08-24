@@ -3,7 +3,7 @@
   <title>ADMIN-INQUIRY</title>
 </head>
 <div layout:fragment="content" class="relative">
-
+  <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
   <table class="w-11/12 mx-auto mb-10" style="min-width:1500px">
     <thead>
     <tr class="border-b-4 border-double border-black h-12">
@@ -17,7 +17,7 @@
     </thead>
 
     <tbody>
-    <tr th:each="inquiry, loop : ${paing}" class="border-b h-8">
+    <tr th:each="inquiry, loop : ${paging}" class="border-b h-8">
       <td th:text="${inquiry.id}" class="text-center"></td>
       <td th:text="${inquiry.category}" class="text-center"></td>
       <td th:text="${inquiry.subject}"></td>
@@ -30,15 +30,40 @@
     </tr>
     </tbody>
   </table>
+
+  <!-- 페이징 -->
+  <div th:if="${!paging.isEmpty()}" class="w-full flex justify-center mb-8">
+    <ul class="w-full flex justify-center items-center">
+      <li th:classappend="${!paging.hasPrevious} ? 'disabled'" class="py-3 px-1">
+        <a class="page-link" href="javascript:void(0)" th:href="@{|?page=${paging.number-1}|}"><span>이전</span></a>
+      </li>
+
+      <li th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}" th:if="${page >= paging.number-5 and page <= paging.number+5}"
+          th:classappend="${page == paging.number} ? 'active'">
+        <a th:text="${page+1}" class="page-link p-3 mx-1 border rounded-lg hover:bg-gray-300" th:href="@{/admin/inquiry(page=${page})}"></a>
+      </li>
+
+      <li th:classappend="${!paging.hasNext} ? 'disabled'" class="page-item py-3 px-1">
+        <a class="page-link" href="javascript:void(0)" th:href="@{|?page=${paging.number+1}|}"><span>다음</span></a>
+      </li>
+    </ul>
+  </div>
 </div>
 <script layout:fragment="script" type='text/javascript'>
-const delete_elements = document.getElementsByClassName("delete");
-Array.from(delete_elements).forEach(function(element) {
-    element.addEventListener('click', function() {
-        if(confirm("정말로 삭제하시겠습니까?")) {
-            location.href = this.dataset.uri;
-        };
-    });
-});
+  const page_elements = document.getElementsByClassName("page-link");
+  Array.from(page_elements).forEach(function(element) {
+      element.addEventListener('click', function() {
+          document.getElementById('page').value = this.dataset.page;
+      });
+  });
+
+  const delete_elements = document.getElementsByClassName("delete");
+  Array.from(delete_elements).forEach(function(element) {
+      element.addEventListener('click', function() {
+          if(confirm("정말로 삭제하시겠습니까?")) {
+              location.href = this.dataset.uri;
+          };
+      });
+  });
 </script>
 </html>
