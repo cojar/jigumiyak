@@ -65,4 +65,14 @@ public class InquiryController {
         this.inquiryService.create(inquiryForm.getSubject(), inquiryForm.getContent(), inquiryForm.isEmail(), inquiryForm.getCategory(), inquirer);
         return "inquiry/inquiry_success";
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/delete/{id}")
+    public String inquiryDelete( @PathVariable("id") Long id) {
+        Inquiry inquiry = this.inquiryService.getInquiry(id);
+        this.inquiryService.delete(inquiry);
+        return "redirect:/admin/inquiry";
+    }
+
+
 }

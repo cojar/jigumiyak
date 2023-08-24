@@ -44,6 +44,13 @@ public class InquiryService {
         return this.inquiryRepository.findAllByInquirer(siteUser);
     }
 
+    public Page<Inquiry> getList(int page, boolean state) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("createDate"));
+        Pageable pageable = PageRequest.of(page, 30, Sort.by(sorts));
+        return this.inquiryRepository.findAllByState(state, pageable);
+    }
+
     public Inquiry getInquiry(Long id) {
         Optional<Inquiry> inquiry = this.inquiryRepository.findById(id);
         if (inquiry.isPresent()) {
@@ -51,5 +58,9 @@ public class InquiryService {
         } else {
             throw new DataNotFoundException("board not found");
         }
+    }
+
+    public void delete(Inquiry inquiry) {
+        this.inquiryRepository.delete(inquiry);
     }
 }

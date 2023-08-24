@@ -13,4 +13,6 @@ public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
 
     Page<Inquiry> findAllByInquirer(SiteUser inquirer, Pageable pageable);
     List<Inquiry> findAllByInquirer(SiteUser inquirer);
+
+    Page<Inquiry> findAllByState(boolean state, Pageable pageable);
 }

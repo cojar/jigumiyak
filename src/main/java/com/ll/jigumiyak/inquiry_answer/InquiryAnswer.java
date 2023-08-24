@@ -1,6 +1,7 @@
 package com.ll.jigumiyak.inquiry_answer;
 
 import com.ll.jigumiyak.base.BaseEntity;
+import com.ll.jigumiyak.inquiry.Inquiry;
 import com.ll.jigumiyak.user.SiteUser;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
@@ -20,4 +21,7 @@ public class InquiryAnswer extends BaseEntity {
 
     @ManyToOne
     private SiteUser author;
+
+    @ManyToOne
+    private Inquiry inquiry;
 }
