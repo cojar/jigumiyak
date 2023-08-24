@@ -1,63 +1,76 @@
 package com.ll.jigumiyak.cart;
 
 import com.ll.jigumiyak.cart_item.CartItem;
-import com.ll.jigumiyak.cart_item.CartItemForm;
 import com.ll.jigumiyak.product.Product;
 import com.ll.jigumiyak.product.ProductService;
 import com.ll.jigumiyak.user.SiteUser;
 import com.ll.jigumiyak.user.UserService;
-import jakarta.validation.Valid;
+import com.ll.jigumiyak.util.RsData;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.List;
 
-@Controller
+@Slf4j
+@RequestMapping("/cart")
 @RequiredArgsConstructor
+@Controller
 public class CartController {
+
     private final CartService cartService;
     private final ProductService productService;
     private final UserService userService;
 
-    @GetMapping("/cart")
-    public String myCart(Principal principal, Model model) {
-        SiteUser user = userService.getUserByLoginId(principal.getName());
-        List<CartItem> cartItemList = cartService.getCartList(user.getId());
-        // good
-        for (CartItem cartItem : cartItemList) {
-            System.out.println(cartItem.getProduct().getName());
-        }
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("")
+    public String myCart(Model model, Principal principal) {
+
+        SiteUser owner = this.userService.getUserByLoginId(principal.getName());
+
+        Cart cart = this.cartService.getCartByOwner(owner);
+
+        List<CartItem> cartItemList = cart.getCartItemList();
         model.addAttribute("cartItemList", cartItemList);
+
+        for (CartItem cartItem : cartItemList) {
+            log.info(cartItem.getProduct().getName() + ": " + cartItem.getCount());
+        }
+
         return "cart";
     }
 
-    @PostMapping("/cart/{id}")
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/add")
     @ResponseBody
-    public ResponseEntity addCart(@Valid CartItemForm cartItemForm, BindingResult bindingResult,
-                                     Principal principal, @PathVariable("id") Long id,
-                                     RedirectAttributes redirectAttributes) {
-        if (bindingResult.hasErrors()) {
-            StringBuilder sb = new StringBuilder();
-            List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+    public ResponseEntity addCartItem(@RequestParam("productId") Long productId,
+                                      @RequestParam(value = "count", defaultValue = "-1") Integer count,
+                                      Principal principal) {
 
-            for (FieldError fieldError : fieldErrors) {
-                sb.append(fieldError.getDefaultMessage());
-            }
-            redirectAttributes.addFlashAttribute("error", sb.toString());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(sb.toString());
+        log.info("productId: ", productId);
+        log.info("count: ", count);
+
+        Product product = this.productService.getProduct(productId);
+
+        if (product == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-1", "해당 상품이 존재하지 않습니다", ""));
         }
 
-        Product product = productService.getProduct(id);
+        if (count < 1) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-2", "수량을 하나 이상 선택해주세요", ""));
+        }
+
         SiteUser siteUser = userService.getUserByLoginId(principal.getName());
-        cartService.addCart(cartItemForm, siteUser, product);
-        return ResponseEntity.status(HttpStatus.OK).body("더 살래??");
+//        cartService.addCart(cartItemForm, siteUser, product);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new RsData<>("S-1", "장바구니에 상품을 담았습니다.\n이동하시겠습니까?", "/cart"));
     }
 }

@@ -1,0 +1,139 @@
+<html layout:decorate="~{layout}">
+<head>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
+
+    <!-- 데이지 UI 불러오기 -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.5/dist/full.css" rel="stylesheet" type="text/css" />
+    <!-- 테일윈드 불러오기 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 토스 페이먼츠 API -->
+    <script src="https://js.tosspayments.com/v1"></script>
+    <!-- 주소 api 불러오기 -->
+    <script type="text/javascript" src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/purchase.css}">
+
+    <title>PURCHASE</title>
+</head>
+<div layout:fragment="content" class="test-Container">
+    <div class="test-con mx-auto pr-1 h-full mt-[128px]">
+        <form id="purchaseForm" action="" th:object="${purchaseForm}">
+            <h5 class="border-b-4 border-double border-gray-300 text-2xl pt-5">주문하기</h5>
+            <div class="h-auto w-[70%] mr-auto px-4 py-4 my-[20px] shadow">
+                <h6 class="text-xl border-b-2 border-gray-300">주문고객정보</h6>
+                <div class="flex mt-5 items-center">
+                    <div class="flex-[0_0_15%]">
+                        <span class="label-text">아이디</span>
+                    </div>
+                    <div class="flex-auto gap-2 flex">
+                        <input type="text" class="input input-bordered flex-auto" disabled th:value="${purchaser.loginId}">
+                    </div>
+                </div>
+                <div class="flex mt-5 items-center">
+                    <div class="flex-[0_0_15%]">
+                        <span class="label-text">이메일</span>
+                    </div>
+                    <div class="flex-auto gap-2 flex">
+                        <input type="text" class="input input-bordered flex-auto" disabled th:value="${purchaser.email}">
+                    </div>
+                </div>
+                <div class="flex mt-5 items-center">
+                    <div class="flex-[0_0_15%]">
+                        <span class="label-text">보내는 분</span>
+                    </div>
+                    <div class="flex-auto gap-2 flex">
+                        <input type="text" class="input input-bordered flex-auto" th:field="*{purchaserName}" autofocus>
+                    </div>
+                </div>
+                <div class="flex mt-5 items-center">
+                    <div class="flex-[0_0_15%]">
+                        <span class="label-text">휴대폰</span>
+                    </div>
+                    <div class="flex-auto gap-2 flex items-center">
+                        <input type="text" class="input input-bordered w-4/12" disabled value="010">
+                        <span>-</span>
+                        <input type="text" class="input input-bordered w-4/6" placeholder="'-' 없이 휴대폰 번호 입력" th:field="*{purchaserPhoneNumber}">
+                    </div>
+                </div>
+            </div>
+            <div class="h-auto w-[70%] mr-auto px-4 py-4 my-[20px] shadow">
+                <h6 class="text-xl border-b-2 border-gray-300 relative">
+                    배송지 정보
+                    <button class="btn btn-sm absolute right-0 bottom-1 px-2 border-gray-300 bg-[#A5CDCD]"
+                            type="button" th:onclick="_copyPurchaserInfo()">주문 고객과 동일</button>
+                </h6>
+                <div class="flex mt-5 items-center">
+                    <div class="flex-[0_0_15%]">
+                        <span class="label-text">받는 분</span>
+                    </div>
+                    <div class="flex-auto gap-2 flex">
+                        <input type="text" class="input input-bordered flex-auto" th:field="*{receiverName}">
+                    </div>
+                </div>
+                <div class="flex mt-5 items-center">
+                    <div class="flex-[0_0_15%]">
+                        <span class="label-text">휴대폰</span>
+                    </div>
+                    <div class="flex-auto gap-2 flex items-center">
+                        <input type="text" class="input input-bordered w-4/12" disabled value="010">
+                        <span>-</span>
+                        <input type="text" class="input input-bordered w-4/6" placeholder="'-' 없이 휴대폰 번호 입력" th:field="*{receiverPhoneNumber}">
+                    </div>
+                </div>
+                <div class="flex mt-5 items-center">
+                    <div class="flex-[0_0_15%]">
+                        <span class="label-text">주소</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" th:field="*{receiverAddress.zoneCode}"
+                               disabled placeholder="우편번호" class="zoneCode input input-bordered flex-[0_0_40%]" th:onclick="_zoneCode()">
+                        <button type="button" class="btn border-gray-300 bg-[#A5CDCD]" th:onclick="_zoneCode()">주소찾기</button>
+                    </div>
+                </div>
+                <div class="flex mt-3 items-center">
+                    <div class="flex-[0_0_15%]"></div>
+                    <div class="flex-auto">
+                        <input type="text" th:field="*{receiverAddress.mainAddress}"
+                               disabled placeholder="주소" class="mainAddress input input-bordered w-full" th:onclick="_zoneCode()">
+                    </div>
+                </div>
+                <div class="flex mt-3 items-center">
+                    <div class="flex-[0_0_15%]"></div>
+                    <div class="flex-auto">
+                        <input type="text" th:field="*{receiverAddress.subAddress}"
+                               placeholder="상세주소" class="subAddress input input-bordered w-full">
+                    </div>
+                </div>
+                <div class="flex mt-5 items-center">
+                    <div class="flex-[0_0_15%]">
+                        <span class="label-text">배송 요청사항</span>
+                    </div>
+                    <div class="flex-auto gap-2 flex">
+                        <select th:field="*{deliveryRequest}" class="select select-bordered w-full" th:onchange="_isCustomRequest()">
+                            <option value="" selected>배송 요청사항 선택</option>
+                            <option value="경비실에 맡겨주세요">경비실에 맡겨주세요</option>
+                            <option value="배송전에 미리 연락주세요">배송전에 미리 연락주세요</option>
+                            <option value="직접입력">직접입력</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="custom-delivery-request" class="flex mt-3 items-center hidden">
+                    <div class="flex-[0_0_15%]">
+                        <span class="label-text"></span>
+                    </div>
+                    <div class="flex-auto gap-2 flex">
+                        <input type="text" th:field="*{customDeliveryRequest}" class="input input-bordered flex-auto">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="hidden-parameters">
+        <input type="hidden" th:value="${price}">
+    </div>
+    <button class="button is-link" onclick="_payment();">결제하기</button>
+</div>
+<script layout:fragment="script" th:src="@{/js/purchase.js}"></script>
+</html>

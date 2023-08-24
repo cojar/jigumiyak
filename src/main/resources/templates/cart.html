@@ -9,10 +9,11 @@
             <table class="w-full">
                 <thead>
                 <tr class="border-b">
-                    <th class="py-3"></th>
-                    <th class="py-3">상품번호</th>
-                    <th>상품명</th>
-                    <th>금액</th>
+                    <th class="py-3">선택</th>
+                    <th class="py-3">상품이미지</th>
+                    <th class="py-3">상품명</th>
+                    <th class="py-3">수량</th>
+                    <th class="py-3">금액</th>
                 </tr>
                 </thead>
                 <tbody class="w-full">
@@ -28,13 +29,13 @@
                                  alt="" class="w-32 h-24 object-cover">
                         </div>
                     </td>
-                    <td th:text="${cartItem.id}"></td>
                     <td th:text="${cartItem.product.name}"></td>
+                    <td th:text="${cartItem.count}"></td>
                     <td th:text="${cartItem.product.price}"></td>
                 </tr>
                 </tbody>
             </table>
-            <button type="submit">주문??????????????</button>
+            <a href="/purchase">주문하기</a>
         </form>
     </div>
 </div>
