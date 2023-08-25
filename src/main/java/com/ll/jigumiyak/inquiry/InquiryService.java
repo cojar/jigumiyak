@@ -1,6 +1,7 @@
 package com.ll.jigumiyak.inquiry;
 
 import com.ll.jigumiyak.DataNotFoundException;
+import com.ll.jigumiyak.inquiryImg.InquiryImg;
 import com.ll.jigumiyak.user.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,13 +20,14 @@ public class InquiryService {
 
     private final InquiryRepository inquiryRepository;
 
-    public Inquiry create (String subject, String content, boolean email, String category, SiteUser inquirer) {
+    public Inquiry create (String subject, String content, boolean email, String category, SiteUser inquirer, List<InquiryImg> imgList) {
         Inquiry inquiry = Inquiry.builder()
                 .subject(subject)
                 .content(content)
                 .email(email)
                 .category(category)
                 .inquirer(inquirer)
+                .imgList(imgList)
                 .build();
 
         this.inquiryRepository.save(inquiry);
