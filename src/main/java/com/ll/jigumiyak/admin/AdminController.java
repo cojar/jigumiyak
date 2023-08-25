@@ -42,6 +42,7 @@ public class AdminController {
     }
 
     // 커뮤니티 구간
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping("/board")
     public String board(Model model, @RequestParam(value="page", defaultValue="0") int page,
                         @RequestParam(value = "kw", defaultValue = "") String kw) {
@@ -51,6 +52,7 @@ public class AdminController {
         return "admin/admin_board";
     }
 
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping("/board/{id}")
     public String comment(Model model, @PathVariable("id") Long id, @RequestParam(value="page", defaultValue="0") int page,
                           @RequestParam(value = "cmtPage", defaultValue = "0") int cmtPage) {
@@ -62,7 +64,7 @@ public class AdminController {
         return "admin/admin_board_comment";
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping("/board/delete/{id}")
     public String boardDelete(@PathVariable("id") Long id) {
         Board board = this.boardService.getBoard(id);
@@ -70,7 +72,7 @@ public class AdminController {
         return "redirect:/admin/board";
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping("/comment/delete/{id}")
     public String commentDelete( @PathVariable("id") Long id) {
         BoardComment boardComment = this.boardCommentService.getBoardComment(id);
@@ -78,7 +80,7 @@ public class AdminController {
         return String.format("redirect:/admin/board/%s", boardComment.getBoard().getId());
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping("/comment/{id}")
     public String recomment(Model model, @PathVariable("id") Long id) {
         BoardComment boardComment = this.boardCommentService.getBoardComment(id);
@@ -89,7 +91,7 @@ public class AdminController {
         return "admin/admin_board_recomment";
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping("/recomment/delete/{id}")
     public String recommentDelete( @PathVariable("id") Long id) {
         BoardRecomment boardRecomment = this.boardRecommentService.getBoareRecomment(id);
@@ -98,6 +100,7 @@ public class AdminController {
     }
 
     // 문의
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping("/inquiry")
     public String inquiry(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
         Page<Inquiry> paging = this.inquiryService.getList(page, false);
@@ -105,6 +108,7 @@ public class AdminController {
         return "admin/admin_inquiry";
     }
 
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping("/inquiry/{id}")
     public String inquiryDetail (Model model, @PathVariable("id") Long id, InquiryForm inquiryForm, InquiryAnswerForm inquiryAnswerForm) {
         Inquiry inquiry = this.inquiryService.getInquiry(id);
@@ -112,6 +116,7 @@ public class AdminController {
         return "admin/inquiry_detail";
     }
 
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping("/inquiry/done")
     public String inquiryDone(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
         Page<Inquiry> paging = this.inquiryService.getList(page,true);
@@ -119,6 +124,7 @@ public class AdminController {
         return "admin/inquiry_done";
     }
 
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping("/faq")
     public String faq(Model model) {
         List<Faq> faqList = this.faqService.getList();
