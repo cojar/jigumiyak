@@ -8,6 +8,8 @@ import com.ll.jigumiyak.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -80,7 +82,7 @@ public class CustomSecurityService extends DefaultOAuth2UserService implements U
             this.socialAccountRepository.save(socialAccount);
         }
 
-        if (user.getAuthorities().contains(new SimpleGrantedAuthority(CustomRole.BLACKLIST.getType()))) {
+        if (socialAccount.getParent().getAuthorities().contains(new SimpleGrantedAuthority(CustomRole.BLACKLIST.getType()))) {
             throw new InternalAuthenticationServiceException("블랙리스트 입니다");
         }
 
