@@ -1,0 +1,27 @@
+<html layout:decorate="~{layout}">
+<head>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>BOARD-FORM</title>
+</head>
+<div layout:fragment="content" class="test-Container">
+    <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
+    <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
+        <form th:action="@{|/product/create/${product.id}|}" th:object="${productDetailForm}" method="post" enctype="multipart/form-data">
+            <input type="file" th:value="${detailImg}" th:field="*{detailImg}"
+                   placeholder="사진 업로드" th:onchange="_getFileName(this)">
+            <button type="submit">등록하기</button>
+        </form>
+    </div>
+    <script type="text/javascript" th:inline="javascript" th:src="@{/common.js}"></script>
+    <script layout:fragment="script" type="text/javascript">
+    function _getFileName(_this) {
+    var fileValue = $(_this).val().split("\\");
+    var fileName = fileValue[fileValue.length - 1];
+
+    $(_this).siblings("div.uploaded-file-name").html(fileName);
+    $(_this).siblings("div.uploaded-file-name").addClass("active");
+    }
+    </script>
+</div>
+</html>
