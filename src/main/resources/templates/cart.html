@@ -53,7 +53,7 @@
                         <span th:id="|${cartItem.id}_price|" th:text="|${#numbers.formatInteger(cartItem.count*cartItem.product.price, 0, 'COMMA')}원|"></span>
                     </div>
                     <div class="border border-gray-300 rounded-lg ml-[4%] h-[40px] flex items-center justify-self-end hover:bg-[#252933] hover:border-[#252933] hover:text-white">
-                        <button class="px-4 py-1 text-sm" th:attr="onclick=|_directPurchase('${cartItem.id}')|">바로구매</button>
+                        <button type="button" class="px-4 py-1 text-sm" th:attr="onclick=|_directPurchase('${cartItem.id}')|">바로구매</button>
                     </div>
                 </div>
             </form>
@@ -63,9 +63,6 @@
             </div>
             <button th:onclick="_selectPurchase()">주문하기</button>
         </div>
-        <form id="directPurchaseForm" action="/purchase" method="get">
-            <input type="hidden" id="cartItemId" name="cartItemId">
-        </form>
     </div>
 </div>
 <script layout:fragment="script" th:src="@{/js/cart.js}"></script>

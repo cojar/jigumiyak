@@ -92,8 +92,7 @@ function _decreaseCount(id) {
 }
 
 function _directPurchase(id) {
-    $("#directPurchaseForm").children("#cartItemId").val(id);
-    $("#directPurchaseForm").submit();
+    location.href = "/purchase?cartItemId=" + id;
 }
 
 function _selectPurchase() {
