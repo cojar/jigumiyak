@@ -2,10 +2,12 @@ package com.ll.jigumiyak.util;
 
 import com.ll.jigumiyak.file.FileService;
 import com.ll.jigumiyak.file.GenFile;
+import com.ll.jigumiyak.security.CustomRole;
 import com.ll.jigumiyak.social_account.SocialAccount;
 import com.ll.jigumiyak.user.SiteUser;
 import com.ll.jigumiyak.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Principal;
@@ -35,5 +37,14 @@ public class CommonUtil {
         }
 
         return false;
+    }
+
+    public boolean isAdmin(Principal principal) {
+
+        SiteUser user = this.userService.getUserByLoginId(principal.getName());
+
+        if (user == null) return false;
+
+        return user.getAuthorities().contains(new SimpleGrantedAuthority(CustomRole.ADMIN.getType()));
     }
 }

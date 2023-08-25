@@ -13,8 +13,8 @@
 
             <ul class="flex menu-1">
                 <li class="menu-1__li-icon">
-                    <a th:href="@{/admin}" class="h-full flex items-center px-2 cursor-pointer">
-                        <span><i class="fa-solid fa-cart-shopping"></i></span>
+                    <a th:if="${@commonUtil.isAdmin(#authentication)}" class="h-full flex items-center px-2 cursor-pointer" href="/admin">
+                        <span>관리자</span>
                     </a>
                 </li>
                 <li class="menu-1__li-icon">
