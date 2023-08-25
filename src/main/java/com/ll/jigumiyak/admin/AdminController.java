@@ -35,6 +35,7 @@ public class AdminController {
     private final FaqService faqService;
     private final InquiryService inquiryService;
 
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping("")
     public String admin() {
         return "admin/administration";

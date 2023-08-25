@@ -13,6 +13,11 @@
 
             <ul class="flex menu-1">
                 <li class="menu-1__li-icon">
+                    <a th:href="@{/admin}" class="h-full flex items-center px-2 cursor-pointer">
+                        <span><i class="fa-solid fa-cart-shopping"></i></span>
+                    </a>
+                </li>
+                <li class="menu-1__li-icon">
                     <a class="h-full flex items-center px-2 cursor-pointer" th:attr="onclick=|_anonymous('/cart', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}')|">
                         <span><i class="fa-solid fa-cart-shopping"></i></span>
                     </a>
