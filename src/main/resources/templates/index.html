@@ -1,21 +1,72 @@
 <html layout:decorate="~{layout}">
 <head>
     <title>JIGUMIYAK</title>
+
+    <script>
+        $(document).ready(function() {
+            var screenHeight = $(window).height();
+            var currentScreen = 0;
+            var isScrolling = false;
+
+            $(window).on('wheel', function(event) {
+                if (isScrolling) {
+                    return;
+                }
+
+                if (event.originalEvent.deltaY > 0) {
+                    isScrolling = true;
+                    currentScreen++;
+                } else {
+                    isScrolling = true;
+                    currentScreen = Math.max(currentScreen - 1, 0);
+                }
+
+                $('html, body').animate({
+                    scrollTop: currentScreen * screenHeight
+                }, 'slow', function() {
+                    isScrolling = false;
+                });
+            });
+        });
+    </script>
 </head>
 <div layout:fragment="content" class="test-Container">
     <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
 
-    <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
-        <div class="relative h-full flex items-center">
-            <img src="https://img.freepik.com/free-photo/clipboard-with-pills-and-copy-space_23-2148551018.jpg?w=1380&t=st=1692000097~exp=1692000697~hmac=1d923ce3df5c1fb3cf158eceabd005b9953c3df269705b5646e7eb14e8864726" alt="survey">
-            <div class="absolute left-1/4 -m-10">
-                <div class="text-6xl font-bold">지금</div>
-                <div class="text-4xl font-bold my-5">내게 필요한</div>
-                <div class="text-5xl font-bold">영양제</div>
+    <style>
+        @font-face {
+            font-family: 'Cafe24Supermagic-Bold-v1.0';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-2@1.0/Cafe24Supermagic-Bold-v1.0.woff2') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        .mainText {
+            font-family: 'Cafe24Supermagic-Bold-v1.0';
+        }
+
+    </style>
+
+    <div class="w-screen h-screen relative">
+        <img src="https://velog.velcdn.com/images/jsr3643/post/2ddab95b-c349-4e85-b114-667566210ba8/image.png" alt="bg"
+        class="w-screen h-screen object-cover">
+        <div class="mainText absolute top-0 w-screen h-screen">
+            <div class="absolute top-1/3 left-1/4">
+                <div class="text-6xl">지금</div>
+                <div class="text-4xl text-gray-600 my-2">내게 필요한</div>
+                <div class="text-5xl">영양제</div>
+                <div class="border-b-4 border-double border-gray-400 inline-block mt-1">
+                    <a href="#">
+                        <span class="text-3xl">확인하러가기</span>
+                        <i class="fa-regular fa-hand-pointer fa-beat-fade fa-lg" style="color: #000000;"></i>
+                    </a>
+                </div>
             </div>
-            <a href="#" class="surveyBtn absolute w-32 text-2xl p-3 border border-gray-500 text-center">설문조사하러가기</a>
         </div>
     </div>
 
+    <div class="w-screen h-screen bg-red-100">
+
+    </div>
 </div>
 </html>
