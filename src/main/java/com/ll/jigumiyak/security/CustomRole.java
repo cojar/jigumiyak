@@ -13,7 +13,7 @@ public enum CustomRole {
     COMMUNITY_MANAGER("community_manager", 1, "커뮤니티 매니저"),
     SELLER("seller", 2, "판매자"),
     USER("user", 3, "회원"),
-    TEMP_USER("temp_user", 4, "임시 유저");
+    TEMP_USER("temp_user", 4, "임시 유저"),
     BLACKLIST("blacklist", 5, "블랙리스트");
 
     private String type;
