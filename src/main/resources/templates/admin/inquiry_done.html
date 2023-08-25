@@ -3,12 +3,9 @@
   <title>ADMIN-INQUIRY</title>
 </head>
 <div layout:fragment="content" class="relative">
-  <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
   <ul class="flex">
-    <li><a th:href="@{/admin/faq}" class="cursor-pointer block text-center w-32 rounded-xl p-1 m-5 border">FAQ 관리</a></li>
-    <li><a th:href="@{/admin/inquiry/done}" class="cursor-pointer block text-center w-32 rounded-xl p-1 m-5 border">답변완료 내역</a></li>
+    <li><a th:href="@{/admin/inquiry}" class="cursor-pointer block text-center w-32 rounded-xl p-1 m-5 border">답변대기 목록</a></li>
   </ul>
-
   <table class="w-11/12 mx-auto mb-10" style="min-width:1500px">
     <thead>
     <tr class="border-b-4 border-double border-black h-12">
@@ -17,7 +14,6 @@
       <th class="w-48">제목</th>
       <th>내용</th>
       <th class="w-36">작성자</th>
-      <th class="w-48">작성일시</th>
       <th class="w-24">답변</th>
       <th class="w-24">이메일</th>
       <th class="w-24">버튼</th>
@@ -37,8 +33,7 @@
       <td class="w-1/5"><a th:href="@{|/admin/inquiry/${inquiry.id}|}" th:text="${inquiry.subject}"></a></td>
       <td class="px-5"><a th:href="@{|/admin/inquiry/${inquiry.id}|}" th:text="${inquiry.content}" ></a></td>
       <td th:text="${inquiry.inquirer.loginId}"></td>
-      <td class="text-center" th:text="${#temporals.format(inquiry.createDate, 'yyyy-MM-dd HH:mm')}"></td>
-      <td class="text-center">
+      <td  class="text-center">
         <div th:if="${inquiry.state == false}">답변대기</div>
         <div th:if="${inquiry.state == true}">답변완료</div>
       </td>

@@ -82,7 +82,6 @@ public class BoardController {
         return String.format("redirect:/board/%d", b.getId());
     }
 
-
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/modify/{id}")
     public String boardModify(BoardForm boardForm, @PathVariable("id") Long id, Principal principal) {

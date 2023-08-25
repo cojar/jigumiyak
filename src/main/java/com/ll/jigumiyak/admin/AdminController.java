@@ -8,6 +8,10 @@ import com.ll.jigumiyak.board_recomment.BoardRecomment;
 import com.ll.jigumiyak.board_recomment.BoardRecommentService;
 import com.ll.jigumiyak.faq.Faq;
 import com.ll.jigumiyak.faq.FaqService;
+import com.ll.jigumiyak.inquiry.Inquiry;
+import com.ll.jigumiyak.inquiry.InquiryForm;
+import com.ll.jigumiyak.inquiry.InquiryService;
+import com.ll.jigumiyak.inquiry_answer.InquiryAnswerForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,6 +33,7 @@ public class AdminController {
     private final BoardCommentService boardCommentService;
     private final BoardRecommentService boardRecommentService;
     private final FaqService faqService;
+    private final InquiryService inquiryService;
 
     @GetMapping("")
     public String admin() {
@@ -93,8 +98,24 @@ public class AdminController {
 
     // 문의
     @GetMapping("/inquiry")
-    public String inquiry() {
+    public String inquiry(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
+        Page<Inquiry> paging = this.inquiryService.getList(page, false);
+        model.addAttribute("paging", paging);
         return "admin/admin_inquiry";
+    }
+
+    @GetMapping("/inquiry/{id}")
+    public String inquiryDetail (Model model, @PathVariable("id") Long id, InquiryForm inquiryForm, InquiryAnswerForm inquiryAnswerForm) {
+        Inquiry inquiry = this.inquiryService.getInquiry(id);
+        model.addAttribute("inquiry", inquiry);
+        return "admin/inquiry_detail";
+    }
+
+    @GetMapping("/inquiry/done")
+    public String inquiryDone(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
+        Page<Inquiry> paging = this.inquiryService.getList(page,true);
+        model.addAttribute("paging", paging);
+        return "admin/inquiry_done";
     }
 
     @GetMapping("/faq")

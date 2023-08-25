@@ -1,6 +1,8 @@
 package com.ll.jigumiyak.inquiry;
 
+import com.ll.jigumiyak.inquiry_answer.InquiryAnswer;
 import com.ll.jigumiyak.inquiry_answer.InquiryAnswerForm;
+import com.ll.jigumiyak.inquiry_answer.InquiryAnswerService;
 import com.ll.jigumiyak.user.SiteUser;
 import com.ll.jigumiyak.user.UserService;
 import jakarta.validation.Valid;
@@ -22,6 +24,7 @@ public class InquiryController {
 
     private final InquiryService inquiryService;
     private final UserService userService;
+    private final InquiryAnswerService inquiryAnswerService;
 
     @GetMapping("")
     public String inquiry() {
@@ -45,6 +48,9 @@ public class InquiryController {
     public String detail(Model model, @PathVariable("id") Long id, InquiryForm inquiryForm, InquiryAnswerForm inquiryAnswerForm) {
         Inquiry inquiry = this.inquiryService.getInquiry(id);
         model.addAttribute("inquiry", inquiry);
+
+        List<InquiryAnswer> answerList = this.inquiryAnswerService.getList(inquiry);
+        model.addAttribute("answerList", answerList);
         return "inquiry/inquiry_detail";
     }
 
@@ -65,4 +71,14 @@ public class InquiryController {
         this.inquiryService.create(inquiryForm.getSubject(), inquiryForm.getContent(), inquiryForm.isEmail(), inquiryForm.getCategory(), inquirer);
         return "inquiry/inquiry_success";
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/delete/{id}")
+    public String inquiryDelete( @PathVariable("id") Long id) {
+        Inquiry inquiry = this.inquiryService.getInquiry(id);
+        this.inquiryService.delete(inquiry);
+        return "redirect:/admin/inquiry";
+    }
+
+
 }

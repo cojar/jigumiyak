@@ -45,7 +45,7 @@
             </div>
 
             <div class="mt-5 text-gray-500">
-                <input type="checkbox" name="xxx" value="yyy" > 답변 알림 이메일로 받기
+                <input type="checkbox" name="email" th:value="true" th:field="*{email}"> 답변 알림 이메일로 받기
             </div>
             <div class="flex justify-center">
                 <input type="submit" value="등록하기" class="block text-center w-32 rounded-xl p-3 my-5 mx-2 cursor-pointer" style="background:#E9B384;" id="saveButton">
