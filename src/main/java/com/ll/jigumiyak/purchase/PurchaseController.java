@@ -29,6 +29,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -45,8 +46,11 @@ public class PurchaseController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("")
-    public String purchase(PurchaseForm purchaseForm,
+    public String purchase(@RequestParam List<Long> cartItemId,
+                           PurchaseForm purchaseForm,
                            Model model, Principal principal) {
+
+        log.info("cartItem size: " + cartItemId.size());
 
         SiteUser purchaser = this.userService.getUserByLoginId(principal.getName());
 
