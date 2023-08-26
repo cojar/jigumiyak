@@ -8,6 +8,8 @@ import com.ll.jigumiyak.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -32,6 +34,10 @@ public class CustomSecurityService extends DefaultOAuth2UserService implements U
 
         SiteUser user = this.userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new BadCredentialsException("가입된 통합회원 계정이 아닙니다"));
+
+        if (user.getAuthorities().contains(new SimpleGrantedAuthority(CustomRole.BLACKLIST.getType()))) {
+            throw new BadCredentialsException("블랙리스트 입니다");
+        }
 
         return new CustomDetails(user);
     }
@@ -74,6 +80,10 @@ public class CustomSecurityService extends DefaultOAuth2UserService implements U
                     .build();
 
             this.socialAccountRepository.save(socialAccount);
+        }
+
+        if (socialAccount.getParent().getAuthorities().contains(new SimpleGrantedAuthority(CustomRole.BLACKLIST.getType()))) {
+            throw new InternalAuthenticationServiceException("블랙리스트 입니다");
         }
 
         return new CustomDetails(socialAccount.getParent());

@@ -33,6 +33,7 @@
           <div class="mx-8" th:text="${inquiry.subject}"></div>
           <div class="text-sm text-white bg-gray-400 px-2 pt-1 rounded-lg" th:if="${inquiry.state == false}">답변대기</div>
           <div class="text-sm text-white bg-green-600 px-2 pt-1 rounded-lg" th:if="${inquiry.state == true}">답변완료</div>
+          <div class="text-sm text-white px-2 pt-1 rounded-lg ml-3" th:if="${inquiry.email == true}" style="background:darkorange;">메일알림</div>
         </div>
         <div class="text-gray-500" th:text="${#temporals.format(inquiry.createDate, 'yyyy-MM-dd HH:mm')}"></div>
       </a>

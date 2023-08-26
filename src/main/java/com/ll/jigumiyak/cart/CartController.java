@@ -1,6 +1,7 @@
 package com.ll.jigumiyak.cart;
 
 import com.ll.jigumiyak.cart_item.CartItem;
+import com.ll.jigumiyak.cart_item.CartItemService;
 import com.ll.jigumiyak.product.Product;
 import com.ll.jigumiyak.product.ProductService;
 import com.ll.jigumiyak.user.SiteUser;
@@ -25,6 +26,7 @@ import java.util.List;
 public class CartController {
 
     private final CartService cartService;
+    private final CartItemService cartItemService;
     private final ProductService productService;
     private final UserService userService;
 
@@ -53,8 +55,8 @@ public class CartController {
                                       @RequestParam(value = "count", defaultValue = "-1") Integer count,
                                       Principal principal) {
 
-        log.info("productId: ", productId);
-        log.info("count: ", count);
+        log.info("productId: " + productId);
+        log.info("count: " + count);
 
         Product product = this.productService.getProduct(productId);
 
@@ -68,8 +70,12 @@ public class CartController {
                     .body(new RsData<>("F-2", "수량을 하나 이상 선택해주세요", ""));
         }
 
-        SiteUser siteUser = userService.getUserByLoginId(principal.getName());
-//        cartService.addCart(cartItemForm, siteUser, product);
+        SiteUser owner = this.userService.getUserByLoginId(principal.getName());
+        Cart cart = this.cartService.getCartByOwner(owner);
+        CartItem cartItem = this.cartItemService.getCartItemByProductAndCart(product, cart);
+
+        this.cartItemService.updateCount(count, cartItem);
+
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new RsData<>("S-1", "장바구니에 상품을 담았습니다.\n이동하시겠습니까?", "/cart"));
     }

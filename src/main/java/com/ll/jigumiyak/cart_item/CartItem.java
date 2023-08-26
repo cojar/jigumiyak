@@ -19,8 +19,8 @@ public class CartItem extends BaseEntity {
     private Integer count;
 
     @ManyToOne
-    private Cart cart;
+    private Product product;
 
     @ManyToOne
-    private Product product;
+    private Cart cart;
 }
