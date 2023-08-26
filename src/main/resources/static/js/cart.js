@@ -1,3 +1,18 @@
+$(function() {
+
+    $(window).scroll(function() {
+
+        let scroll = window.scrollY;
+        let subTitleHeight = $("h5#sub-title").outerHeight();
+
+        if (scroll > subTitleHeight) {
+            $("#total-amount-info").css("top", scroll);
+        } else {
+            $("#total-amount-info").css("top", "56px");
+        }
+    })
+})
+
 function _toggleAllItemSelect() {
     if ($("#select-all:checked").length == 1) {
         $("input.item-select").prop("checked", true);
@@ -6,6 +21,8 @@ function _toggleAllItemSelect() {
         $("input.item-select").prop("checked", false);
         $("input.item-value").removeAttr("name");
     }
+
+    _refreshTotalAmount();
 }
 
 function _toggleItemSelect(_this) {
@@ -25,12 +42,14 @@ function _toggleItemSelect(_this) {
     } else {
         $("#select-all").prop("checked", true);
     }
+
+    _refreshTotalAmount();
 }
 
 function _increaseCount(id) {
 
     let count = $("#" + id + "_count");
-    let price = $("#" + id + "_price");
+    let amount = $("#" + id + "_amount");
     let disabled = $("#" + id + "_decrease");
 
     $.ajax({
@@ -47,10 +66,11 @@ function _increaseCount(id) {
         success: function(res) {
             console.log(res.code + ": " + res.message);
             count.text(res.data.count);
-            price.text(res.data.price);
+            amount.text(res.data.amount);
             if (res.data.count > 1) {
                 disabled.removeAttr("disabled");
             }
+            _refreshTotalAmount();
         },
         error: function(res) {
             console.log(res.responseJSON.code + ": " + res.responseJSON.message);
@@ -62,7 +82,7 @@ function _increaseCount(id) {
 function _decreaseCount(id) {
 
     let count = $("#" + id + "_count");
-    let price = $("#" + id + "_price");
+    let amount = $("#" + id + "_amount");
     let disabled = $("#" + id + "_decrease");
 
     $.ajax({
@@ -79,10 +99,11 @@ function _decreaseCount(id) {
         success: function(res) {
             console.log(res.code + ": " + res.message);
             count.text(res.data.count);
-            price.text(res.data.price);
+            amount.text(res.data.amount);
             if (res.data.count <= 1) {
                 disabled.attr("disabled", true);
             }
+            _refreshTotalAmount();
         },
         error: function(res) {
             console.log(res.responseJSON.code + ": " + res.responseJSON.message);
@@ -125,6 +146,7 @@ function _selectDelete() {
                 $.each(res.data, function(key, value){
                     $(value).remove();
                 });
+                _refreshTotalAmount();
             },
             error: function(res) {
                 console.log(res.responseJSON.code + ": " + res.responseJSON.message);
@@ -134,4 +156,20 @@ function _selectDelete() {
     } else {
         alert("삭제할 상품을 1개 이상 선택해주세요");
     }
+}
+
+function _refreshTotalAmount() {
+
+    let totalAmount = 0;
+
+    $("input.item-value[name=cartItemId]").each(function() {
+
+        let count = $("#" + $(this).val() + "_count");
+        let price = $("#" + $(this).val() + "_price");
+        let amount = $("#" + $(this).val() + "_amount");
+
+        totalAmount += count.text() * price.val();
+    })
+
+    $("#total-amount").text(totalAmount.toLocaleString() + "원");
 }
