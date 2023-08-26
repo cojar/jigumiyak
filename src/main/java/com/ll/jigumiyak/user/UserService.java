@@ -1,6 +1,7 @@
 package com.ll.jigumiyak.user;
 
 import com.ll.jigumiyak.address.Address;
+import com.ll.jigumiyak.inquiry.Inquiry;
 import com.ll.jigumiyak.security.CustomRole;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -62,6 +63,37 @@ public class UserService {
             content += "<span>지금이약 [" + titleType + "] 입니다.</span><br>";
             content += "<span>아래 " + contentType + " 입력해주세요.</span>";
             content += "<h2 style='color: indigo; text-align: center'>" + code + "</h2>";
+            content += "</div>";
+            content += "</div>";
+
+            helper.setTo(email);
+            helper.setSubject(title);
+            helper.setText(content, true);
+
+            this.javaMailSender.send(mimeMessage);
+
+            return true;
+
+        } catch (Exception e) {
+
+            return false;
+        }
+    }
+    public boolean sendEmail(Inquiry inquiry, String email, String titleType) {
+        Long id = inquiry.getId();
+
+        String url = String.format("https://jigumiyak/inquiry/list/%s", id);
+
+        try {
+            MimeMessage mimeMessage = this.javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+            String title = "지금이약 " + titleType + " 발송 메일입니다.";
+            String content = "<div style='text-align: center'>";
+            content += "<div style='border: 2px solid black; display: inline-block; padding: 10px; text-align: start'>";
+            content += "<span>지금이약 [" + titleType + "] 입니다.</span><br>";
+            content += "<h2 style='color: indigo; text-align: center'>답변이 등록되었습니다.</h2>";
+            content += "<a href='" + url + "' style='color: indigo; text-align: center;'>지금이약 홈페이지</a>";
             content += "</div>";
             content += "</div>";
 
