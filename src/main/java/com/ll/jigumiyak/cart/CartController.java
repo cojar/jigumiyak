@@ -41,9 +41,15 @@ public class CartController {
         List<CartItem> cartItemList = cart.getCartItemList();
         model.addAttribute("cartItemList", cartItemList);
 
+        int totalAmount = 0;
+
         for (CartItem cartItem : cartItemList) {
             log.info(cartItem.getProduct().getName() + ": " + cartItem.getCount());
+            totalAmount += cartItem.getCount() * cartItem.getProduct().getPrice();
         }
+
+        log.info(String.format("totalAmount: %,d원", totalAmount));
+        model.addAttribute("totalAmount", totalAmount);
 
         return "cart";
     }
