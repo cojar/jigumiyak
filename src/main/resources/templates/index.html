@@ -45,6 +45,10 @@
             font-family: 'Cafe24Supermagic-Bold-v1.0';
         }
 
+        .btns {
+            font-family: 'Cafe24Supermagic-Bold-v1.0';
+        }
+
     </style>
 
     <div class="w-screen h-screen relative">
@@ -65,8 +69,38 @@
         </div>
     </div>
 
-    <div class="w-screen h-screen bg-red-100">
-
+    <div class="w-screen h-screen relative">
+        <img src="https://images.unsplash.com/photo-1555850267-89eb167e9667?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt=""
+             class="w-screen h-screen object-cover">
+        <div class="h-full w-full flex items-center flex-wrap absolute top-0 left-1/2"
+             style="max-width:1280px; transform: translateX(-50%);">
+            <div class="btns w-full">
+                <div class="w-full h-24 my-5 flex justify-center">
+                    <a th:href="@{/product}" class="w-2/3 rounded-2xl flex items-center justify-between"
+                       style="background:#7C9D96;">
+                        <span class="text-3xl ml-8 border-b border-black border-opacity-0 hover:border-opacity-100">
+                            영양제 찾기
+                        </span>
+                        <span class="mr-8">>></span>
+                    </a>
+                </div>
+                <div class="w-full h-24 mb-5 flex justify-center">
+                    <a th:href="@{/board}" class="w-2/3 rounded-2xl flex items-center justify-between" style="background:#F4F2DE;">
+                        <span class="text-3xl ml-8 border-b border-black border-opacity-0 hover:border-opacity-100">
+                            커뮤니티 바로가기
+                        </span>
+                        <span class="mr-8">>></span>
+                    </a>
+                </div>
+                <div class="w-full h-12 flex justify-center" th:each="notice, loop : ${paging}">
+                    <a th:href="@{|/notice/${notice.id}|}" class="w-2/3 bg-gray-300 rounded-2xl flex items-center">
+                        <span class="ml-8 w-1/6">[공지사항]</span>
+                        <span class="mx-3 w-full" th:text="${notice.title}"></span>
+                        <span class="mr-8">>></span>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 </html>
