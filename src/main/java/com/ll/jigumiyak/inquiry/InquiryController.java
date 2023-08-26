@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
@@ -72,13 +73,13 @@ public class InquiryController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
-    public String inquiryCreate (@Valid InquiryForm inquiryForm, BindingResult bindingResult, Principal principal) {
+    public String inquiryCreate (@Valid InquiryForm inquiryForm, BindingResult bindingResult, Principal principal) throws IOException {
         if (bindingResult.hasErrors()) {
             return "inquiry/inquiry_form";
         }
         SiteUser inquirer = this.userService.getUserByLoginId(principal.getName());
 
-        this.inquiryService.create(inquiryForm.getSubject(), inquiryForm.getContent(), inquiryForm.isEmail(), inquiryForm.getCategory(), inquirer, inquiryForm.getImgList());
+        this.inquiryService.create(inquiryForm.getSubject(), inquiryForm.getContent(), inquiryForm.isEmail(), inquiryForm.getCategory(), inquirer, inquiryForm.getImg());
         return "inquiry/inquiry_success";
     }
 

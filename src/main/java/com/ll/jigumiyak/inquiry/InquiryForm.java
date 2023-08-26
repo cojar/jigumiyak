@@ -1,11 +1,9 @@
 package com.ll.jigumiyak.inquiry;
 
-import com.ll.jigumiyak.inquiryImg.InquiryImg;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -23,5 +21,5 @@ public class InquiryForm {
 
     private boolean state;
 
-    private List<InquiryImg> imgList;
+    private MultipartFile img;
 }

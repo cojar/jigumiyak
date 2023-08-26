@@ -17,7 +17,7 @@
                 <li class="text-gray-500 pt-1">- 고객상담센터 답변가능시간 오전 9시~오후 6시(토/일/공휴일 제외)</li>
             </ul>
         </div>
-        <form th:object="${inquiryForm}" method="post">
+        <form th:object="${inquiryForm}" method="post" enctype="multipart/form-data">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <div th:replace="~{form_errors :: formErrorsFragment}"></div>
             <div class="mt-5">
@@ -40,8 +40,9 @@
                 <textarea th:field="*{content}" class="block border w-full rounded-lg p-3 resize-none" rows="20"></textarea>
             </div>
 
-            <div class="mt-5">
-                <div class="w-full bg-gray-400 p-3 rounded-lg text-center text-white"><i class="fa-solid fa-camera fa-lg" style="color: #ffffff;"></i> 사진 첨부하기</div>
+            <div class="mt-5 w-full">
+                <label for="img" class="block cursor-pointer w-full bg-gray-400 p-3 rounded-lg text-center text-white"><i class="fa-solid fa-camera fa-lg" style="color: #ffffff;"></i> 사진 첨부하기</label>
+                <input type="file" th:value="${img}" th:field="*{img}" class="input-field hidden" th:onchange="_getFileName(this)">
             </div>
 
             <div class="mt-5 text-gray-500">
@@ -86,5 +87,13 @@
         // Initial button color update
         updateSaveButtonColor();
     });
+
+    function _getFileName(_this) {
+        var fileValue = $(_this).val().split("\\");
+        var fileName = fileValue[fileValue.length - 1];
+
+        $(_this).siblings("div.uploaded-file-name").html(fileName);
+        $(_this).siblings("div.uploaded-file-name").addClass("active");
+    }
 </script>
 </html>
