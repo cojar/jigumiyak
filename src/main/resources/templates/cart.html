@@ -14,9 +14,9 @@
     <title>CART-LIST</title>
 </head>
 <div layout:fragment="content" class="test-Container">
-    <div class="test-con mx-auto pr-1 h-full mt-[128px]">
-        <h5 class="border-b-4 border-double border-gray-300 text-2xl pt-5">장바구니</h5>
-        <div class="h-auto w-[70%] mr-auto px-4 py-4 my-[20px]">
+    <div class="test-con mx-auto pr-1 h-full mt-[128px] relative">
+        <h5 id="sub-title" class="border-b-4 border-double border-gray-300 text-2xl pt-5">장바구니</h5>
+        <div class="h-auto w-[75%] mr-auto px-4 py-4 my-[20px]">
             <div class="flex justify-between items-center border-b-2 border-gray-300 px-4 pb-2">
                 <div class="flex items-center gap-2">
                     <input type="checkbox" checked id="select-all" class="cursor-pointer accent-[#A5CDCD] h-4 w-4"
@@ -25,6 +25,10 @@
                 </div>
                 <div class="cursor-pointer flex text-sm" th:onclick="_selectDelete()">선택 삭제</div>
             </div>
+            <div id="empty-cart" class="border-b border-gray-300 flex flex-col items-center gap-5 px-4 py-8" th:classappend="${#lists.size(cartItemList)} > 0 ? 'hidden'">
+                <span class="text-xl my-[20px]">장바구니에 담긴 상품이 없습니다</span>
+                <a href="/product" class="border border-gray-300 px-5 py-3 bg-[#A5CDCD] text-white text-sm rounded-xl">상품 보러가기</a>
+            </div>
             <form id="selectPurchaseForm" action="/purchase" method="get">
                 <div th:each="cartItem : ${cartItemList}" th:id="|${cartItem.id}_dom|"
                      class="border-b border-gray-300 flex items-center gap-5 px-4 py-8">
@@ -32,6 +36,7 @@
                         <input type="checkbox" checked th:id="${cartItem.id}" class="cursor-pointer accent-[#A5CDCD] h-4 w-4 item-select"
                                th:onclick="_toggleItemSelect(this)">
                         <input type="hidden" th:id="|${cartItem.id}_value|" class="item-value" th:name="cartItemId" th:value="${cartItem.id}">
+                        <input type="hidden" th:id="|${cartItem.id}_price|" class="item-price" th:value="${cartItem.product.price}">
                     </div>
                     <div class="flex-[0_0_40%] flex items-center gap-5">
                         <img th:if="${cartItem.product.thumbnailImg != null}"
@@ -50,18 +55,22 @@
                         </button>
                     </div>
                     <div class="flex justify-end">
-                        <span th:id="|${cartItem.id}_price|" th:text="|${#numbers.formatInteger(cartItem.count*cartItem.product.price, 0, 'COMMA')}원|"></span>
+                        <span th:id="|${cartItem.id}_amount|" th:text="|${#numbers.formatInteger(cartItem.count*cartItem.product.price, 0, 'COMMA')}원|"></span>
                     </div>
                     <div class="border border-gray-300 rounded-lg ml-[4%] h-[40px] flex items-center justify-self-end hover:bg-[#252933] hover:border-[#252933] hover:text-white">
                         <button type="button" class="px-4 py-1 text-sm" th:attr="onclick=|_directPurchase('${cartItem.id}')|">바로구매</button>
                     </div>
                 </div>
             </form>
-            <div>
-                <span>가격: </span>
-                <span id="total-price"></span>
+        </div>
+        <div id="total-amount-info" class="h-auto w-[24%] my-[20px] absolute top-[56px] right-[1%]">
+            <div class="px-5 py-5 border-t border-l border-r border-gray-300 rounded-t-xl flex justify-between">
+                <span>결제 예상 금액</span>
+                <span id="total-amount" th:text="|${#numbers.formatInteger(totalAmount, 0, 'COMMA')}원|"></span>
             </div>
-            <button th:onclick="_selectPurchase()">주문하기</button>
+            <div class="px-5 py-3 border-b border-l border-r border-gray-300 rounded-b-xl cursor-pointer text-center bg-[#A5CDCD]" th:onclick="_selectPurchase()">
+                <span class="text-white">주문하기</span>
+            </div>
         </div>
     </div>
 </div>

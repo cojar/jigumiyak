@@ -1,6 +1,8 @@
 package com.ll.jigumiyak.inquiry;
 
 import com.ll.jigumiyak.DataNotFoundException;
+import com.ll.jigumiyak.file.FileService;
+import com.ll.jigumiyak.file.GenFile;
 import com.ll.jigumiyak.user.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -8,7 +10,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,14 +22,18 @@ import java.util.Optional;
 public class InquiryService {
 
     private final InquiryRepository inquiryRepository;
+    private final FileService fileService;
 
-    public Inquiry create (String subject, String content, boolean email, String category, SiteUser inquirer) {
+    public Inquiry create (String subject, String content, boolean email, String category, SiteUser inquirer, MultipartFile file) throws IOException {
+        GenFile img = this.fileService.upload(file, "inquiry", "img", inquirer.getLoginId());
+
         Inquiry inquiry = Inquiry.builder()
                 .subject(subject)
                 .content(content)
                 .email(email)
                 .category(category)
                 .inquirer(inquirer)
+                .img(img)
                 .build();
 
         this.inquiryRepository.save(inquiry);

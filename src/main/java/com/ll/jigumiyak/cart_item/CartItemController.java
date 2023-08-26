@@ -41,7 +41,7 @@ public class CartItemController {
 
         Map<String, Object> cartItemAttributes = new HashMap<>();
         cartItemAttributes.put("count", cartItem.getCount());
-        cartItemAttributes.put("price", String.format("%,d원", cartItem.getCount() * cartItem.getProduct().getPrice()));
+        cartItemAttributes.put("amount", String.format("%,d원", cartItem.getCount() * cartItem.getProduct().getPrice()));
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new RsData<>("S-1", "해당 아이템의 개수를 증가시켰습니다", cartItemAttributes));
@@ -70,7 +70,7 @@ public class CartItemController {
 
         Map<String, Object> cartItemAttributes = new HashMap<>();
         cartItemAttributes.put("count", cartItem.getCount());
-        cartItemAttributes.put("price", String.format("%,d원", cartItem.getCount() * cartItem.getProduct().getPrice()));
+        cartItemAttributes.put("amount", String.format("%,d원", cartItem.getCount() * cartItem.getProduct().getPrice()));
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new RsData<>("S-1", "해당 아이템의 개수를 감소시켰습니다", cartItemAttributes));
