@@ -21,11 +21,9 @@ public class Survey extends BaseEntity {
     private String question;
     @OneToMany(mappedBy = "survey", cascade = CascadeType.ALL)
     private List<SurveyAnswer> surveyAnswerList;
+
+//    @ManyToOne
+//    private SiteUser surveyee;
     @ManyToOne
-    private SiteUser surveyee;
-    @ManyToMany
-    @JoinTable(name = "survey_category_mapping",
-            joinColumns = @JoinColumn(name = "survey_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private List<NutrientCategory> categoryList;
+    private NutrientCategory nutrientCategory;
 }

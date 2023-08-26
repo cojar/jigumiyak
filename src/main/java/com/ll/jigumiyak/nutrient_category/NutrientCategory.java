@@ -24,6 +24,6 @@ public class NutrientCategory extends BaseEntity {
     @ManyToMany(mappedBy = "categoryList")
     private List<Nutrient> nutrientList;
 
-    @ManyToMany(mappedBy = "categoryList")
+    @OneToMany(mappedBy = "nutrientCategory")
     private List<Survey> surveyList;
 }

@@ -25,6 +25,8 @@ public class Nutrient extends BaseEntity {
     private String efficacy;
 
     private String dailyIntake;
+    @OneToMany(mappedBy = "nutrient", cascade = CascadeType.ALL)
+    private List<NutrientAnswer> nutrientAnswerList;
 
     @ManyToMany
     @JoinTable(name = "nutrient_category_mapping",
@@ -40,7 +42,4 @@ public class Nutrient extends BaseEntity {
 
     @ManyToMany(mappedBy = "nutrientList")
     private List<Product> productList;
-
-    @OneToMany(mappedBy = "nutrient", cascade = CascadeType.ALL)
-    private List<NutrientAnswer> nutrientAnswerList;
 }
