@@ -18,7 +18,16 @@
     <div class="text-lg border-b py-2" th:text="|내용 : ${inquiry.content}|"></div>
     <div class="text-lg border-b py-2 bg-blue-100 w-full h-80">아마도 사진 자리</div>
 
-    <div class="text-2xl py-2">답변</div>
+    <div class="text-2xl py-2 flex">
+      <span>답변</span>
+      <span class="flex mx-3" th:if="${inquiry.email == true}">
+        <button class="sendBtn text-base bg-green-700 text-white px-1 rounded-xl hover:bg-green-800"
+                th:data-uri="@{|/inquiry/sendEmail/${inquiry.id}|}"
+                th:onclick="_sendEmail(this)">이메일 발송</button>
+      </span>
+      <div class="alert-sendEmail text-sm text-green-700 my-auto"></div>
+    </div>
+
     <div th:each="answer : ${inquiry.answerList}">
       <div class="answer-content text-lg border-b py-2 flex justify-between">
         <div th:text="${answer.content}" class="answer-content"></div>
@@ -48,6 +57,33 @@
           };
       });
   });
+
+  function _sendEmail(_this) {
+
+    $(".alert-sendEmail").text("");
+
+    $.ajax({
+        url: _this.getAttribute("data-uri"),
+        type: "GET",
+        beforeSend : function() {
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+        },
+        success: function(res) {
+            console.log(res.code + ": " + res.message);
+            $(".alert-sendEmail").text(res.message);
+        },
+        error: function(res) {
+            if (res.responseJSON.loginId !== undefined) {
+                $(".alert-sendEmail").text(res.responseJSON.loginId.message);
+            }
+            if (res.responseJSON.email !== undefined) {
+                console.log(res.responseJSON.email.code + ": " + res.responseJSON.email.message);
+            }
+        }
+    })
+  }
 
 </script>
 </html>
