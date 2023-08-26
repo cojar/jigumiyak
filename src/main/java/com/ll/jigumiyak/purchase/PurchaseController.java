@@ -1,5 +1,7 @@
 package com.ll.jigumiyak.purchase;
 
+import com.ll.jigumiyak.cart_item.CartItem;
+import com.ll.jigumiyak.cart_item.CartItemService;
 import com.ll.jigumiyak.user.SiteUser;
 import com.ll.jigumiyak.user.UserService;
 import com.ll.jigumiyak.util.RsData;
@@ -27,10 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @RequestMapping("/purchase")
@@ -43,6 +42,7 @@ public class PurchaseController {
 
     private final PurchaseService purchaseService;
     private final UserService userService;
+    private final CartItemService cartItemService;
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("")
@@ -53,8 +53,22 @@ public class PurchaseController {
         log.info("cartItem size: " + cartItemId.size());
 
         SiteUser purchaser = this.userService.getUserByLoginId(principal.getName());
-
         model.addAttribute("purchaser", purchaser);
+
+        List<CartItem> cartItemList = new ArrayList<>();
+        int totalAmount = 0;
+
+        for (Long id : cartItemId) {
+            CartItem cartItem = this.cartItemService.getCartItem(id);
+            cartItemList.add(cartItem);
+            log.info(cartItem.getProduct().getName() + ": " + cartItem.getCount());
+            totalAmount += cartItem.getCount() * cartItem.getProduct().getPrice();
+        }
+
+        model.addAttribute("cartItemList", cartItemList);
+
+        log.info(String.format("totalAmount: %,d원", totalAmount));
+        model.addAttribute("totalAmount", totalAmount);
 
         return "purchase/purchase";
     }
