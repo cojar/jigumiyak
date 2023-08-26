@@ -17,7 +17,6 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 public class NutrientCategory extends BaseEntity {
-
     @Column
     private String categoryName;
 
@@ -25,6 +24,6 @@ public class NutrientCategory extends BaseEntity {
     @ManyToMany(mappedBy = "categoryList")
     private List<Nutrient> nutrientList;
 
-    @OneToMany(mappedBy = "nutrientCategory")
+    @ManyToMany(mappedBy = "categoryList")
     private List<Survey> surveyList;
 }

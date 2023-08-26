@@ -1,30 +1,30 @@
 package com.ll.jigumiyak.survey_answer;
 
+import com.ll.jigumiyak.base.BaseEntity;
 import com.ll.jigumiyak.nutrient.Nutrient;
-import com.ll.jigumiyak.surver_answer_score.SurveyAnswerScore;
+import com.ll.jigumiyak.nutrient_answer.NutrientAnswer;
 import com.ll.jigumiyak.survey.Survey;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class SurveyAnswer {
+public class SurveyAnswer extends BaseEntity {
     @Column
     private String answerText;
 
-    // Many-to-One 관계: 여러 답변은 하나의 질문에 속함
     @ManyToOne
     private Survey survey;
-    @ManyToOne
-    private Nutrient nutrient;
-    @Column
-    private double score;
+
+    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL)
+    private List<NutrientAnswer> nutrientAnswerList;
 }
