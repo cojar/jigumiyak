@@ -25,6 +25,10 @@
                 </div>
                 <div class="cursor-pointer flex text-sm" th:onclick="_selectDelete()">선택 삭제</div>
             </div>
+            <div id="empty-cart" class="border-b border-gray-300 flex flex-col items-center gap-5 px-4 py-8" th:classappend="${#lists.size(cartItemList)} > 0 ? 'hidden'">
+                <span class="text-xl my-[20px]">장바구니에 담긴 상품이 없습니다</span>
+                <a href="/product" class="border border-gray-300 px-5 py-3 bg-[#A5CDCD] text-white text-sm rounded-xl">상품 보러가기</a>
+            </div>
             <form id="selectPurchaseForm" action="/purchase" method="get">
                 <div th:each="cartItem : ${cartItemList}" th:id="|${cartItem.id}_dom|"
                      class="border-b border-gray-300 flex items-center gap-5 px-4 py-8">

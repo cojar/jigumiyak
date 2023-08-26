@@ -147,6 +147,10 @@ function _selectDelete() {
                     $(value).remove();
                 });
                 _refreshTotalAmount();
+
+                if ($("input.item-value[name=cartItemId]").length == 0) {
+                    $("#empty-cart").removeClass("hidden");
+                }
             },
             error: function(res) {
                 console.log(res.responseJSON.code + ": " + res.responseJSON.message);
