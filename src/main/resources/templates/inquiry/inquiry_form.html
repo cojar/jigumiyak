@@ -41,6 +41,11 @@
             </div>
 
             <div class="mt-5 w-full">
+                <div class="uploaded-file-preview w-full h-full bg-red-100">
+                    <img th:if="${inquiryForm.img != null}" th:src="@{'/inquiry/' + inquiryForm.img}" alt="Uploaded Image"
+                    class="bg-red-100 w-full h-12">
+                </div>
+                <div class="uploaded-file-name"></div>
                 <label for="img" class="block cursor-pointer w-full bg-gray-400 p-3 rounded-lg text-center text-white"><i class="fa-solid fa-camera fa-lg" style="color: #ffffff;"></i> 사진 첨부하기</label>
                 <input type="file" th:value="${img}" th:field="*{img}" class="input-field hidden" th:onchange="_getFileName(this)">
             </div>
