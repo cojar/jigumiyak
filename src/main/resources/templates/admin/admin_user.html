@@ -44,7 +44,7 @@
                 <button type="button" class="btn btn-xs text-black border-gray-300 hover:text-white" th:attr="onclick=|_withdraw('${user.id}')|">탈퇴</button>
             </td>
             <td class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2">
-                <button type="button" class="btn btn-xs text-black border-gray-300 hover:text-white" th:attr="onclick=|_black('${user.id}')|">블랙</button>
+                <button type="button" class="btn btn-xs text-black border-gray-300 hover:text-white" th:attr="onclick=|_blacklist('${user.id}')|">블랙</button>
             </td>
         </tr>
         </tbody>
@@ -84,6 +84,21 @@
             <div class="modal-action">
                 <button id="modify-authority-btn" class="btn btn-sm border-gray-300 bg-[#A5CDCD]" th:onclick="_modifyAuthority()">변경하기</button>
                 <label for="modifyAuthorityModal" class="btn btn-sm border-gray-300 bg-gray-400">닫기</label>
+            </div>
+        </div>
+    </div>
+    <!-- 모달 영역 끝 -->
+
+    <!-- 모달 영역 컨트롤 -->
+    <input type="checkbox" id="alertModal" class="modal-toggle" />
+    <!-- 모달 영역 시작 -->
+    <div class="modal">
+        <div class="modal-box">
+            <div>
+                <span id="alertModal-message"></span>
+            </div>
+            <div class="modal-action">
+                <label for="alertModal" class="btn btn-sm border-gray-300 bg-gray-400">닫기</label>
             </div>
         </div>
     </div>

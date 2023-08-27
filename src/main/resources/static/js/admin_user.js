@@ -77,3 +77,57 @@ function _modifyAuthority() {
         }
     })
 }
+
+function _withdraw(id) {
+    $("#alertModal-message").text("");
+    $.ajax({
+        url: "/user/withdraw",
+        type: "POST",
+        data: {
+            "id": id,
+        },
+        beforeSend : function() {
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+        },
+        success: function(res) {
+            console.log(res.code + ": " + res.message);
+            $("#" + res.data.id + "_authoritiesInline").text(res.data.authoritiesInline);
+            $("#alertModal-message").text(res.message);
+            $("#alertModal").prop("checked", true);
+        },
+        error: function(res) {
+            console.log(res.responseJSON.code + ": " + res.responseJSON.message);
+            $("#alertModal-message").text(res.responseJSON.message);
+            $("#alertModal").prop("checked", true);
+        }
+    })
+}
+
+function _blacklist(id) {
+    $("#alertModal-message").text("");
+    $.ajax({
+        url: "/user/blacklist",
+        type: "POST",
+        data: {
+            "id": id,
+        },
+        beforeSend : function() {
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+        },
+        success: function(res) {
+            console.log(res.code + ": " + res.message);
+            $("#" + res.data.id + "_authoritiesInline").text(res.data.authoritiesInline);
+            $("#alertModal-message").text(res.message);
+            $("#alertModal").prop("checked", true);
+        },
+        error: function(res) {
+            console.log(res.responseJSON.code + ": " + res.responseJSON.message);
+            $("#alertModal-message").text(res.responseJSON.message);
+            $("#alertModal").prop("checked", true);
+        }
+    })
+}

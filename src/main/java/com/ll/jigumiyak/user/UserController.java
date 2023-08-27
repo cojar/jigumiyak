@@ -468,7 +468,61 @@ public class UserController {
     @PostMapping("/withdraw")
     public ResponseEntity withdraw(@RequestParam("id") Long id, Principal principal) {
 
+        SiteUser user = this.userService.getUser(id);
+        SiteUser admin = this.userService.getUserByLoginId(principal.getName());
+
+        if (user.getAuthoritiesInline().contains("총관리자")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-1", "탈퇴 처리가 불가능한 회원입니다", ""));
+        }
+
+        if (!admin.getAuthoritiesInline().contains("총관리자")
+                && admin.getAuthoritiesInline().contains("관리자")
+                && user.getAuthoritiesInline().contains("관리자")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-2", "해당 회원에 대한 탈퇴 처리 권한이 부여되지 않았습니다", ""));
+        }
+
+        this.userService.withdrawUser(user);
+
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put("id", user.getId().toString());
+        attributes.put("authoritiesInline", user.getAuthoritiesInline());
+
+        log.info("modified authorities: " + user.getAuthoritiesInline());
+
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new RsData<>("S-1", "해당 회원 탈퇴 처리를 완료했습니다", ""));
+                .body(new RsData<>("S-1", "해당 회원 탈퇴 처리를 완료했습니다", attributes));
+    }
+
+    @PreAuthorize("hasAuthority('admin')")
+    @PostMapping("/blacklist")
+    public ResponseEntity blacklist(@RequestParam("id") Long id, Principal principal) {
+
+        SiteUser user = this.userService.getUser(id);
+        SiteUser admin = this.userService.getUserByLoginId(principal.getName());
+
+        if (user.getAuthoritiesInline().contains("총관리자")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-1", "블랙 처리가 불가능한 회원입니다", ""));
+        }
+
+        if (!admin.getAuthoritiesInline().contains("총관리자")
+                && admin.getAuthoritiesInline().contains("관리자")
+                && user.getAuthoritiesInline().contains("관리자")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-2", "해당 회원에 대한 블랙 처리 권한이 부여되지 않았습니다", ""));
+        }
+
+        this.userService.blacklistUser(user);
+
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put("id", user.getId().toString());
+        attributes.put("authoritiesInline", user.getAuthoritiesInline());
+
+        log.info("modified authorities: " + user.getAuthoritiesInline());
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new RsData<>("S-1", "해당 회원 블랙 처리를 완료했습니다", attributes));
     }
 }

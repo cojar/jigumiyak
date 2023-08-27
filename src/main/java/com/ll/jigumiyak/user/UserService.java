@@ -173,4 +173,22 @@ public class UserService {
 
         this.userRepository.save(user);
     }
+
+    public void withdrawUser(SiteUser user) {
+
+        user = user.toBuilder()
+                .authority(CustomRole.WITHDRAWAL_USER.getDecCode())
+                .build();
+
+        this.userRepository.save(user);
+    }
+
+    public void blacklistUser(SiteUser user) {
+
+        user = user.toBuilder()
+                .authority(CustomRole.BLACKLIST.getDecCode())
+                .build();
+
+        this.userRepository.save(user);
+    }
 }
