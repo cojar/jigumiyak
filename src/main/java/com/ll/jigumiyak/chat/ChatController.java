@@ -3,6 +3,7 @@ package com.ll.jigumiyak.chat;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Log4j2
 public class ChatController {
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/chat")
     public void getChat(HttpServletRequest request, @RequestParam String id) {
 
@@ -28,6 +30,7 @@ public class ChatController {
         log.info("@ChatController, getChat()");
     }
 
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping("/chat/master")
     public String enterChatAsMaster(HttpServletRequest request) {
 

@@ -197,18 +197,17 @@
             	 deleteOnlieList(outOne);
              }
 
-             // save or show message
-             if(myId=='master' && senderId != 'master' && receiverId != senderId) {
-            	addStagingMessage(senderId, time, message);
-             } else {
-			 	insertMessage(senderId, time, message);
-             }
+             if (myId === 'master' && senderId !== 'master' && receiverId !== senderId) {
+                  addStagingMessage(senderId, time, message);
+              } else {
+                  insertMessage(senderId, time, message);
+              }
 
+              // 마스터 상태를 업데이트합니다
+              updateMasterStatus();
 
-             // update master status
-             updateMasterStatus();
-             // scroll down
-             scrollDown();
+              // 채팅 내용을 가장 아래로 스크롤합니다
+              scrollDown();
        	 }
 
          // insert a message

@@ -127,7 +127,6 @@ body{
 .chat .chat-history .message {
     color: #444;
     padding: 13px 15px;
-    margin-bottom:15px;
     line-height: 26px;
     font-size: 16px;
     border-radius: 7px;
@@ -135,36 +134,8 @@ body{
     position: relative;
 }
 
-.chat .chat-history .message:after {
-    bottom: 100%;
-    left: 7%;
-    border: solid transparent;
-    content: " ";
-    height: 0;
-    width: 0;
-    position: absolute;
-    pointer-events: none;
-    border-bottom-color: #fff;
-    border-width: 10px;
-    margin-left: -10px
-}
-
 .chat .chat-history .my-message {
     background: #e8f1f3
-}
-
-.chat .chat-history .my-message:after {
-    bottom: 100%;
-    left: 30px;
-    border: solid transparent;
-    content: " ";
-    height: 0;
-    width: 0;
-    position: absolute;
-    pointer-events: none;
-    border-bottom-color: #e8f1f3;
-    border-width: 10px;
-    margin-left: -10px
 }
 
 .d-flex {
