@@ -1,8 +1,10 @@
-package com.ll.jigumiyak.purchase_detail;
+package com.ll.jigumiyak.purchase_item;
 
 import com.ll.jigumiyak.base.BaseEntity;
+import com.ll.jigumiyak.product.Product;
 import com.ll.jigumiyak.purchase.Purchase;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +15,12 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class PurchaseDetail extends BaseEntity {
+public class PurchaseItem extends BaseEntity {
+
+    private Integer count;
+
+    @ManyToOne
+    private Product product;
 
     @ManyToOne
     private Purchase purchase;

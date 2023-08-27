@@ -88,7 +88,7 @@ public class CartItemController {
         for (Long id : cartItemId) {
             log.info("id: " + id);
             CartItem cartItem = this.cartItemService.getCartItem(id);
-            this.cartItemService.deleteCartItem(cartItem);
+            this.cartItemService.delete(cartItem);
             deleteDomAttributes.put(id.toString(), String.format("#%s_dom", id));
         }
 

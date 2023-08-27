@@ -45,7 +45,10 @@ public class SuccessHandler implements AuthenticationSuccessHandler {
         request.getSession().removeAttribute("refererUri");
 
         SavedRequest savedRequest = this.requestCache.getRequest(request, response);
-        String redirectUri = savedRequest != null ? savedRequest.getRedirectUrl() : null;
+        String redirectUri = savedRequest != null ? savedRequest.getRedirectUrl().replaceAll("continue", "") : null;
+        if (redirectUri != null) {
+            redirectUri = redirectUri.endsWith("?") || redirectUri.endsWith("&") ? redirectUri.substring(0, redirectUri.length() - 1) : redirectUri;
+        }
         log.info(redirectUri);
 
         if (user.isTemp()) {

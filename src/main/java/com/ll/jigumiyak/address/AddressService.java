@@ -32,4 +32,8 @@ public class AddressService {
 
         this.addressRepository.save(address);
     }
+
+    public void delete(Address address) {
+        this.addressRepository.delete(address);
+    }
 }

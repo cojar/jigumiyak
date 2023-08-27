@@ -1,10 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
+<html layout:decorate="~{layout}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
 
-</body>
+    <!-- 데이지 UI 불러오기 -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.5/dist/full.css" rel="stylesheet" type="text/css" />
+    <!-- 테일윈드 불러오기 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 토스 페이먼츠 API -->
+    <script src="https://js.tosspayments.com/v1"></script>
+    <!-- 주소 api 불러오기 -->
+    <script type="text/javascript" src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+    <title>PURCHASE</title>
+</head>
+<div layout:fragment="content" class="test-Container">
+    <div class="test-con mx-auto pr-1 h-full mt-[128px] relative">
+        <h5 id="sub-title" class="border-b-4 border-double border-gray-300 text-2xl pt-5">주문상세</h5>
+        <div class="h-auto w-full mr-auto px-4 py-4 my-[20px]">
+            <h6 class="text-xl border-b-2 border-gray-300">주문정보</h6>
+            <div class="flex mt-5 items-center">
+                <span th:text="${responseStr}"></span>
+            </div>
+        </div>
+    </div>
+</div>
 </html>

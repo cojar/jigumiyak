@@ -52,7 +52,7 @@ public class CartItemService {
     }
 
 
-    public void deleteCartItem(CartItem cartItem) {
+    public void delete(CartItem cartItem) {
         this.cartItemRepository.delete(cartItem);
     }
 }
