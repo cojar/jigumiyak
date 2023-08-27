@@ -44,12 +44,6 @@ html > body {
     font-size : 16px;
   }
 }
-@media ( max-width: 1000px) {
-    .surveyBtn {
-        font-size :12px;
-        width:75px;
-    }
-}
 
 /* 탑바 */
 .top-bar {
@@ -92,25 +86,4 @@ html > body {
 .disabled {
     color:gray;
     pointer-events:none;
-}
-
-
-
-.sidebar-Container {
-    width:100px;
-    height:310px;
-    position:fixed;
-    top:65%;
-    left:90%;
-    transform: translate(-50%, 0);
-}
-
-@media ( max-width:1600px ) {
-  .sidebar-Container{
-    left:93%;
-  }
-}
-
-.surveyBtn {
-    right: 17%;
 }

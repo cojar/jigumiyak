@@ -10,6 +10,7 @@
 <body>
 <nav th:replace="~{navbar :: navbarFragment}"></nav>
 <th:block layout:fragment="content"></th:block>
+<nav th:replace="~{sidebar :: sidebarFragment}"></nav>
 <nav th:replace="~{footer :: footerFragment}"></nav>
 <script type="text/javascript" th:inline="javascript" th:src="@{/common.js}"></script>
 <!-- 자바스크립트 Start -->
