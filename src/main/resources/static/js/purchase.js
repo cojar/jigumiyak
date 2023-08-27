@@ -4,6 +4,21 @@ let successUrl = window.location.origin + path + "success";
 let failUrl = window.location.origin + path + "fail";
 let callbackUrl = window.location.origin + path + "va_callback";
 
+$(function() {
+
+    $(window).scroll(function() {
+
+        let scroll = window.scrollY;
+        let subTitleHeight = $("h5#sub-title").outerHeight();
+
+        if (scroll > subTitleHeight) {
+            $("#total-amount-info").css("top", scroll);
+        } else {
+            $("#total-amount-info").css("top", "56px");
+        }
+    })
+})
+
 function _payment() {
 
     // 결제 전 주문 엔티티 생성 및 orderId 반환

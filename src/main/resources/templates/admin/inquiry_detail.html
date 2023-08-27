@@ -15,7 +15,7 @@
   </ul>
   <div class="w-3/4 h-96 mx-auto">
     <div class="text-2xl border-b py-2" th:text="|제목 : ${inquiry.subject}|"></div>
-    <div class="text-lg border-b py-2" th:text="|내용 : ${inquiry.content}|"></div>
+    <div class="text-lg border-b py-2" th:utext="${@commonUtil.markdown(inquiry.content)}"></div>
     <img th:if="${inquiry.img != null}" th:attr="src=${@commonUtil.getFilePath(inquiry.img.id)}" alt=""
          class="w-1/2 border mt-5">
 

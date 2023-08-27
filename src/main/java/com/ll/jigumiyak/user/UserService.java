@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -125,6 +126,14 @@ public class UserService {
         return _user.isPresent();
     }
 
+    public SiteUser getUser(Long id) {
+        return this.userRepository.findById(id).orElse(null);
+    }
+
+    public List<SiteUser> getList() {
+        return this.userRepository.findAll();
+    }
+
     public SiteUser getUserByLoginId(String loginId) {
         return this.userRepository.findByLoginId(loginId).orElse(null);
     }
@@ -151,6 +160,33 @@ public class UserService {
 
         user = user.toBuilder()
                 .address(address)
+                .build();
+
+        this.userRepository.save(user);
+    }
+
+    public void modifyAuthorities(SiteUser user, Integer authority) {
+
+        user = user.toBuilder()
+                .authority(authority)
+                .build();
+
+        this.userRepository.save(user);
+    }
+
+    public void withdrawUser(SiteUser user) {
+
+        user = user.toBuilder()
+                .authority(CustomRole.WITHDRAWAL_USER.getDecCode())
+                .build();
+
+        this.userRepository.save(user);
+    }
+
+    public void blacklistUser(SiteUser user) {
+
+        user = user.toBuilder()
+                .authority(CustomRole.BLACKLIST.getDecCode())
                 .build();
 
         this.userRepository.save(user);

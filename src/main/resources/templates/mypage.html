@@ -53,10 +53,26 @@
         </div>
         <!--문의-->
         <div class="">
-            <div class="text-xl mt-3 py-2 border-b">문의내역</div>
-            <div class="h-56 bg-blue-100">내용넣는 자리</div>
+            <div class="text-xl mt-3 py-2 border-b"></div>
+            <div class="w-full mb-8" th:each="inquiry, loop : ${paging}">
+                <a th:href="@{|/inquiry/list/${inquiry.id}|}" class="block border w-full mt-5 py-4 px-5 flex justify-between"
+                th:if="${inquiry.state == false}">
+                    <div class="flex items-center">
+                        <div class="text-gray-500" th:if="${inquiry.category == 'order'}">주문/결제</div>
+                        <div class="text-gray-500" th:if="${inquiry.category == 'refund'}">환불/반품/교환</div>
+                        <div class="text-gray-500" th:if="${inquiry.category == 'delivery'}">배송</div>
+                        <div class="text-gray-500" th:if="${inquiry.category == 'user'}">회원</div>
+                        <div class="text-gray-500" th:if="${inquiry.category == 'other'}">사이트 이용/기타</div>
+                        <div class="mx-8" th:text="${inquiry.subject}"></div>
+                        <div class="text-sm text-white bg-gray-400 px-2 pt-1 rounded-lg" th:if="${inquiry.state == false}">답변대기</div>
+                        <div class="text-sm text-white bg-green-600 px-2 pt-1 rounded-lg" th:if="${inquiry.state == true}">답변완료</div>
+                        <div class="text-sm text-white px-2 pt-1 rounded-lg ml-3" th:if="${inquiry.email == true}" style="background:darkorange;">메일알림</div>
+                    </div>
+                    <div class="text-gray-500" th:text="${#temporals.format(inquiry.createDate, 'yyyy-MM-dd HH:mm')}"></div>
+                </a>
+            </div>
             <div class="h-24 flex justify-center items-center">
-                <a href="#" class="bg-white border text-xl px-5 h-12 py-2 text-gray-500">more</a>
+                <a th:href="@{/inquiry/list}" class="bg-white border text-xl px-5 h-12 py-2 text-gray-500">more</a>
             </div>
         </div>
     </div>

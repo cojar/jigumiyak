@@ -80,6 +80,7 @@ public class InquiryController {
         SiteUser inquirer = this.userService.getUserByLoginId(principal.getName());
 
         this.inquiryService.create(inquiryForm.getSubject(), inquiryForm.getContent(), inquiryForm.isEmail(), inquiryForm.getCategory(), inquirer, inquiryForm.getImg());
+
         return "inquiry/inquiry_success";
     }
 
