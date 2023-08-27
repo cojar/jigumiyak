@@ -128,21 +128,22 @@
                     </div>
                 </div>
             </div>
-        </form>
-        <div class="h-auto w-[75%] mr-auto px-4 py-4 my-[20px]">
-            <h6 class="text-xl border-b-2 border-gray-300">주문상품</h6>
-            <div th:each="cartItem : ${cartItemList}" class="border-b border-gray-300 flex items-center justify-between px-8 py-8">
-                <div class="flex-[0_0_40%] flex items-center gap-5">
-                    <img th:if="${cartItem.product.thumbnailImg != null}"
-                         th:attr="src=${@commonUtil.getFilePath(cartItem.product.thumbnailImg.id)}" alt=""
-                         style="max-width: 100px; max-height: 75px;">
-                    <span th:text="${cartItem.product.name}" class="overflow-auto text-sm"></span>
-                </div>
-                <div class="flex">
-                    <span th:id="|${cartItem.id}_amount|" th:text="|${#numbers.formatInteger(cartItem.count*cartItem.product.price, 0, 'COMMA')}원/${cartItem.count}개|"></span>
+            <div class="h-auto w-[75%] mr-auto px-4 py-4 my-[20px]">
+                <h6 class="text-xl border-b-2 border-gray-300">주문상품</h6>
+                <div th:each="cartItem : ${cartItemList}" class="border-b border-gray-300 flex items-center justify-between px-8 py-8">
+                    <div class="flex-[0_0_40%] flex items-center gap-5">
+                        <img th:if="${cartItem.product.thumbnailImg != null}"
+                             th:attr="src=${@commonUtil.getFilePath(cartItem.product.thumbnailImg.id)}" alt=""
+                             style="max-width: 100px; max-height: 75px;">
+                        <span th:text="${cartItem.product.name}" class="overflow-auto text-sm"></span>
+                    </div>
+                    <div class="flex">
+                        <span th:id="|${cartItem.id}_amount|" th:text="|${#numbers.formatInteger(cartItem.count*cartItem.product.price, 0, 'COMMA')}원/${cartItem.count}개|"></span>
+                    </div>
+                    <input type="hidden" name="cartItemId" th:value="${cartItem.id}">
                 </div>
             </div>
-        </div>
+        </form>
         <div id="total-amount-info" class="h-auto w-[24%] my-[20px] absolute top-[56px] right-[1%]">
             <div class="px-5 py-5 border-t border-l border-r border-gray-300 rounded-t-xl flex justify-between">
                 <span>최종 결제 금액</span>

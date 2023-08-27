@@ -1,10 +1,17 @@
 package com.ll.jigumiyak.purchase;
 
+import com.ll.jigumiyak.address.Address;
+import com.ll.jigumiyak.address.AddressService;
+import com.ll.jigumiyak.cart.Cart;
+import com.ll.jigumiyak.cart.CartService;
 import com.ll.jigumiyak.cart_item.CartItem;
 import com.ll.jigumiyak.cart_item.CartItemService;
+import com.ll.jigumiyak.purchase_item.PurchaseItem;
+import com.ll.jigumiyak.purchase_item.PurchaseItemService;
 import com.ll.jigumiyak.user.SiteUser;
 import com.ll.jigumiyak.user.UserService;
 import com.ll.jigumiyak.util.RsData;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +35,10 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequestMapping("/purchase")
@@ -41,8 +50,11 @@ public class PurchaseController {
     private String secretKey;
 
     private final PurchaseService purchaseService;
-    private final UserService userService;
+    private final PurchaseItemService purchaseItemService;
+    private final CartService cartService;
     private final CartItemService cartItemService;
+    private final UserService userService;
+    private final AddressService addressService;
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("")
@@ -60,7 +72,7 @@ public class PurchaseController {
 
         for (Long id : cartItemId) {
             CartItem cartItem = this.cartItemService.getCartItem(id);
-            cartItemList.add(cartItem);
+            cartItemList.add(this.cartItemService.getCartItem(id));
             log.info(cartItem.getProduct().getName() + ": " + cartItem.getCount());
             totalAmount += cartItem.getCount() * cartItem.getProduct().getPrice();
         }
@@ -76,7 +88,15 @@ public class PurchaseController {
     @PreAuthorize("isAuthenticated")
     @PostMapping("/payment/before")
     @ResponseBody
-    public ResponseEntity beforePayment(@Valid PurchaseForm purchaseForm, BindingResult bindingResult, Principal principal) {
+    public ResponseEntity beforePayment(HttpServletRequest request,
+                                        @Valid PurchaseForm purchaseForm, BindingResult bindingResult,
+                                        @RequestParam List<Long> cartItemId,
+                                        Principal principal) {
+
+        // 주문 실패 시 되돌아갈 주문 페이지 쿼리스트링 생성 및 저장
+        request.getSession().removeAttribute("purchaseQuery");
+        String purchaseQuery = cartItemId.stream().map(x -> "cartItemId=" + x).collect(Collectors.joining("&"));
+        request.getSession().setAttribute("purchaseQuery", purchaseQuery);
 
         log.info("purchaserName: " + purchaseForm.getPurchaserName());
         log.info("purchaserPhoneNumber: " + purchaseForm.getPurchaserPhoneNumber());
@@ -87,18 +107,61 @@ public class PurchaseController {
         log.info("receiverAddress.subAddress: " + purchaseForm.getReceiverAddress().getSubAddress());
         log.info("deliveryRequest: " + purchaseForm.getDeliveryRequest());
         log.info("customDeliveryRequest: " + purchaseForm.getCustomDeliveryRequest());
+        log.info("cartItemList: " + cartItemId.toString());
 
+        // 주문 객체 저장 정보 생성
         SiteUser purchaser = this.userService.getUserByLoginId(principal.getName());
 
+        String purchaseId = "jigumiyak_" + String.format("%010d", purchaser.getId()) + "_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_n"));
+
+        List<CartItem> cartItemList = new ArrayList<>();
+        Integer totalAmount = 0;
+
+        for (Long id : cartItemId) {
+            CartItem cartItem = this.cartItemService.getCartItem(id);
+            cartItemList.add(cartItem);
+            log.info(cartItem.getProduct().getName() + ": " + cartItem.getCount());
+            totalAmount += cartItem.getCount() * cartItem.getProduct().getPrice();
+        }
+
+        String purchaseName = cartItemList.get(0).getProduct().getName();
+
+        if (cartItemList.size() > 1) {
+            purchaseName += String.format(" 외 %s건", cartItemList.size() - 1);
+        }
+
+        Address receiverAddress = this.addressService.create(purchaseForm.getReceiverAddress().getZoneCode(),
+                purchaseForm.getReceiverAddress().getMainAddress(),
+                purchaseForm.getReceiverAddress().getSubAddress());
+
+        String deliveryRequest = !purchaseForm.getDeliveryRequest().equals("직접입력") ? purchaseForm.getDeliveryRequest() : purchaseForm.getCustomDeliveryRequest();
+
+        // 주문 객체 저장
+        Purchase purchase = this.purchaseService.create(
+                purchaseId,
+                purchaseName,
+                purchaseForm.getPurchaserName(),
+                "010" + purchaseForm.getPurchaserPhoneNumber(),
+                purchaseForm.getReceiverName(),
+                "010" + purchaseForm.getReceiverPhoneNumber(),
+                receiverAddress,
+                deliveryRequest,
+                totalAmount,
+                purchaser
+        );
+
+        // 주문 아이템 객체 저장
+        for (CartItem cartItem : cartItemList) {
+            PurchaseItem purchaseItem = this.purchaseItemService.create(cartItem, purchase);
+        }
+
+        // 주문 객체 정보 전달 맵 생성
         Map<String, Object> purchaseAttributes = new HashMap<>();
 
-        String purchaseId = "jigumiyak_" + String.format("%010d", purchaser.getId()) + "_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_n"));
-        String purchaseName = "김상엽 처리의 건";
-
-        purchaseAttributes.put("amount", 50000);
-        purchaseAttributes.put("orderId", purchaseId);
-        purchaseAttributes.put("orderName", purchaseName);
-        purchaseAttributes.put("customerName", purchaseForm.getPurchaserName());
+        purchaseAttributes.put("amount", purchase.getTotalAmount());
+        purchaseAttributes.put("orderId", purchase.getPurchaseId());
+        purchaseAttributes.put("orderName", purchase.getPurchaseName());
+        purchaseAttributes.put("customerName", purchase.getPurchaserName());
 
         log.info("purchaseAttributes: {}", purchaseAttributes);
 
@@ -109,15 +172,24 @@ public class PurchaseController {
     @PreAuthorize("isAuthenticated")
     @PostMapping("/payment/cancel")
     @ResponseBody
-    public ResponseEntity cancelPayment(@RequestParam("orderId") String purchaseId, Principal principal) {
+    public ResponseEntity cancelPayment(HttpServletRequest request,
+                                        @RequestParam("orderId") String purchaseId, Principal principal) {
+
+        request.getSession().removeAttribute("purchaseQuery");
 
         log.info("payment cancel on purchaseId == " + purchaseId);
 
         SiteUser purchaser = this.userService.getUserByLoginId(principal.getName());
 
-//        Purchase purchase = this.purchaseService.getPurchaseByPurchaserAndPurchaseId(purchaser, orderId);
-//
-//        this.purchaseService.deletePurchase(purchase);
+        Purchase purchase = this.purchaseService.getPurchaseByPurchaserAndPurchaseId(purchaser, purchaseId);
+
+        if (purchase == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-1", "해당 주문 ID가 존재하지 않습니다", ""));
+        }
+
+        this.purchaseService.delete(purchase);
+        this.addressService.delete(purchase.getReceiverAddress());
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new RsData<>("S-1", "해당 주문 ID를 삭제했습니다", ""));
@@ -125,10 +197,13 @@ public class PurchaseController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/payment/success")
-    public String successPayment(Model model,
+    public String successPayment(HttpServletRequest request, Model model,
                                  @RequestParam("orderId") String purchaseId,
                                  @RequestParam("amount") Integer amount,
-                                 @RequestParam("paymentKey") String paymentKey) throws Exception {
+                                 @RequestParam("paymentKey") String paymentKey,
+                                 Principal principal) throws Exception {
+
+        request.getSession().removeAttribute("purchaseQuery");
 
         // 결제 승인 처리
         Base64.Encoder encoder = Base64.getEncoder();
@@ -166,33 +241,53 @@ public class PurchaseController {
         model.addAttribute("responseStr", jsonObject.toJSONString());
         log.info(jsonObject.toJSONString());
 
-        model.addAttribute("method", (String) jsonObject.get("method"));
-        model.addAttribute("orderName", (String) jsonObject.get("orderName"));
+        String method = jsonObject.get("method").toString();
 
-        if (((String) jsonObject.get("method")) != null) {
-            if (((String) jsonObject.get("method")).equals("카드")) {
-                model.addAttribute("cardNumber", (String) ((JSONObject) jsonObject.get("card")).get("number"));
-            } else if (((String) jsonObject.get("method")).equals("가상계좌")) {
-                model.addAttribute("accountNumber", (String) ((JSONObject) jsonObject.get("virtualAccount")).get("accountNumber"));
-            } else if (((String) jsonObject.get("method")).equals("계좌이체")) {
-                model.addAttribute("bank", (String) ((JSONObject) jsonObject.get("transfer")).get("bank"));
-            } else if (((String) jsonObject.get("method")).equals("휴대폰")) {
-                model.addAttribute("customerMobilePhone", (String) ((JSONObject) jsonObject.get("mobilePhone")).get("customerMobilePhone"));
-            }
-        } else {
-            model.addAttribute("code", (String) jsonObject.get("code"));
-            model.addAttribute("message", (String) jsonObject.get("message"));
+        String approvedAt = jsonObject.get("approvedAt").toString();
+        ZonedDateTime zonedDateTime = ZonedDateTime.parse(approvedAt);
+        LocalDateTime payDate = zonedDateTime.toLocalDateTime();
+
+        Integer suppliedAmount = Integer.parseInt(jsonObject.get("suppliedAmount").toString());
+        Integer vat = Integer.parseInt(jsonObject.get("vat").toString());
+
+        String paymentDetail = "";
+        if (method.equals("간편결제")) {
+            paymentDetail = ((JSONObject) jsonObject.get("easyPay")).get("provider").toString();
+        } else if (method.equals("카드")) {
+            String ownerType = ((JSONObject) jsonObject.get("card")).get("ownerType").toString();
+            String cardType = ((JSONObject) jsonObject.get("card")).get("cardType").toString();
+            String number = ((JSONObject) jsonObject.get("card")).get("number").toString();
+            paymentDetail = ownerType + "_" + cardType + "_" + number;
         }
+
+        SiteUser purchaser = this.userService.getUserByLoginId(principal.getName());
+        Purchase purchase = this.purchaseService.getPurchaseByPurchaserAndPurchaseId(purchaser, purchaseId);
+        this.purchaseService.updateSuccess(purchase, paymentKey, method, payDate, suppliedAmount, vat, paymentDetail);
+
+        // 구매 완료된 장바구니 아이템 삭제
+        List<PurchaseItem> purchaseItemList = purchase.getPurchaseItemList();
+        Cart cart = this.cartService.getCartByOwner(purchaser);
+        for (PurchaseItem purchaseItem : purchaseItemList) {
+            CartItem cartItem = this.cartItemService.getCartItemByProductAndCart(purchaseItem.getProduct(), cart);
+            this.cartItemService.delete(cartItem);
+        }
+
+        model.addAttribute("code", (String) jsonObject.get("code"));
+        model.addAttribute("message", (String) jsonObject.get("message"));
 
         return "purchase/success";
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/payment/fail")
-    public String failPayment(Model model, Principal principal,
+    public String failPayment(HttpServletRequest request,
+                              Model model, Principal principal,
                               @RequestParam("orderId") String purchaseId,
                               @RequestParam("message") String message,
                               @RequestParam("code") String code) throws Exception {
+
+        String purchaseQuery = request.getSession().getAttribute("purchaseQuery").toString();
+        request.getSession().removeAttribute("purchaseQuery");
 
         log.info("payment fail on purchaseId == " + purchaseId);
 
@@ -200,10 +295,19 @@ public class PurchaseController {
 
         Purchase purchase = this.purchaseService.getPurchaseByPurchaserAndPurchaseId(purchaser, purchaseId);
 
-        this.purchaseService.deletePurchase(purchase);
-
         model.addAttribute("code", code);
         model.addAttribute("message", message);
+
+        // 주문 객체 없을 시 잘못된 주문 과정이므로 장바구니로 리턴
+        if (purchase == null) {
+            model.addAttribute("uri", "/cart");
+        }
+
+        this.purchaseService.delete(purchase);
+        this.addressService.delete(purchase.getReceiverAddress());
+
+        // 주문 실패 시 실패 창 잠깐 띄우고 바로 주문 페이지로 리턴
+        model.addAttribute("uri", "/purchase?" + purchaseQuery);
 
         return "purchase/fail";
     }
