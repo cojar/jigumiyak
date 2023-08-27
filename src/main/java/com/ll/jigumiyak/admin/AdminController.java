@@ -12,6 +12,8 @@ import com.ll.jigumiyak.inquiry.Inquiry;
 import com.ll.jigumiyak.inquiry.InquiryForm;
 import com.ll.jigumiyak.inquiry.InquiryService;
 import com.ll.jigumiyak.inquiry_answer.InquiryAnswerForm;
+import com.ll.jigumiyak.user.SiteUser;
+import com.ll.jigumiyak.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,6 +36,7 @@ public class AdminController {
     private final BoardRecommentService boardRecommentService;
     private final FaqService faqService;
     private final InquiryService inquiryService;
+    private final UserService userService;
 
     @PreAuthorize("hasAuthority('admin')")
     @GetMapping("")
@@ -130,5 +133,15 @@ public class AdminController {
         List<Faq> faqList = this.faqService.getList();
         model.addAttribute("faqList", faqList);
         return "admin/admin_faq";
+    }
+
+    @PreAuthorize("hasAuthority('admin')")
+    @GetMapping("/user")
+    public String userManage(Model model) {
+
+        List<SiteUser> userList = this.userService.getList();
+        model.addAttribute("userList", userList);
+
+        return "admin/admin_user";
     }
 }

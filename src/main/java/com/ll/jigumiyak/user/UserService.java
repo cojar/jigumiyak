@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -123,6 +124,10 @@ public class UserService {
     public boolean isDuplicatedEmail(String email) {
         Optional<SiteUser> _user = this.userRepository.findByEmail(email);
         return _user.isPresent();
+    }
+
+    public List<SiteUser> getList() {
+        return this.userRepository.findAll();
     }
 
     public SiteUser getUserByLoginId(String loginId) {
