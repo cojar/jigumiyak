@@ -2840,7 +2840,7 @@ textarea.form-control-lg {
 .was-validated :valid ~ .valid-tooltip,
 .is-valid ~ .valid-feedback,
 .is-valid ~ .valid-tooltip {
-  display: block;
+  display: none;
 }
 
 .was-validated .form-control:valid, .form-control.is-valid {
@@ -2929,7 +2929,7 @@ textarea.form-control-lg {
 .was-validated :invalid ~ .invalid-tooltip,
 .is-invalid ~ .invalid-feedback,
 .is-invalid ~ .invalid-tooltip {
-  display: block;
+  display: none;
 }
 
 .was-validated .form-control:invalid, .form-control.is-invalid {
@@ -5760,7 +5760,7 @@ textarea.form-control-lg {
 .tooltip {
   position: absolute;
   z-index: 1080;
-  display: block;
+  display: none;
   margin: 0;
   font-family: var(--bs-font-sans-serif);
   font-style: normal;
@@ -5785,12 +5785,12 @@ textarea.form-control-lg {
 }
 .tooltip .tooltip-arrow {
   position: absolute;
-  display: block;
+  display: none;
   width: 0.8rem;
   height: 0.4rem;
 }
 .tooltip .tooltip-arrow::before {
-  position: absolute;
+  position: relative;
   content: "";
   border-color: transparent;
   border-style: solid;
