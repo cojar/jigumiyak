@@ -97,7 +97,7 @@ public class SurveyController {
         return "survey";
     }
 
-    @GetMapping("/submit")
+    @PostMapping("/submit")
     public String submitSurvey(@RequestBody Map<Long, Long> answerIdMap, Model model) {
         for (Map.Entry<Long, Long> entry : answerIdMap.entrySet()) {
             Long questionId = entry.getKey();
