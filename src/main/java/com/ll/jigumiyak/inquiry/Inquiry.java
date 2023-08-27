@@ -34,7 +34,7 @@ public class Inquiry extends BaseEntity {
     private SiteUser inquirer;
 
     @OneToMany(mappedBy = "inquiry", cascade = CascadeType.REMOVE)
-    private List<InquiryAnswer> answerList = new ArrayList<>();
+    private List<InquiryAnswer> answerList;
 
     @OneToOne
     private GenFile img;
