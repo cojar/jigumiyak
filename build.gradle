@@ -42,6 +42,7 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation 'org.commonmark:commonmark:0.21.0'
 }
 
 tasks.named('test') {

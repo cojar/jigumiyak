@@ -7,6 +7,9 @@ import com.ll.jigumiyak.social_account.SocialAccount;
 import com.ll.jigumiyak.user.SiteUser;
 import com.ll.jigumiyak.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
@@ -46,5 +49,12 @@ public class CommonUtil {
         if (user == null) return false;
 
         return user.getAuthorities().contains(new SimpleGrantedAuthority(CustomRole.ADMIN.getType()));
+    }
+
+    public String markdown(String markdown) {
+        Parser parser = Parser.builder().build();
+        Node document = parser.parse(markdown);
+        HtmlRenderer renderer = HtmlRenderer.builder().build();
+        return renderer.render(document);
     }
 }
