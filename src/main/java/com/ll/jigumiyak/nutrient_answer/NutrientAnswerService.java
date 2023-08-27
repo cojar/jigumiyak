@@ -24,11 +24,15 @@ public class NutrientAnswerService {
                             .nutrient(nutrient)
                             .score(score)
                             .answer(answer)
-                            .build(); // This line was missing in your code
+                            .build();
                 })
                 .collect(Collectors.toList());
 
         this.nutrientAnswerRepository.saveAll(nutrientAnswers);
         return nutrientAnswers;
+    }
+
+    public List<NutrientAnswer> getAnswerListByAnswer(Long surveyAnswerId) {
+        return nutrientAnswerRepository.findByAnswerId(surveyAnswerId);
     }
 }

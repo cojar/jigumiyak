@@ -25,4 +25,13 @@ public class NutrientCategoryService {
             throw new DataNotFoundException("not found nutrientCategory");
         }
     }
+
+    public NutrientCategory getNutrientCategoryBySurvey(Long id){
+        Optional<NutrientCategory> optionalNutrientCategory = nutrientCategoryRepository.findBySurveyId(id);
+        if(optionalNutrientCategory.isPresent()){
+            return optionalNutrientCategory.get();
+        } else {
+            throw new DataNotFoundException("not found nutrientCategory");
+        }
+    }
 }
