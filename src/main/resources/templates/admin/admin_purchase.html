@@ -1,0 +1,59 @@
+<html layout:decorate="~{admin/ad_navbar}">
+<head>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+
+    <!-- 데이지 UI 불러오기 -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.5/dist/full.css" rel="stylesheet" type="text/css" />
+    <!-- 테일윈드 불러오기 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+<!--    <link rel="stylesheet" type="text/css" th:href="@{/css/admin_user.css}">-->
+    <title>ADMIN-PURCHASE</title>
+</head>
+<div layout:fragment="content" class="relative">
+    <table class="w-11/12 mx-auto border-collapse" style="min-width:1500px">
+        <thead>
+        <tr class="border-b-4 border-double border-gray-500 h-12">
+            <th class="border-l-2 border-r-2 border-gray-300 w-24 px-2">아이디</th>
+            <th class="border-l-2 border-r-2 border-gray-300 px-2">결제일</th>
+            <th class="border-l-2 border-r-2 border-gray-300 w-100 px-2">상품명</th>
+            <th class="border-l-2 border-r-2 border-gray-300 w-100 px-2">구매자명</th>
+            <th class="border-l-2 border-r-2 border-gray-300 px-2">결제방법</th>
+            <th class="border-l-2 border-r-2 border-gray-300 px-2">결제상세</th>
+            <th class="border-l-2 border-r-2 border-gray-300 px-2">결제금액</th>
+            <th class="border-l-2 border-r-2 border-gray-300 px-2">결제상태</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="purchase, loop : ${purchaseList}" class="border h-9 text-sm">
+            <td th:text="${purchase.purchaser.loginId}" class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
+            <td th:text="${#temporals.format(purchase.payDate, 'yy.MM.dd HH:mm')}" class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
+            <td th:text="${purchase.purchaseName}" class="border-l-2 border-r-2 border-b-2 border-gray-300 text-start px-2"></td>
+            <td th:text="${purchase.purchaserName}" class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
+            <td th:text="${purchase.method}" class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
+            <td th:text="${purchase.paymentDetail}" class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
+            <td th:text="|${#numbers.formatInteger(purchase.totalAmount, 0, 'COMMA')}원|" class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
+            <td th:text="${purchase.purchaseState.stateKor}" class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- 모달 영역 컨트롤 -->
+    <input type="checkbox" id="alertModal" class="modal-toggle" />
+    <!-- 모달 영역 시작 -->
+    <div class="modal">
+        <div class="modal-box">
+            <div>
+                <span id="alertModal-message"></span>
+            </div>
+            <div class="modal-action">
+                <label for="alertModal" class="btn btn-sm border-gray-300 bg-gray-400">닫기</label>
+            </div>
+        </div>
+    </div>
+    <!-- 모달 영역 끝 -->
+</div>
+<!--<script layout:fragment="script" type="text/javascript" th:src="@{/js/admin_user.js}"></script>-->
+</html>
