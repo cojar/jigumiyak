@@ -45,7 +45,7 @@
         </div>
       </div>
       <div class="px-10 pt-16 pb-10 border-b">
-        <div th:text="${notice.content}" class="text-lg"></div>
+        <div th:utext="${@commonUtil.markdown(notice.content)}" class="text-lg"></div>
       </div>
     </div>
     <!--  댓글  -->
@@ -88,7 +88,7 @@
             </div>
           </div>
 
-          <div th:text="${comment.content}" class="mt-3"></div>
+          <div th:utext="${@commonUtil.markdown(comment.content)}" class="mt-3"></div>
 
         </div>
       </div>

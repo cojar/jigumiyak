@@ -25,7 +25,11 @@ public class InquiryService {
     private final FileService fileService;
 
     public Inquiry create (String subject, String content, boolean email, String category, SiteUser inquirer, MultipartFile file) throws IOException {
-        GenFile img = this.fileService.upload(file, "inquiry", "img", inquirer.getLoginId());
+        GenFile img = null;
+
+        if (!file.isEmpty()){
+            img = this.fileService.upload(file, "inquiry", "img", inquirer.getLoginId());
+        }
 
         Inquiry inquiry = Inquiry.builder()
                 .subject(subject)
