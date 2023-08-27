@@ -1,6 +1,15 @@
 <html layout:decorate="~{admin/ad_navbar}">
 <head>
-    <title>ADMIN-BOARD</title>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+
+    <!-- 데이지 UI 불러오기 -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.5/dist/full.css" rel="stylesheet" type="text/css" />
+    <!-- 테일윈드 불러오기 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/admin_user.css}">
+    <title>ADMIN-USER</title>
 </head>
 <div layout:fragment="content" class="relative">
     <table class="w-11/12 mx-auto border-collapse" style="min-width:1500px">
@@ -12,7 +21,9 @@
             <th class="border-l-2 border-r-2 border-gray-300 px-2">가입</th>
             <th class="border-l-2 border-r-2 border-gray-300 px-2">최근로그인</th>
             <th class="border-l-2 border-r-2 border-gray-300 px-2">회원권한</th>
-            <th class="border-l-2 border-r-2 border-gray-300 px-2">수정/삭제</th>
+            <th class="border-l-2 border-r-2 border-gray-300 px-2">수정</th>
+            <th class="border-l-2 border-r-2 border-gray-300 px-2">탈퇴</th>
+            <th class="border-l-2 border-r-2 border-gray-300 px-2">블랙</th>
         </tr>
         </thead>
 
@@ -25,10 +36,73 @@
             </td>
             <td th:text="${#temporals.format(user.createDate, 'yy.MM.dd HH:mm')}" class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
             <td th:text="${#temporals.format(user.lastLoginDate, 'yy.MM.dd HH:mm')}" class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
-            <td th:text="${user.getAuthoritiesInline}" class="border-l-2 border-r-2 border-b-2 border-gray-300 text-start px-2"></td>
-            <td th:text="${user.getAuthoritiesInline}" class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
+            <td th:text="${user.getAuthoritiesInline}" th:id="|${user.id}_authoritiesInline|" class="border-l-2 border-r-2 border-b-2 border-gray-300 text-start px-2"></td>
+            <td class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2">
+                <button type="button" class="btn btn-xs text-black border-gray-300 hover:text-white" th:attr="onclick=|_modify('${user.id}', '${user.loginId}')|">수정</button>
+            </td>
+            <td class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2">
+                <button type="button" class="btn btn-xs text-black border-gray-300 hover:text-white" th:attr="onclick=|_withdraw('${user.id}')|">탈퇴</button>
+            </td>
+            <td class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2">
+                <button type="button" class="btn btn-xs text-black border-gray-300 hover:text-white" th:attr="onclick=|_blacklist('${user.id}')|">블랙</button>
+            </td>
         </tr>
         </tbody>
     </table>
+    <!-- 모달 영역 컨트롤 -->
+    <input type="checkbox" id="modifyAuthorityModal" class="modal-toggle" />
+    <!-- 모달 영역 시작 -->
+    <div class="modal">
+        <div class="modal-box">
+            <h3 class="font-bold text-xl border-b-4 border-double border-gray-300">회원권한 수정</h3>
+            <form method="post" id="userAuthorityForm">
+                <div class="mt-[10px] flex gap-5 items-center">
+                    <div>
+                        <span class="label-text">회원 정보</span>
+                    </div>
+                    <div>
+                        <span class="label-text" id="modal_loginId"></span>
+                        <input type="hidden" id="input_loginId" name="loginId">
+                    </div>
+                </div>
+                <div class="mt-[10px] flex gap-5 items-center">
+                    <div>
+                        <span class="label-text">권한 설정</span>
+                    </div>
+                    <div>
+                        <input class="authority-select hidden" type="checkbox" id="authority_super_admin" name="authority" value="super_admin">
+                        <label for="authority_super_admin" class="btn btn-sm border-gray-300 bg-white text-black hover:text-white">총관리자</label>
+                        <input class="authority-select hidden" type="checkbox" id="authority_admin" name="authority" value="admin">
+                        <label for="authority_admin" class="btn btn-sm border-gray-300 bg-white text-black hover:text-white">관리자</label>
+                        <input class="authority-select hidden" type="checkbox" id="authority_seller" name="authority" value="seller">
+                        <label for="authority_seller" class="btn btn-sm border-gray-300 bg-white text-black hover:text-white">판매자</label>
+                        <input class="authority-select hidden" type="checkbox" id="authority_user" name="authority" value="user">
+                        <label for="authority_user" class="btn btn-sm border-gray-300 bg-white text-black hover:text-white">회원</label>
+                    </div>
+                </div>
+            </form>
+            <div class="modal-action">
+                <button id="modify-authority-btn" class="btn btn-sm border-gray-300 bg-[#A5CDCD]" th:onclick="_modifyAuthority()">변경하기</button>
+                <label for="modifyAuthorityModal" class="btn btn-sm border-gray-300 bg-gray-400">닫기</label>
+            </div>
+        </div>
+    </div>
+    <!-- 모달 영역 끝 -->
+
+    <!-- 모달 영역 컨트롤 -->
+    <input type="checkbox" id="alertModal" class="modal-toggle" />
+    <!-- 모달 영역 시작 -->
+    <div class="modal">
+        <div class="modal-box">
+            <div>
+                <span id="alertModal-message"></span>
+            </div>
+            <div class="modal-action">
+                <label for="alertModal" class="btn btn-sm border-gray-300 bg-gray-400">닫기</label>
+            </div>
+        </div>
+    </div>
+    <!-- 모달 영역 끝 -->
 </div>
+<script layout:fragment="script" type="text/javascript" th:src="@{/js/admin_user.js}"></script>
 </html>
