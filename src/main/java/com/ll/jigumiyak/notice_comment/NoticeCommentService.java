@@ -4,8 +4,13 @@ import com.ll.jigumiyak.DataNotFoundException;
 import com.ll.jigumiyak.notice.Notice;
 import com.ll.jigumiyak.user.SiteUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,5 +56,12 @@ public class NoticeCommentService {
 
     public List<NoticeComment> getCommentList(){
         return noticeCommentRepository.findAll();
+    }
+
+    public Page<NoticeComment> getList (Notice notice, int size, int page) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("createDate"));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sorts));
+        return this.noticeCommentRepository.findAllByNotice(notice, pageable);
     }
 }

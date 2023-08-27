@@ -12,6 +12,10 @@ import com.ll.jigumiyak.inquiry.Inquiry;
 import com.ll.jigumiyak.inquiry.InquiryForm;
 import com.ll.jigumiyak.inquiry.InquiryService;
 import com.ll.jigumiyak.inquiry_answer.InquiryAnswerForm;
+import com.ll.jigumiyak.notice.Notice;
+import com.ll.jigumiyak.notice.NoticeService;
+import com.ll.jigumiyak.notice_comment.NoticeComment;
+import com.ll.jigumiyak.notice_comment.NoticeCommentService;
 import com.ll.jigumiyak.user.SiteUser;
 import com.ll.jigumiyak.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +41,8 @@ public class AdminController {
     private final FaqService faqService;
     private final InquiryService inquiryService;
     private final UserService userService;
+    private final NoticeService noticeService;
+    private final NoticeCommentService noticeCommentService;
 
     @PreAuthorize("hasAuthority('admin')")
     @GetMapping("")
@@ -143,5 +149,44 @@ public class AdminController {
         model.addAttribute("userList", userList);
 
         return "admin/admin_user";
+    }
+
+    // 공지사항 관리
+    @PreAuthorize("hasAuthority('admin')")
+    @GetMapping("/notice")
+    public String notice(Model model, @RequestParam(value="page", defaultValue="0") int page,
+                        @RequestParam(value = "kw", defaultValue = "") String kw) {
+        Page<Notice> paging = this.noticeService.getList(page, kw);
+        model.addAttribute("paging", paging);
+        model.addAttribute("kw", kw);
+        return "admin/notice";
+    }
+
+    @PreAuthorize("hasAuthority('admin')")
+    @GetMapping("/notice/{id}")
+    public String noticeComment(Model model, @PathVariable("id") Long id, @RequestParam(value="page", defaultValue="0") int page,
+                          @RequestParam(value = "cmtPage", defaultValue = "0") int cmtPage) {
+        Notice notice = this.noticeService.getNotice(id);
+        model.addAttribute("notice", notice);
+
+        Page<NoticeComment> paging = this.noticeCommentService.getList(notice, 20, cmtPage);
+        model.addAttribute("paging", paging);
+        return "admin/notice_comment";
+    }
+
+    @PreAuthorize("hasAuthority('admin')")
+    @GetMapping("/notice/delete/{id}")
+    public String noticeDelete(@PathVariable("id") Long id) {
+        Notice notice = this.noticeService.getNotice(id);
+        this.noticeService.delete(notice);
+        return "redirect:/admin/notice";
+    }
+
+    @PreAuthorize("hasAuthority('admin')")
+    @GetMapping("/ncomment/delete/{id}")
+    public String ncommentDelete( @PathVariable("id") Long id) {
+        NoticeComment noticeComment = this.noticeCommentService.getCommentById(id);
+        this.noticeCommentService.delete(noticeComment);
+        return String.format("redirect:/admin/notice/%s", noticeComment.getNotice().getId());
     }
 }

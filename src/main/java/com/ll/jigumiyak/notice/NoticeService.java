@@ -11,6 +11,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -106,5 +108,12 @@ public class NoticeService {
             // thymeleaf null 처리를 위해 null return
             return null;
         }
+    }
+
+    public Page<Notice> getList(int page, String kw) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("createDate"));
+        Pageable pageable = PageRequest.of(page, 30, Sort.by(sorts));
+        return this.noticeRepository.findAllByKeyword(kw, pageable);
     }
 }
