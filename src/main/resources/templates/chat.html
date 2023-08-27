@@ -120,7 +120,7 @@
 	        	send();
          });
 
-         const websocket = new WebSocket("ws://jigumiyak.com/ws/chat");
+         const websocket = new WebSocket("wss://jigumiyak.com/ws/chat");
 	         websocket.onmessage = onMessage;
 	         websocket.onopen = onOpen;
 	         websocket.onclose = onClose;
