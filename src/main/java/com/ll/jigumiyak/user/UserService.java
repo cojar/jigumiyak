@@ -126,6 +126,10 @@ public class UserService {
         return _user.isPresent();
     }
 
+    public SiteUser getUser(Long id) {
+        return this.userRepository.findById(id).orElse(null);
+    }
+
     public List<SiteUser> getList() {
         return this.userRepository.findAll();
     }
@@ -156,6 +160,15 @@ public class UserService {
 
         user = user.toBuilder()
                 .address(address)
+                .build();
+
+        this.userRepository.save(user);
+    }
+
+    public void modifyAuthorities(SiteUser user, Integer authority) {
+
+        user = user.toBuilder()
+                .authority(authority)
                 .build();
 
         this.userRepository.save(user);

@@ -2,6 +2,7 @@ package com.ll.jigumiyak.user;
 
 import com.ll.jigumiyak.address.Address;
 import com.ll.jigumiyak.address.AddressService;
+import com.ll.jigumiyak.security.CustomRole;
 import com.ll.jigumiyak.util.RsData;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -393,5 +395,80 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new RsData<>("S-1", "저장을 완료했습니다", "/user/mypage"));
+    }
+
+    @PreAuthorize("hasAuthority('admin')")
+    @GetMapping("/authority")
+    public ResponseEntity authority(@RequestParam("id") Long id, Principal principal) {
+
+        SiteUser user = this.userService.getUser(id);
+        SiteUser admin = this.userService.getUserByLoginId(principal.getName());
+
+        // checked 권한
+        Map<String, String> checkedAttributes = new HashMap<>();
+        for (GrantedAuthority authority : user.getAuthorities()) {
+            checkedAttributes.put(authority.getAuthority(), "authority_" + authority.getAuthority());
+        }
+
+        // disabled 권한
+        Map<String, String> disabledAttributes = new HashMap<>();
+        disabledAttributes.put("super_admin", "authority_super_admin");
+        disabledAttributes.put("admin", "authority_admin");
+        disabledAttributes.put("seller", "authority_seller");
+        disabledAttributes.put("user", "user");
+
+        if (admin.getAuthoritiesInline().contains("총관리자")) {
+            if (!user.getAuthoritiesInline().contains("총관리자")) {
+                disabledAttributes.remove("admin");
+                disabledAttributes.remove("seller");
+                disabledAttributes.remove("user");
+            }
+        } else {
+            if (!user.getAuthoritiesInline().contains("총관리자") && !user.getAuthoritiesInline().contains("관리자")) {
+                disabledAttributes.remove("seller");
+                disabledAttributes.remove("user");
+            }
+        }
+
+        Map<String, Map<String, String>> attributes = new HashMap<>();
+        attributes.put("checked", checkedAttributes);
+        attributes.put("disabled", disabledAttributes);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new RsData<>("S-1", "요청한 회원의 권한 상태를 반환합니다", attributes));
+    }
+
+    @PreAuthorize("hasAuthority('admin')")
+    @PostMapping("/authority")
+    public ResponseEntity authority(@RequestParam("loginId") String loginId,
+                                    @RequestParam List<String> authority) {
+
+        SiteUser user = this.userService.getUserByLoginId(loginId);
+
+        log.info("authority: {}", authority);
+
+        Integer authorityDec = 0;
+        for (String type : authority) {
+            authorityDec += CustomRole.getDecCodeByType(type);
+        }
+
+        this.userService.modifyAuthorities(user, authorityDec);
+
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put("id", user.getId().toString());
+        attributes.put("authoritiesInline", user.getAuthoritiesInline());
+
+        log.info("modified authorities: " + user.getAuthoritiesInline());
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new RsData<>("S-1", "요청한 회원의 권한 상태를 변경했습니다", attributes));
+    }
+
+    @PreAuthorize("hasAuthority('admin')")
+    @PostMapping("/withdraw")
+    public ResponseEntity withdraw(@RequestParam("id") Long id, Principal principal) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new RsData<>("S-1", "해당 회원 탈퇴 처리를 완료했습니다", ""));
     }
 }
