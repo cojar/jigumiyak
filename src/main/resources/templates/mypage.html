@@ -52,7 +52,11 @@
         <!--주문내역-->
         <div class="border-b border-gray-400">
             <div class="text-xl mt-3 py-2 border-b-4 border-double border-gray-400">주문내역</div>
-            <table class="w-full my-4 mx-auto border-collapse">
+            <div class="border-b border-gray-300 flex flex-col items-center gap-5 px-4 py-8" th:classappend="${#lists.size(purchaseList)} > 0 ? 'hidden'">
+                <span class="text-xl my-[20px]">주문내역이 없습니다</span>
+                <a href="/product" class="border border-gray-300 px-5 py-3 bg-[#5B9A8B] text-white text-sm rounded-xl">상품 보러가기</a>
+            </div>
+            <table th:if="${#lists.size(purchaseList) > 0}" class="w-full my-4 mx-auto border-collapse">
                 <thead>
                 <tr class="border-b-4 border-t-2 border-double border-gray-300 h-12">
                     <th class="border-l-2 border-r-2 border-gray-300 px-2">결제일</th>
@@ -76,21 +80,25 @@
                 </tbody>
             </table>
         </div>
-        <!--찜-->
-        <div class="border-b border-gray-400">
-            <div class="text-xl mt-3 py-2 border-b">찜 목록</div>
-            <div class="h-56 bg-blue-100">내용넣는 자리</div>
-            <div class="h-24 flex justify-center items-center">
-                <a href="#" class="bg-white border text-xl px-5 h-12 py-2 text-gray-500">more</a>
-            </div>
-        </div>
+<!--        &lt;!&ndash;찜&ndash;&gt;-->
+<!--        <div class="border-b border-gray-400">-->
+<!--            <div class="text-xl mt-3 py-2 border-b-4 border-double border-gray-400">찜 목록</div>-->
+<!--            <div class="border-b border-gray-300 flex flex-col items-center gap-5 px-4 py-8" th:classappend="${#lists.size(purchaseList)} > 0 ? 'hidden'">-->
+<!--                <span class="text-xl my-[20px]">찜한 상품이 없습니다</span>-->
+<!--                <a href="/product" class="border border-gray-300 px-5 py-3 bg-[#5B9A8B] text-white text-sm rounded-xl">상품 보러가기</a>-->
+<!--            </div>-->
+<!--            <div class="h-56 bg-blue-100">내용넣는 자리</div>-->
+<!--        </div>-->
         <!--문의-->
-        <div class="">
-            <div class="text-xl mt-3 py-2 border-b">
+        <div>
+            <div class="text-xl mt-3 py-2 border-b-4 border-double border-gray-400">
                 <span>문의내역 (답변대기)</span>
                 <a th:href="@{/inquiry/create}" class="btn btn-sm bg-[#5B9A8B] border-gray-300">문의하기</a>
             </div>
-            <div class="w-full mb-8" th:each="inquiry, loop : ${paging}">
+            <div class="border-b border-gray-300 flex flex-col items-center gap-5 px-4 py-8 mb-8" th:classappend="${!paging.isEmpty()} ? 'hidden'">
+                <span class="text-xl my-[20px]">문의내역이 없습니다</span>
+            </div>
+            <div th:if="${!paging.isEmpty()}" class="w-full mb-8" th:each="inquiry, loop : ${paging}">
                 <a th:href="@{|/inquiry/list/${inquiry.id}|}"
                    class="block border w-full mt-5 py-4 px-5 flex justify-between"
                    th:if="${inquiry.state == false}">
@@ -112,11 +120,11 @@
                         </div>
                     </div>
                     <div class="text-gray-500"
-                         th:text="${#temporals.format(inquiry.createDate, 'yyyy-MM-dd HH:mm')}"></div>
+                         th:text="${#temporals.format(inquiry.createDate, 'yy.MM.dd HH:mm')}"></div>
                 </a>
             </div>
-            <div class="h-24 flex justify-center items-center">
-                <a th:href="@{/inquiry/list}" class="bg-white border text-xl px-5 h-12 py-2 text-gray-500">more</a>
+            <div th:if="${!paging.isEmpty()}" class="h-24 flex justify-center items-center">
+                <a th:href="@{/inquiry/list}" class="btn bg-[#5B9A8B] border-gray-300">더보기</a>
             </div>
         </div>
     </div>

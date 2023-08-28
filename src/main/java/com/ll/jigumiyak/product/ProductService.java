@@ -53,7 +53,6 @@ public class ProductService {
         return this.productRepository.findAllByKeyword(keyword, pageable);
     }
 
-
     public Product getProduct(Long id) {
 
         return this.productRepository.findById(id)
@@ -80,6 +79,6 @@ public class ProductService {
     }
 
     public List<Product> findProductsByNutrientName(String nutrientName) {
-        return productRepository.findByNutrientListName(nutrientName);
+        return this.productRepository.findByNutrientListName(nutrientName);
     }
 }
