@@ -27,7 +27,8 @@
                         <span class="mx-5 font-bold" style="color:#5D9C59;" th:text="${productAvg}"></span>
                         <span class="text-lg">⭐⭐⭐⭐⭐</span>
                     </div>
-                    <div class="flex items-center"><a href="#" class="text-gray-600">REVIEW(123) >></a></div>
+                    <div class="flex items-center"><a href="#review_anchor" class="text-gray-600"
+                                                       th:text=${"|REVIEW(${#lists.size(product.reviewList)} >>|"}></a></div>
                 </div>
             </div>
 
@@ -127,7 +128,7 @@
         </div>
 
         <!--  리뷰 외  -->
-        <div class="bottom-area w-full mb-10">
+        <div id="review_anchor" class="bottom-area w-full mb-10">
             <div class="bottom-area w-full mb-10">
                 <!--  리뷰  -->
                 <div class="mx-10">
