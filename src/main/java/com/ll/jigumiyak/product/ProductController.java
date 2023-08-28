@@ -87,6 +87,14 @@ public class ProductController {
 
     @PostMapping("/create")
     public String create(@Valid ProductForm productForm, BindingResult bindingResult) throws IOException {
+        for(String nutrient : productForm.getNutrientList()){
+            Nutrient nutrient1 = nutrientService.findByName(nutrient);
+            System.out.println(nutrient1.getName());
+        }
+        System.out.println(productForm.getName());
+        System.out.println(productForm.getDescription());
+        System.out.println(productForm.getPrice());
+        System.out.println(productForm.getThumbnailImage());
         if (bindingResult.hasErrors()) {
             return "product_form";
         }
