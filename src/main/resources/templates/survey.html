@@ -28,12 +28,10 @@
                 <a class="page-link bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
                    th:href="@{/survey(page=${surveyList.previousPageable.pageNumber})}">이전</a>
             </li>
-            <li class="ml-auto" th:if="${!surveyList.hasNext}">
-                <form th:if="${!surveyList.hasNext}" th:action="@{/survey/submit}" th:object="${surveyForm}"
-                      method="post">
+            <li class="ml-auto">
+                <form th:if="${!surveyList.hasNext}" th:action="@{/survey/submit}" th:object="${surveyForm}" method="post">
                     <input type="hidden" id="answerIdMap" name="answerIdMap">
-                    <button id="submitBtn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">제출
-                    </button>
+                    <button id="submitBtn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">제출</button>
                 </form>
             </li>
             <li class="ml-auto" th:if="${surveyList.hasNext}">
