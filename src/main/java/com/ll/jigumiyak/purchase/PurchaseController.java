@@ -26,6 +26,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -199,7 +200,7 @@ public class PurchaseController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/payment/success")
-    public String successPayment(HttpServletRequest request, Model model,
+    public String successPayment(HttpServletRequest request,
                                  @RequestParam("orderId") String purchaseId,
                                  @RequestParam("amount") Integer amount,
                                  @RequestParam("paymentKey") String paymentKey,
@@ -228,7 +229,6 @@ public class PurchaseController {
 
         int code = connection.getResponseCode();
         boolean isSuccess = code == 200 ? true : false;
-        model.addAttribute("isSuccess", isSuccess);
 
         InputStream responseStream = isSuccess ? connection.getInputStream() : connection.getErrorStream();
 
@@ -240,7 +240,6 @@ public class PurchaseController {
         log.info("payment success on purchaseId == " + purchaseId);
 
         // 필요 결제 정보 저장
-        model.addAttribute("responseStr", jsonObject.toJSONString());
         log.info(jsonObject.toJSONString());
 
         String method = jsonObject.get("method").toString();
@@ -274,10 +273,7 @@ public class PurchaseController {
             this.cartItemService.delete(cartItem);
         }
 
-        model.addAttribute("code", (String) jsonObject.get("code"));
-        model.addAttribute("message", (String) jsonObject.get("message"));
-
-        return "purchase/success";
+        return String.format("redirect:/purchase/%s", purchase.getId());
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -364,5 +360,22 @@ public class PurchaseController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new RsData<>("S-1", "해당 주문 ID에 대한 정보를 반환합니다", attributes));
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}")
+    public String detail(@PathVariable("id") Long id,
+                         Model model,
+                         Principal principal) {
+
+        Purchase purchase = this.purchaseService.getPurchase(id);
+
+        if (!purchase.getPurchaser().getLoginId().equals(principal.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "접근 권한이 없습니다");
+        }
+
+        model.addAttribute("purchase", purchase);
+
+        return "purchase/detail";
     }
 }

@@ -82,4 +82,8 @@ public class PurchaseService {
 
         this.purchaseRepository.save(purchase);
     }
+
+    public List<Purchase> getListByPurchaser(SiteUser purchaser) {
+        return this.purchaseRepository.findByPurchaser(purchaser);
+    }
 }
