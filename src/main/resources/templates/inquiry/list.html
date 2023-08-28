@@ -6,15 +6,8 @@
   <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
   <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
     <h5 class="border-b-4 border-double border-gray-300 text-2xl pt-5">문의내역</h5>
-    <div class="w-full text-center mt-10 mb-8">
-      <div class="inline-block border border-gray-500 py-4">
-        <a href="#" class="text-lg p-4 px-6">전체 기간</a>
-        <a href="#" class="text-lg border-r border-l border-gray-500 p-4 px-6">최근 1개월</a>
-        <a href="#" class="text-lg p-4 px-6">최근 3개월</a>
-      </div>
-    </div>
 
-    <div class="text-lg text-gray-400 py-1 border-b" th:text="|총 ${#lists.size(inquiryList)}개의 문의가 있습니다.|"></div>
+    <div class="text-lg text-gray-400 py-1 mt-5" th:text="|총 ${#lists.size(inquiryList)}개의 문의가 있습니다.|"></div>
 <!--내역 없을 때-->
     <div th:if="${#lists.size(inquiryList) == 0}" class="flex flex-wrap justify-center w-full text-2xl text-gray-600 p-56">
       <div class="w-full text-center">문의 내역이 없습니다.</div>

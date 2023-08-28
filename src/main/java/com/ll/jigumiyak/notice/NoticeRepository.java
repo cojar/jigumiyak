@@ -47,4 +47,14 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
     @Query("SELECT n FROM Notice n WHERE n.id = (SELECT MIN(id) FROM Notice WHERE id > :id)")
     Optional<Notice> findNextNotice(@Param("id") Long id);
+
+    @Query("select "
+            + "distinct n "
+            + "from Notice n "
+            + "left outer join SiteUser u1 on n.author=u1 "
+            + "where "
+            + "   n.title like %:kw% "
+            + "   or n.content like %:kw% "
+            + "   or u1.loginId like %:kw% ")
+    Page<Notice> findAllByKeyword(@Param("kw") String kw, Pageable pageable);
 }

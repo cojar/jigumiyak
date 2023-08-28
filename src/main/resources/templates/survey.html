@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}">
+<head>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
+    <title>SURVEY</title>
+</head>
+<div layout:fragment="content" class="test-Container">
+    <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
+        <div>
+            <ul th:each="survey : ${surveyList}" th:with="surveyId=${survey.id}">
+                <li>
+                    <p th:text="${survey.question}"></p>
+                    <ul>
+                        <li th:each="answer : ${survey.surveyAnswerList}">
+                            <input type="radio" th:id="${'answer-' + surveyId + '-' + answer.id}"
+                                   th:name="${'surveyForm.answerIdMap[' + surveyId + ']'}"
+                                   th:value="${answer.id}"/>
+                            <label th:for="${'answer-' + surveyId + '-' + answer.id}"
+                                   th:text="${answer.answerText}"></label>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- 페이지네이션 UI -->
+            <ul class="pagination flex">
+                <li th:if="${surveyList.hasPrevious}" class="page-item">
+                    <a class="page-link" th:href="@{/survey(page=${surveyList.previousPageable.pageNumber})}">Previous</a>
+                </li>
+                <li th:if="${surveyList.hasNext}" class="page-item">
+                    <a class="page-link" th:href="@{/survey(page=${surveyList.nextPageable.pageNumber})}">Next</a>
+                </li>
+            </ul>
+            <form th:action="@{/survey/submit}" th:object="${surveyForm}" method="post">
+                <input type="hidden" id="answerIdMap" name="answerIdMap">
+                <button th:if="${!surveyList.hasNext}" id="submitBtn">Submit</button>
+            </form>
+        </div>
+    </div>
+    <script type="text/javascript" th:inline="javascript" th:src="@{/common.js}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var answerIdMap = localStorage.getItem('answerIdMap');
+            if (answerIdMap) {
+                answerIdMap = JSON.parse(answerIdMap);
+            } else {
+                answerIdMap = {};
+            }
+
+            $("input[type=radio]").change(function() {
+                var surveyId = $(this).attr("name").match(/\[(\d+)\]/)[1];
+                var answerId = $(this).val();
+                answerIdMap[surveyId] = parseInt(answerId);
+                localStorage.setItem('answerIdMap', JSON.stringify(answerIdMap));
+            });
+
+            $("#submitBtn").click(function() {
+                $("#answerIdMap").val(JSON.stringify(answerIdMap));
+            });
+        });
+    </script>
+</div>
+</html>

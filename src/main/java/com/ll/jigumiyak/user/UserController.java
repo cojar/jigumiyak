@@ -2,12 +2,15 @@ package com.ll.jigumiyak.user;
 
 import com.ll.jigumiyak.address.Address;
 import com.ll.jigumiyak.address.AddressService;
+import com.ll.jigumiyak.inquiry.Inquiry;
+import com.ll.jigumiyak.inquiry.InquiryService;
 import com.ll.jigumiyak.security.CustomRole;
 import com.ll.jigumiyak.util.RsData;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,6 +35,7 @@ public class UserController {
 
     private final UserService userService;
     private final AddressService addressService;
+    private final InquiryService inquiryService;
 
     @GetMapping("/signup")
     public String signup(UserSignupForm userSignupForm) {
@@ -305,8 +309,10 @@ public class UserController {
     public String my(Model model, Principal principal) {
 
         SiteUser user = this.userService.getUserByLoginId(principal.getName());
-
         model.addAttribute("user", user);
+
+        Page<Inquiry> paging = this.inquiryService.getList(0, user);
+        model.addAttribute("paging", paging);
 
         return "mypage";
     }

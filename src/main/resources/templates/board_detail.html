@@ -71,7 +71,7 @@
       </div>
 
       <div class="px-10 pt-16 pb-10 border-b">
-        <div th:text="${board.content}" class="text-lg"></div>
+        <div th:utext="${@commonUtil.markdown(board.content)}" class="text-lg"></div>
         <div class="flex justify-center mt-10">
           <div id="vote-box">
             <a class="py-3 px-5 text-2xl rounded-xl border-2 flex justify-center items-center hover:bg-white bg-gray-200 cursor-pointer"
@@ -145,7 +145,7 @@
               </div>
             </div>
 
-            <div th:text="${comment.content}" class="mt-3 border-b pb-3"></div>
+            <div th:utext="${@commonUtil.markdown(comment.content)}" class="mt-3 border-b pb-3"></div>
 
   <!--          대댓-->
             <div class="recomment-box">
@@ -176,7 +176,7 @@
                     </div>
                   </div>
 
-                  <div th:text="${recomment.content}" class="px-5 pt-2"></div>
+                  <div th:utext="${@commonUtil.markdown(recomment.content)}" class="px-5 pt-2"></div>
                 </div>
 
                 <!--          대댓작성-->
