@@ -4,6 +4,7 @@ import com.ll.jigumiyak.base.BaseEntity;
 import com.ll.jigumiyak.nutrient_category.NutrientCategory;
 import com.ll.jigumiyak.nutrient_caution.NutrientCaution;
 import com.ll.jigumiyak.product.Product;
+import com.ll.jigumiyak.nutrient_answer.NutrientAnswer;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +25,8 @@ public class Nutrient extends BaseEntity {
     private String efficacy;
 
     private String dailyIntake;
+    @OneToMany(mappedBy = "nutrient", cascade = CascadeType.ALL)
+    private List<NutrientAnswer> nutrientAnswerList;
 
     @ManyToMany
     @JoinTable(name = "nutrient_category_mapping",

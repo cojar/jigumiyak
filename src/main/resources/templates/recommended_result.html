@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<ul>
+  <li th:each="nutrient : ${highestNutrients}">
+    <span th:text="${nutrient.name}"></span>
+  </li>
+</ul>
+</body>
+</html>
