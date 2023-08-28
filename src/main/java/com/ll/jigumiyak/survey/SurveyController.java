@@ -4,18 +4,16 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ll.jigumiyak.nutrient.Nutrient;
 import com.ll.jigumiyak.nutrient.NutrientService;
-import com.ll.jigumiyak.nutrient_answer.NutrientAnswer;
 import com.ll.jigumiyak.nutrient_answer.NutrientAnswerService;
-import com.ll.jigumiyak.nutrient_category.NutrientCategory;
 import com.ll.jigumiyak.nutrient_category.NutrientCategoryService;
+import com.ll.jigumiyak.product.Product;
+import com.ll.jigumiyak.product.ProductService;
 import com.ll.jigumiyak.survey_answer.SurveyAnswer;
 import com.ll.jigumiyak.survey_answer.SurveyAnswerService;
-import com.ll.jigumiyak.util.RsData;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -35,8 +33,9 @@ public class SurveyController {
     private final SurveyService surveyService;
     private final NutrientService nutrientService;
     private final NutrientAnswerService nutrientAnswerService;
+    private final ProductService productService;
 
-
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping("/nutrient/answer1")
     @ResponseBody
     public String createNutrientAnswer1() {
@@ -59,17 +58,23 @@ public class SurveyController {
         return "nutrientAnswerList are created";
     }
 
+    @GetMapping("/ready")
+    public String beforeSurvey() {
+        return "survey_ready";
+    }
+
+
     @GetMapping("")
     public String doSurvey(Model model,
                            SurveyForm surveyForm,
                            @RequestParam(value = "page", defaultValue = "0") int page,
                            @RequestParam(value = "pageSize", defaultValue = "1") int pageSize) {
-        Page<Survey> surveyList = surveyService.getSurvetList(page, pageSize);
+        Page<Survey> surveyList = surveyService.getSurveyList(page, pageSize);
         model.addAttribute("surveyList", surveyList);
         return "survey";
     }
 
-//    @PostMapping("/submit")
+    //    @PostMapping("/submit")
 //    public String submitSurvey(@RequestBody Map<Long, Long> answerIdMap, Model model,
 //                                       RedirectAttributes redirectAttributes) {
 //        List<Nutrient> highestNutrients = surveyService.getNutrientsWithHighestScores(answerIdMap);
@@ -78,8 +83,8 @@ public class SurveyController {
 //    }
     @PostMapping("/submit")
     public String submitSurvey(@ModelAttribute("surveyForm") @Valid SurveyForm surveyForm,
-                                                       BindingResult bindingResult,
-                                                       RedirectAttributes redirectAttributes) {
+                               BindingResult bindingResult,
+                               RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "survey";
         }
@@ -87,21 +92,37 @@ public class SurveyController {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<Long, Long> answerIdMap = new HashMap<>();
         try {
-            answerIdMap = objectMapper.readValue(surveyForm.getAnswerIdMap(), new TypeReference<Map<Long, Long>>() {});
+            answerIdMap = objectMapper.readValue(surveyForm.getAnswerIdMap(), new TypeReference<Map<Long, Long>>() {
+            });
         } catch (IOException e) {
 
         }
-
-        List<Nutrient> highestNutrients = surveyService.getNutrientsWithHighestScores(answerIdMap);
+        Map<Nutrient, Double> avgNutrientMap = surveyService.getAverageScoresByNutrient(answerIdMap);
+        redirectAttributes.addFlashAttribute("avgNutrientMap", avgNutrientMap);
+        List<Nutrient> highestNutrients = surveyService.findHighScoringNutrients(avgNutrientMap);
         redirectAttributes.addFlashAttribute("highestNutrients", highestNutrients);
+        List<Nutrient> top3Nutrients = surveyService.findTopHighScoringNutrients(avgNutrientMap, 3);
+        redirectAttributes.addFlashAttribute("top3Nutrients", top3Nutrients);
         return "redirect:/survey/result";
     }
 
     @GetMapping("/result")
     public String success(@ModelAttribute("highestNutrients") ArrayList<Nutrient> highestNutrients,
-                          Model model){
+                          @ModelAttribute("avgNutrientMap") Map<Nutrient, Double> avgNutrientMap,
+                          @ModelAttribute("top3Nutrients") ArrayList<Nutrient> top3Nutrients,
+                          Model model) {
+
+        List<Product> products = highestNutrients.stream()
+                .map(nutrient -> productService.findProductsByNutrientName(nutrient.getName()))
+                .flatMap(Collection::stream)
+                .distinct()
+                .collect(Collectors.toList());
+
+        model.addAttribute("products", products);
         model.addAttribute("highestNutrients", highestNutrients);
-        for(Nutrient nutrient : highestNutrients){
+        model.addAttribute("avgNutrientMap", avgNutrientMap);
+        model.addAttribute("top3Nutrients", top3Nutrients);
+        for (Nutrient nutrient : highestNutrients) {
             System.out.println(nutrient.getName());
         }
         return "survey_result";

@@ -26,7 +26,6 @@ public class SurveyService {
     private final SurveyRepository surveyRepository;
     private final NutrientAnswerService nutrientAnswerService;
     private final NutrientCategoryRepository nutrientCategoryRepository;
-    private final SurveyAnswerService surveyAnswerService;
     private final NutrientCategoryService nutrientCategoryService;
 
     public Survey createSurvey(String question, NutrientCategory nutrientCategory) {
@@ -55,7 +54,7 @@ public class SurveyService {
         return surveyRepository.findByNutrientCategoryId(surveyCategoryId);
     }
 
-    public Page<Survey> getSurvetList(int page, int pageSize) {
+    public Page<Survey> getSurveyList(int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "id"));
         return surveyRepository.findAll(pageable);
     }
@@ -65,10 +64,7 @@ public class SurveyService {
         return calculateAverageScores(nutrientScoresMap);
     }
 
-    public List<Nutrient> getNutrientsWithHighestScores(Map<Long, Long> answerIdMap) {
-        Map<Nutrient, List<Double>> nutrientScoresMap = groupScoresByNutrient(answerIdMap);
-        return findNutrientsWithHighestScores(nutrientScoresMap);
-    }
+
     private Map<Nutrient, List<Double>> groupScoresByNutrient(Map<Long, Long> answerIdMap) {
         Map<Nutrient, List<Double>> nutrientScoresMap = new HashMap<>();
 
@@ -109,22 +105,33 @@ public class SurveyService {
     private double calculateAverage(List<Double> scores) {
         return scores.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
     }
-    private List<Nutrient> findNutrientsWithHighestScores(Map<Nutrient, List<Double>> nutrientScoresMap) {
-        List<Nutrient> nutrientsWithHighestScores = new ArrayList<>();
 
-        for (Map.Entry<Nutrient, List<Double>> entry : nutrientScoresMap.entrySet()) {
+    public List<Nutrient> findHighScoringNutrients(Map<Nutrient, Double> averageScores) {
+        List<Nutrient> highScoringNutrients = new ArrayList<>();
+
+        for (Map.Entry<Nutrient, Double> entry : averageScores.entrySet()) {
             Nutrient nutrient = entry.getKey();
-            List<Double> scores = entry.getValue();
+            Double averageScore = entry.getValue();
 
-            if (!scores.isEmpty()) {
-                double highestScore = scores.stream().mapToDouble(Double::doubleValue).max().orElse(0.0);
-                if (highestScore >= 3.0) {  // 평균 점수가 3.0 이상인 경우에만 추가
-                    nutrientsWithHighestScores.add(nutrient);
-                }
+            if (averageScore >= 2.3) {
+                highScoringNutrients.add(nutrient);
             }
         }
 
-        return nutrientsWithHighestScores;
+        return highScoringNutrients;
+    }
+
+    public List<Nutrient> findTopHighScoringNutrients(Map<Nutrient, Double> averageScores, int topCount) {
+        List<Nutrient> highScoringNutrients = new ArrayList<>();
+
+        averageScores.entrySet().stream()
+                .filter(entry -> entry.getValue() >= 3.0)
+                .sorted(Map.Entry.<Nutrient, Double>comparingByValue().reversed())
+                .limit(topCount)
+                .map(Map.Entry::getKey)
+                .forEach(highScoringNutrients::add);
+
+        return highScoringNutrients;
     }
 }
 

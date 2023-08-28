@@ -1,17 +1,107 @@
-<!DOCTYPE html>
-<html lang="en">
+<html layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>SURVEY-RESULT</title>
+    <style>
+    .chart-container {
+        position: relative;
+        height: 500px;
+        width: 80%;
+        margin: auto;
+    }
+    </style>
 </head>
-<body>
-<h1>Survey Result</h1>
-<div>
-  <ul th:each="nutrient, loop : ${highestNutrients}">
-    <li th:text="${nutrient.name}">
-        <h1 th:text="${nutrient.name}"></h1>
-    </li>
-  </ul>
+<div layout:fragment="content" class="test-Container">
+    <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
+    <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
+        <div class="test-con mx-auto py-8 text-center">
+            <h1 class="text-3xl font-bold">Top 3 Nutrients</h1>
+            <ul>
+                <div th:if="${top3Nutrients.size() > 0}">
+                    <li th:each="nutrient : ${top3Nutrients}">
+                        <p th:text="${nutrient.name}"></p>
+                    </li>
+                </div>
+                <div th:unless="${top3Nutrients.size() > 0}">
+                    <p>추천해드릴 영양성분이 없습니다, 매우 건강한 상태입니다</p>
+                </div>
+            </ul>
+        </div>
+
+        <div class="section-box">
+            <div class="test-con mx-auto py-8 text-center">
+                <h1 class="text-3xl font-bold">조사한 영양성분에 대한 데이터 평균</h1>
+                <div class="chart-container">
+                    <canvas id="avgNutrientChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-con mx-auto py-8 text-center">
+            <h1 class="text-3xl font-bold">Potential Nutrients to Consider</h1>
+            <p class="text-2xl">섭취를 고려해볼만한 영양소들</p>
+            <div class="horizontal-list" th:if="${highestNutrients.size() > 0}">
+                <div class="flex-list">
+                    <span th:each="nutrient : ${highestNutrients}" class="inline-block p-2 border rounded-lg mr-2">
+                    <p th:text="${nutrient.name}" class="inline-block"></p>
+                    </span>
+                </div>
+            </div>
+            <div th:unless="${highestNutrients.size() > 0}">
+                <p>추천해드릴 영양성분이 없습니다, 매우 건강한 상태입니다</p>
+            </div>
+
+            <div class="product-list" th:if="${products}">
+                <h2 class="text-3xl font-bold mt-8">Associated Products</h2>
+                <ul class="flex-list">
+                    <li th:each="product : ${products}">
+                        <a th:href="@{|/product/${product.id}|}" class="group-hover:underline">
+                            <div class="profile-img-box">
+                                <img th:if="${product.thumbnailImg != null}"
+                                     th:attr="src=${@commonUtil.getFilePath(product.thumbnailImg.id)}" alt="">
+                                <img th:if="${product.thumbnailImg == null}" src="https://picsum.photos/id/237/752/442"
+                                     alt="" class="w-32 h-24 object-cover">
+                            </div>
+                            <div class="font-bold pt-1 text-base" th:text="${product.name}"></div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.0.0/chart.min.js"></script>
+    <script th:inline="javascript">
+    var labels = [];
+    var data = [];
+
+    /*[# th:each="entry : ${avgNutrientMap}"]*/
+        labels.push(/*[[${entry.key.name}]]*/);
+        data.push(/*[[${entry.value}]]*/);
+    /*[/]*/
+
+    var ctx = document.getElementById('avgNutrientChart').getContext('2d');
+    var avgNutrientChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Average Nutrient Scores',
+                data: data,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 5
+                }
+            }
+        }
+    });
+    </script>
 </div>
-</body>
 </html>

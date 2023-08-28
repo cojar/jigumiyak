@@ -78,4 +78,8 @@ public class ProductService {
         }
         this.productRepository.save(product);
     }
+
+    public List<Product> findProductsByNutrientName(String nutrientName) {
+        return productRepository.findByNutrientListName(nutrientName);
+    }
 }

@@ -25,4 +25,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<Product> findByCategoryNameAndKeyword(@Param("keyword") String keyword,
                                                @Param("categoryName") String categoryName,
                                                Pageable pageable);
+
+    List<Product> findByNutrientListName(String nutrientName);
 }

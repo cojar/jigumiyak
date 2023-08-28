@@ -6,38 +6,42 @@
     <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
     <title>SURVEY</title>
 </head>
-<div layout:fragment="content" class="test-Container">
-    <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
-        <div>
-            <ul th:each="survey : ${surveyList}" th:with="surveyId=${survey.id}">
-                <li>
-                    <p th:text="${survey.question}"></p>
-                    <ul>
-                        <li th:each="answer : ${survey.surveyAnswerList}">
-                            <input type="radio" th:id="${'answer-' + surveyId + '-' + answer.id}"
-                                   th:name="${'surveyForm.answerIdMap[' + surveyId + ']'}"
-                                   th:value="${answer.id}"/>
-                            <label th:for="${'answer-' + surveyId + '-' + answer.id}"
-                                   th:text="${answer.answerText}"></label>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-            <!-- 페이지네이션 UI -->
-            <ul class="pagination flex">
-                <li th:if="${surveyList.hasPrevious}" class="page-item">
-                    <a class="page-link" th:href="@{/survey(page=${surveyList.previousPageable.pageNumber})}">Previous</a>
-                </li>
-                <li th:if="${surveyList.hasNext}" class="page-item">
-                    <a class="page-link" th:href="@{/survey(page=${surveyList.nextPageable.pageNumber})}">Next</a>
-                </li>
-            </ul>
-            <form th:action="@{/survey/submit}" th:object="${surveyForm}" method="post">
-                <input type="hidden" id="answerIdMap" name="answerIdMap">
-                <button th:if="${!surveyList.hasNext}" id="submitBtn">Submit</button>
-            </form>
-        </div>
+<div layout:fragment="content" class="test-Container flex justify-center items-center min-h-screen">
+    <div class="border rounded-lg border-gray-300 max-w-md mx-auto text-lg w-160 p-10">
+        <ul th:each="survey : ${surveyList}" th:with="surveyId=${survey.id}">
+            <li class="mb-4">
+                <p class="text-2xl font-bold mb-2" th:text="${survey.question}"></p>
+                <ul class="text-left space-y-2">
+                    <li th:each="answer : ${survey.surveyAnswerList}">
+                        <input type="radio" th:id="${'answer-' + surveyId + '-' + answer.id}"
+                               th:name="${'surveyForm.answerIdMap[' + surveyId + ']'}"
+                               th:value="${answer.id}"/>
+                        <label class="text-lg" th:for="${'answer-' + surveyId + '-' + answer.id}"
+                               th:text="${answer.answerText}"></label>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <!-- 페이지네이션 UI -->
+        <ul class="pagination flex py-2">
+            <li th:if="${surveyList.hasPrevious}" class="page-item">
+                <a class="page-link bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                   th:href="@{/survey(page=${surveyList.previousPageable.pageNumber})}">이전</a>
+            </li>
+            <li class="ml-auto">
+                <form th:if="${!surveyList.hasNext}" th:action="@{/survey/submit}" th:object="${surveyForm}" method="post">
+                    <input type="hidden" id="answerIdMap" name="answerIdMap">
+                    <button id="submitBtn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">제출</button>
+                </form>
+            </li>
+            <li class="ml-auto" th:if="${surveyList.hasNext}">
+                <a th:if="${surveyList.hasNext}"
+                   class="page-link bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                   th:href="@{/survey(page=${surveyList.nextPageable.pageNumber})}">다음</a>
+            </li>
+        </ul>
     </div>
+
     <script type="text/javascript" th:inline="javascript" th:src="@{/common.js}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
