@@ -9,24 +9,31 @@
 
         <!-- 검색  -->
         <div class="search-area w-full h-32 border-b-4 border-double border-gray-300 flex justify-center items-center flex-wrap">
-            <div class="search-box border border-gray-300 rounded-lg h-10 w-2/3 flex items-center">
+            <div class="search-box border border-gray-300 rounded-lg h-10 w-full flex items-center">
                 <form action="/notice" method="get" class="flex w-full h-10" id="noticeForm">
                     <input type="hidden" id="page" name="page" th:value="${page}">
                     <input type="hidden" id="pageSize" name="pageSize" th:value="${pageSize}">
-                    <select th:value="${keywordCategory}" name="keywordCategory" id="keywordCategory" class="bg-transparent">
+                    <select th:value="${pageSize}" id="pageSizeSelect" name="pageSizeSelect"
+                            class="bg-transparent px-3 border-r h-full">
+                        <option value="5" th:selected="${pageSize} == 5">5개씩 보기</option>
+                        <option value="10" th:selected="${pageSize} == 10">10개씩 보기</option>
+                        <option value="20" th:selected="${pageSize} == 20">20개씩 보기</option>
+                        <option value="50" th:selected="${pageSize} == 50">50개씩 보기</option>
+                    </select>
+                    <select th:value="${keywordCategory}" name="keywordCategory" id="keywordCategory" class="bg-transparent h-full border-r ml-3">
                         <option value="title" th:selected="${keywordCategory == 'title'}">제목</option>
                         <option value="content" th:selected="${keywordCategory == 'content'}">내용</option>
                         <option value="author" th:selected="${keywordCategory == 'author'}">작성자</option>
                         <option value="all" th:selected="${keywordCategory == 'all'}">제목+내용</option>
                     </select>
-                    <select th:value="${noticeCategory}" name="noticeCategory" id="noticeCategory" class="bg-transparent">
-                        <option value="">선택하세요</option>
+                    <select th:value="${noticeCategory}" name="noticeCategory" id="noticeCategory" class="bg-transparent h-full border-r px-3">
+                        <option value="">카테고리</option>
                         <option value="공지사항" th:selected="${noticeCategory == '공지사항'}">공지사항</option>
                         <option value="이벤트" th:selected="${noticeCategory == '이벤트'}">이벤트</option>
                     </select>
                     <input type="text" id="keyword" name="keyword" th:value="${keyword}"
                            class="w-full bg-transparent">
-                    <button type="submit" id="btn_search" class="w-20 bg-transparent">찾기
+                    <button type="submit" id="btn_search" class="h-full w-2/12 inline-block border-l">찾기
                     </button>
                 </form>
             </div>
@@ -36,15 +43,7 @@
         <table class="w-full">
             <thead>
             <tr class="border-b">
-                <th>
-                    <select th:value="${pageSize}" id="pageSizeSelect" name="pageSizeSelect"
-                            class="border border-gray-400 rounded py-2 mt-auto">
-                        <option value="5" th:selected="${pageSize} == 5">5개</option>
-                        <option value="10" th:selected="${pageSize} == 10">10개</option>
-                        <option value="20" th:selected="${pageSize} == 20">20개</option>
-                        <option value="50" th:selected="${pageSize} == 50">50개</option>
-                    </select>
-                </th>
+                <th class="py-3">번호</th>
                 <th>카테고리</th>
                 <th>제목</th>
                 <th>작성일시</th>
