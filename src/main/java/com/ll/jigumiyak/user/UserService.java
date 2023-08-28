@@ -83,7 +83,7 @@ public class UserService {
     public boolean sendEmail(Inquiry inquiry, String email, String titleType) {
         Long id = inquiry.getId();
 
-        String url = String.format("https://jigumiyak/inquiry/list/%s", id);
+        String url = String.format("https://jigumiyak.com/inquiry/list/%s", id);
 
         try {
             MimeMessage mimeMessage = this.javaMailSender.createMimeMessage();
