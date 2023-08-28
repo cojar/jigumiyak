@@ -100,9 +100,9 @@ public class SurveyController {
         }
         Map<Nutrient, Double> avgNutrientMap = surveyService.getAverageScoresByNutrient(answerIdMap);
         redirectAttributes.addFlashAttribute("avgNutrientMap", avgNutrientMap);
-        List<Nutrient> highestNutrients = surveyService.getNutrientsWithHighestScores(answerIdMap);
+        List<Nutrient> highestNutrients = surveyService.findHighScoringNutrients(avgNutrientMap);
         redirectAttributes.addFlashAttribute("highestNutrients", highestNutrients);
-        List<Nutrient> top3Nutrients = surveyService.top3ScoresByNutrient(answerIdMap);
+        List<Nutrient> top3Nutrients = surveyService.findTopHighScoringNutrients(avgNutrientMap, 3);
         redirectAttributes.addFlashAttribute("top3Nutrients", top3Nutrients);
         return "redirect:/survey/result";
     }

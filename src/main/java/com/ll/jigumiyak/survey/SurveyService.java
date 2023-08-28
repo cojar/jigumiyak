@@ -64,10 +64,6 @@ public class SurveyService {
         return calculateAverageScores(nutrientScoresMap);
     }
 
-    public List<Nutrient> getNutrientsWithHighestScores(Map<Long, Long> answerIdMap) {
-        Map<Nutrient, List<Double>> nutrientScoresMap = groupScoresByNutrient(answerIdMap);
-        return findNutrientsWithHighestScores(nutrientScoresMap);
-    }
 
     private Map<Nutrient, List<Double>> groupScoresByNutrient(Map<Long, Long> answerIdMap) {
         Map<Nutrient, List<Double>> nutrientScoresMap = new HashMap<>();
@@ -110,51 +106,32 @@ public class SurveyService {
         return scores.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
     }
 
-    private List<Nutrient> findNutrientsWithHighestScores(Map<Nutrient, List<Double>> nutrientScoresMap) {
-        List<Nutrient> nutrientsWithHighestScores = new ArrayList<>();
+    public List<Nutrient> findHighScoringNutrients(Map<Nutrient, Double> averageScores) {
+        List<Nutrient> highScoringNutrients = new ArrayList<>();
 
-        for (Map.Entry<Nutrient, List<Double>> entry : nutrientScoresMap.entrySet()) {
+        for (Map.Entry<Nutrient, Double> entry : averageScores.entrySet()) {
             Nutrient nutrient = entry.getKey();
-            List<Double> scores = entry.getValue();
+            Double averageScore = entry.getValue();
 
-            if (!scores.isEmpty()) {
-                double highestScore = scores.stream().mapToDouble(Double::doubleValue).max().orElse(0.0);
-                if (highestScore >= 3.0) {  // 평균 점수가 3.0 이상인 경우에만 추가
-                    nutrientsWithHighestScores.add(nutrient);
-                }
+            if (averageScore >= 2.3) {
+                highScoringNutrients.add(nutrient);
             }
         }
 
-        return nutrientsWithHighestScores;
+        return highScoringNutrients;
     }
 
-    public List<Nutrient> top3ScoresByNutrient(Map<Long, Long> answerIdMap) {
-        return findTop3NutrientsWithHighestScores(groupScoresByNutrient(answerIdMap));
-    }
+    public List<Nutrient> findTopHighScoringNutrients(Map<Nutrient, Double> averageScores, int topCount) {
+        List<Nutrient> highScoringNutrients = new ArrayList<>();
 
-    private List<Nutrient> findTop3NutrientsWithHighestScores(Map<Nutrient, List<Double>> nutrientScoresMap) {
-        List<Nutrient> nutrientsWithTopScores = new ArrayList<>();
+        averageScores.entrySet().stream()
+                .filter(entry -> entry.getValue() >= 3.0)
+                .sorted(Map.Entry.<Nutrient, Double>comparingByValue().reversed())
+                .limit(topCount)
+                .map(Map.Entry::getKey)
+                .forEach(highScoringNutrients::add);
 
-        // 영양성분과 해당 점수 리스트를 내림차순으로 정렬하여 가장 높은 점수를 가진 순서대로 처리
-        nutrientScoresMap.entrySet().stream()
-                .sorted((entry1, entry2) -> {
-                    double maxScore1 = entry1.getValue().stream().mapToDouble(Double::doubleValue).max().orElse(0.0);
-                    double maxScore2 = entry2.getValue().stream().mapToDouble(Double::doubleValue).max().orElse(0.0);
-                    return Double.compare(maxScore2, maxScore1);
-                })
-                .limit(3) // 상위 3개의 영양성분만 선택
-                .forEach(entry -> {
-                    Nutrient nutrient = entry.getKey();
-                    List<Double> scores = entry.getValue();
-
-                    // 점수가 3.0 이상인 경우에만 추가
-                    double highestScore = scores.stream().mapToDouble(Double::doubleValue).max().orElse(0.0);
-                    if (highestScore >= 3.0) {
-                        nutrientsWithTopScores.add(nutrient);
-                    }
-                });
-
-        return nutrientsWithTopScores;
+        return highScoringNutrients;
     }
 }
 

@@ -2,16 +2,36 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>SURVEY-RESULT</title>
 </head>
-<body>
-<h1>Survey Result</h1>
-<div>
-  <ul th:each="nutrient, loop : ${highestNutrients}">
-    <li th:text="${nutrient.name}">
-        <h1 th:text="${nutrient.name}"></h1>
-    </li>
-  </ul>
+<div layout:fragment="content" class="test-Container flex justify-center items-center min-h-screen">
+    <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
+    <div class="test-con mx-auto py-8 text-center">
+        <h1>Top 3 Nutrients</h1>
+        <ul>
+            <li th:each="nutrient : ${top3Nutrients}">
+                <p th:text="${nutrient.name}"></p>
+            </li>
+        </ul>
+
+        <h1>Average Nutrient Scores</h1>
+        <div>
+            <ul>
+                <li th:each="entry : ${avgNutrientMap}">
+                    <p th:text="${entry.key.name}"></p>
+                    <p th:text="${entry.value}"></p>
+                    <!-- 이 부분에서 그래프를 추가하면 됩니다 -->
+                </li>
+            </ul>
+        </div>
+
+        <h1>Potential Nutrients to Consider</h1>
+        <p>섭취를 고려해볼만한 영양소들:</p>
+        <ul>
+            <li th:each="nutrient : ${highestNutrients}">
+                <p th:text="${nutrient.name}"></p>
+            </li>
+        </ul>
+    </div>
 </div>
-</body>
 </html>
