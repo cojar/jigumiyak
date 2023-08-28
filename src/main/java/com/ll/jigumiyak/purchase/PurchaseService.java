@@ -44,6 +44,11 @@ public class PurchaseService {
         return purchase;
     }
 
+    public Purchase getPurchase(Long id) {
+        return this.purchaseRepository.findById(id)
+                .orElse(null);
+    }
+
     public List<Purchase> getList() {
         return this.purchaseRepository.findAll();
     }

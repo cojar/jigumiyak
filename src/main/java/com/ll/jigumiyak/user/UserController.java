@@ -399,6 +399,7 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('admin')")
     @GetMapping("/authority")
+    @ResponseBody
     public ResponseEntity authority(@RequestParam("id") Long id, Principal principal) {
 
         SiteUser user = this.userService.getUser(id);
@@ -440,6 +441,7 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('admin')")
     @PostMapping("/authority")
+    @ResponseBody
     public ResponseEntity authority(@RequestParam("loginId") String loginId,
                                     @RequestParam List<String> authority) {
 
@@ -466,6 +468,7 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('admin')")
     @PostMapping("/withdraw")
+    @ResponseBody
     public ResponseEntity withdraw(@RequestParam("id") Long id, Principal principal) {
 
         SiteUser user = this.userService.getUser(id);
@@ -497,6 +500,7 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('admin')")
     @PostMapping("/blacklist")
+    @ResponseBody
     public ResponseEntity blacklist(@RequestParam("id") Long id, Principal principal) {
 
         SiteUser user = this.userService.getUser(id);
