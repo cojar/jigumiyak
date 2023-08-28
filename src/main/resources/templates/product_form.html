@@ -17,9 +17,8 @@
             <input type="file" th:value="${thumbnailImage}" th:field="*{thumbnailImage}" class="input-field border mb-2"
                    th:onchange="_getFileName(this)">
 
-            <div class="relative mb-2">
-                <input type="text" id="searchWord" name="searchWord" size="100" autocomplete="off"
-                       onkeyup="searchNutrient()" class="input-field border w-full">
+            <div id="nutrientListContainer" class="relative mb-2">
+                <input type="text" id="searchWord" name="searchWord" size="100" autocomplete="off" onkeyup="searchNutrient()" class="input-field border w-full">
                 <div id="displayList" class="absolute border bg-white border-gray-300 mt-1 p-2 hidden"></div>
             </div>
 

@@ -31,7 +31,7 @@
             </div>
             <form id="selectPurchaseForm" action="/purchase" method="get">
                 <div th:each="cartItem : ${cartItemList}" th:id="|${cartItem.id}_dom|"
-                     class="border-b border-gray-300 flex items-center gap-5 px-4 py-8">
+                     class="item-dom border-b border-gray-300 flex items-center gap-5 px-4 py-8">
                     <div>
                         <input type="checkbox" checked th:id="${cartItem.id}" class="cursor-pointer accent-[#A5CDCD] h-4 w-4 item-select"
                                th:onclick="_toggleItemSelect(this)">
