@@ -1,0 +1,133 @@
+<html layout:decorate="~{layout}">
+<head>
+    <!-- 데이지 UI 불러오기 -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.5/dist/full.css" rel="stylesheet" type="text/css" />
+    <!-- 테일윈드 불러오기 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <title>JIGUMIYAK</title>
+</head>
+<div layout:fragment="content" class="test-Container">
+    <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
+    <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
+        <h5 class="border-b border-gray-400 text-2xl pt-5">마이페이지</h5>
+        <div class="border-b border-gray-400 h-64 w-full flex items-center">
+            <div class="h-24 w-full flex items-center flex-wrap">
+                <div class="text-4xl font-bold pl-10">
+                    <span th:text="${user.loginId}"></span>
+                    <span> 님</span>
+                </div>
+                <div class="text-sm self-end mb-2 pl-5 text-gray-500 flex">
+                    <span th:if="${@commonUtil.isLinked('kakao', #authentication)}">
+                        <img th:src="@{/image/login_kakao.png}" class="h-5 rounded-md mr-2" alt="">
+                    </span>
+                    <span th:if="${@commonUtil.isLinked('google', #authentication)}">
+                        <img th:src="@{/image/login_google.png}" class="h-5 rounded-md mr-2" alt="">
+                    </span>
+                </div>
+                <div class="w-full pl-10" th:text="${user.email}"></div>
+            </div>
+            <div class="bg-gray-100 w-full p-5 flex flex-wrap">
+                <div class="flex items-center">
+                    <div class="text-lg font-bold">회원정보</div>
+                    <a href="/user/modify" class="text-sm text-gray-500 px-3">정보수정 ></a>
+                </div>
+                <div class="w-full text-lg text-gray-600">
+                    <div>
+                        <span>회원 유형 : </span>
+                        <span th:text="${user.getAuthoritiesInline}"></span>
+                    </div>
+                    <div>
+                        <span>최근 접속 : </span>
+                        <span th:text="${#temporals.format(user.lastLoginDate, 'yy.MM.dd HH:mm')}"></span>
+                    </div>
+                    <div>
+                        <span>주소 : </span>
+                        <span th:if="${user.address != null}"
+                              th:text="|(${user.address.zoneCode}) ${user.address.mainAddress}|"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--주문내역-->
+        <div class="border-b border-gray-400">
+            <div class="text-xl mt-3 py-2 border-b-4 border-double border-gray-400">주문내역</div>
+            <div class="border-b border-gray-300 flex flex-col items-center gap-5 px-4 py-8" th:classappend="${#lists.size(purchaseList)} > 0 ? 'hidden'">
+                <span class="text-xl my-[20px]">주문내역이 없습니다</span>
+                <a href="/product" class="border border-gray-300 px-5 py-3 bg-[#5B9A8B] text-white text-sm rounded-xl">상품 보러가기</a>
+            </div>
+            <table th:if="${#lists.size(purchaseList) > 0}" class="w-full my-4 mx-auto border-collapse">
+                <thead>
+                <tr class="border-b-4 border-t-2 border-double border-gray-300 h-12">
+                    <th class="border-l-2 border-r-2 border-gray-300 px-2">결제일</th>
+                    <th class="border-l-2 border-r-2 border-gray-300 w-100 px-2">상품명</th>
+                    <th class="border-l-2 border-r-2 border-gray-300 px-2">결제방법</th>
+                    <th class="border-l-2 border-r-2 border-gray-300 px-2">결제상세</th>
+                    <th class="border-l-2 border-r-2 border-gray-300 px-2">결제금액</th>
+                    <th class="border-l-2 border-r-2 border-gray-300 px-2">결제상태</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="purchase, loop : ${purchaseList}" class="border h-9 text-sm">
+                    <td th:text="${#temporals.format(purchase.payDate, 'yy.MM.dd HH:mm')}" class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
+                    <td th:text="${purchase.purchaseName}" th:onclick="|location.href='@{|/purchase/${purchase.id}|}'|"
+                        class="border-l-2 border-r-2 border-b-2 border-gray-300 text-start px-2 cursor-pointer"></td>
+                    <td th:text="${purchase.method}" class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
+                    <td th:text="${purchase.paymentDetail}" class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
+                    <td th:text="|${#numbers.formatInteger(purchase.totalAmount, 0, 'COMMA')}원|" class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
+                    <td th:text="${purchase.purchaseState.stateKor}" class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+<!--        &lt;!&ndash;찜&ndash;&gt;-->
+<!--        <div class="border-b border-gray-400">-->
+<!--            <div class="text-xl mt-3 py-2 border-b-4 border-double border-gray-400">찜 목록</div>-->
+<!--            <div class="border-b border-gray-300 flex flex-col items-center gap-5 px-4 py-8" th:classappend="${#lists.size(purchaseList)} > 0 ? 'hidden'">-->
+<!--                <span class="text-xl my-[20px]">찜한 상품이 없습니다</span>-->
+<!--                <a href="/product" class="border border-gray-300 px-5 py-3 bg-[#5B9A8B] text-white text-sm rounded-xl">상품 보러가기</a>-->
+<!--            </div>-->
+<!--            <div class="h-56 bg-blue-100">내용넣는 자리</div>-->
+<!--        </div>-->
+        <!--문의-->
+        <div>
+            <div class="text-xl mt-3 py-2 border-b-4 border-double border-gray-400">
+                <span>문의내역 (답변대기)</span>
+                <a th:href="@{/inquiry/create}" class="btn btn-sm bg-[#5B9A8B] border-gray-300">문의하기</a>
+            </div>
+            <div class="border-b border-gray-300 flex flex-col items-center gap-5 px-4 py-8 mb-8" th:classappend="${!paging.isEmpty()} ? 'hidden'">
+                <span class="text-xl my-[20px]">문의내역이 없습니다</span>
+            </div>
+            <div th:if="${!paging.isEmpty()}" class="w-full mb-8" th:each="inquiry, loop : ${paging}">
+                <a th:href="@{|/inquiry/list/${inquiry.id}|}"
+                   class="block border w-full mt-5 py-4 px-5 flex justify-between"
+                   th:if="${inquiry.state == false}">
+                    <div class="flex items-center">
+                        <div class="text-gray-500" th:if="${inquiry.category == 'order'}">주문/결제</div>
+                        <div class="text-gray-500" th:if="${inquiry.category == 'refund'}">환불/반품/교환</div>
+                        <div class="text-gray-500" th:if="${inquiry.category == 'delivery'}">배송</div>
+                        <div class="text-gray-500" th:if="${inquiry.category == 'user'}">회원</div>
+                        <div class="text-gray-500" th:if="${inquiry.category == 'other'}">사이트 이용/기타</div>
+                        <div class="mx-8" th:text="${inquiry.subject}"></div>
+                        <div class="text-sm text-white bg-gray-400 px-2 pt-1 rounded-lg"
+                             th:if="${inquiry.state == false}">답변대기
+                        </div>
+                        <div class="text-sm text-white bg-green-600 px-2 pt-1 rounded-lg"
+                             th:if="${inquiry.state == true}">답변완료
+                        </div>
+                        <div class="text-sm text-white px-2 pt-1 rounded-lg ml-3" th:if="${inquiry.email == true}"
+                             style="background:darkorange;">메일알림
+                        </div>
+                    </div>
+                    <div class="text-gray-500"
+                         th:text="${#temporals.format(inquiry.createDate, 'yy.MM.dd HH:mm')}"></div>
+                </a>
+            </div>
+            <div th:if="${!paging.isEmpty()}" class="h-24 flex justify-center items-center">
+                <a th:href="@{/inquiry/list}" class="btn bg-[#5B9A8B] border-gray-300">더보기</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+</html>

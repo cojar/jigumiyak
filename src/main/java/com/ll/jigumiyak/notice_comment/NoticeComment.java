@@ -1,19 +1,23 @@
 package com.ll.jigumiyak.notice_comment;
 
+import com.ll.jigumiyak.base.BaseEntity;
 import com.ll.jigumiyak.notice.Notice;
 import com.ll.jigumiyak.user.SiteUser;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-@Entity
 @Getter
-@Setter
-public class NoticeComment {
+@SuperBuilder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+public class NoticeComment extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String content;
 
     @ManyToOne
     private Notice notice;

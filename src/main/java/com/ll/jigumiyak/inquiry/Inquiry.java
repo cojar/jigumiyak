@@ -1,19 +1,41 @@
 package com.ll.jigumiyak.inquiry;
 
+import com.ll.jigumiyak.base.BaseEntity;
+import com.ll.jigumiyak.file.GenFile;
+import com.ll.jigumiyak.inquiry_answer.InquiryAnswer;
 import com.ll.jigumiyak.user.SiteUser;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-@Entity
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
-@Setter
-public class Inquiry {
+@SuperBuilder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+public class Inquiry extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String subject;
+
+    private String content;
+
+    private boolean email;
+
+    private String category;
+
+    private boolean state;
 
     @ManyToOne
     private SiteUser inquirer;
+
+    @OneToMany(mappedBy = "inquiry", cascade = CascadeType.REMOVE)
+    private List<InquiryAnswer> answerList;
+
+    @OneToOne
+    private GenFile img;
 }

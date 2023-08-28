@@ -1,0 +1,87 @@
+<html layout:decorate="~{admin/ad_navbar}">
+<head>
+  <title>ADMIN-INQUIRY</title>
+</head>
+<div layout:fragment="content" class="relative">
+  <ul class="flex">
+    <li><a th:href="@{/admin/inquiry}" class="cursor-pointer block text-center w-32 rounded-xl p-1 m-5 border">답변대기 목록</a></li>
+  </ul>
+  <table class="w-11/12 mx-auto mb-10" style="min-width:1500px">
+    <thead>
+    <tr class="border-b-4 border-double border-black h-12">
+      <th class="w-24">문의글ID</th>
+      <th class="w-36">카테고리</th>
+      <th class="w-48">제목</th>
+      <th>내용</th>
+      <th class="w-36">작성자</th>
+      <th class="w-24">답변</th>
+      <th class="w-24">이메일</th>
+      <th class="w-24">버튼</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="inquiry, loop : ${paging}" class="border-b h-8">
+      <td th:text="${inquiry.id}" class="text-center"></td>
+      <td class="text-center">
+        <div th:if="${inquiry.category == 'order'}">주문/결제</div>
+        <div th:if="${inquiry.category == 'refund'}">환불/반품/교환</div>
+        <div th:if="${inquiry.category == 'delivery'}">배송</div>
+        <div th:if="${inquiry.category == 'user'}">회원</div>
+        <div th:if="${inquiry.category == 'other'}">사이트 이용/기타</div>
+      </td>
+      <td class="w-1/5"><a th:href="@{|/admin/inquiry/${inquiry.id}|}" th:text="${inquiry.subject}"></a></td>
+      <td class="px-5"><a th:href="@{|/admin/inquiry/${inquiry.id}|}" th:text="${inquiry.content}" ></a></td>
+      <td th:text="${inquiry.inquirer.loginId}"></td>
+      <td  class="text-center">
+        <div th:if="${inquiry.state == false}">답변대기</div>
+        <div th:if="${inquiry.state == true}">답변완료</div>
+      </td>
+      <td class="text-center">
+        <div th:if="${inquiry.email == false}">미신청</div>
+        <div th:if="${inquiry.email == true}">신청</div>
+      </td>
+      <td class="text-center">
+        <a href="javascript:void(0);" th:data-uri="@{|/inquiry/delete/${inquiry.id}|}" sec:authorize="isAuthenticated()"
+           class="delete border rounded-lg p-1 hover:bg-gray-200" th:text="삭제"></a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- 페이징 -->
+  <div th:if="${!paging.isEmpty()}" class="w-full flex justify-center mb-8">
+    <ul class="w-full flex justify-center items-center">
+      <li th:classappend="${!paging.hasPrevious} ? 'disabled'" class="py-3 px-1">
+        <a class="page-link" href="javascript:void(0)" th:href="@{|?page=${paging.number-1}|}"><span>이전</span></a>
+      </li>
+
+      <li th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}" th:if="${page >= paging.number-5 and page <= paging.number+5}"
+          th:classappend="${page == paging.number} ? 'active'">
+        <a th:text="${page+1}" class="page-link p-3 mx-1 border rounded-lg hover:bg-gray-300" th:href="@{/admin/inquiry(page=${page})}"></a>
+      </li>
+
+      <li th:classappend="${!paging.hasNext} ? 'disabled'" class="page-item py-3 px-1">
+        <a class="page-link" href="javascript:void(0)" th:href="@{|?page=${paging.number+1}|}"><span>다음</span></a>
+      </li>
+    </ul>
+  </div>
+</div>
+<script layout:fragment="script" type='text/javascript'>
+  const page_elements = document.getElementsByClassName("page-link");
+  Array.from(page_elements).forEach(function(element) {
+      element.addEventListener('click', function() {
+          document.getElementById('page').value = this.dataset.page;
+      });
+  });
+
+  const delete_elements = document.getElementsByClassName("delete");
+  Array.from(delete_elements).forEach(function(element) {
+      element.addEventListener('click', function() {
+          if(confirm("정말로 삭제하시겠습니까?")) {
+              location.href = this.dataset.uri;
+          };
+      });
+  });
+</script>
+</html>

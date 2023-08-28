@@ -1,0 +1,280 @@
+<html layout:decorate="~{layout}">
+<head>
+  <title>BOARD-DETAIL</title>
+  <meta id="_csrf" name="_csrf" th:content="${_csrf.token}" />
+  <meta id="_csrf_header" name="_csrf_header"
+        th:content="${_csrf.headerName}" />
+</head>
+<div layout:fragment="content" class="test-Container">
+  <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
+  <style>
+    @media ( max-width:767px ) {
+      .boardDate {
+        display:none;
+      }
+    }
+
+    .rcmtBtn::after {
+      content: " ∨";
+      padding-right:15px;
+    }
+
+    .recomment-box.hover > .rcmtBtn::after {
+    content: " ∧";
+    }
+
+    .recommend:before{
+    content: "🤍";
+    }
+
+    .recommended {
+    background:transparent;
+    }
+
+    .recommended:hover {
+    background:#E5E7EB;
+    }
+
+    .recommended:before {
+    content: "❤️";
+    }
+  </style>
+  <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
+    <h5 class="border-b-4 border-double border-gray-300 text-2xl pt-5">커뮤니티</h5>
+
+<!--  글 상세  -->
+    <div>
+
+      <div class="py-3 border-b mt-3">
+        <div th:text="${board.subject}" class="text-3xl font-bold"></div>
+        <div class="flex justify-between my-3 text-gray-500">
+          <div class="flex items-center">
+            <div th:if="${board.author != null}" th:text="|작성자 : ${board.author.loginId}|"></div>
+            <div class="mx-3 flex items-center">
+              <a th:href="@{|/board/modify/${board.id}|}" class="px-1 border-b border-gray-600 border-opacity-0 hover:border-opacity-100"
+                 sec:authorize="isAuthenticated()"
+                 th:if="${board.author != null and #authentication.getPrincipal().getUsername() == board.author.loginId}"
+                 th:text="수정"></a>
+
+              <a href="javascript:void(0);" th:data-uri="@{|/board/delete/${board.id}|}"
+                 class="delete px-1 border-b border-gray-600 border-opacity-0 hover:border-opacity-100" sec:authorize="isAuthenticated()"
+                 th:if="${board.author != null and #authentication.getPrincipal().getUsername() == board.author.loginId}"
+                 th:text="삭제"></a>
+            </div>
+          </div>
+          <div class="boardDate flex items-center">
+            <div th:if="${board.modifyDate != null}" th:text="|수정 - ${#temporals.format(board.modifyDate, 'yyyy-MM-dd HH:mm')}|"></div>
+            <div th:text="|작성 - ${#temporals.format(board.createDate, 'yyyy-MM-dd HH:mm')}|" class="pl-10"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="px-10 pt-16 pb-10 border-b">
+        <div th:utext="${@commonUtil.markdown(board.content)}" class="text-lg"></div>
+        <div class="flex justify-center mt-10">
+          <div id="vote-box">
+            <a class="py-3 px-5 text-2xl rounded-xl border-2 flex justify-center items-center hover:bg-white bg-gray-200 cursor-pointer"
+               th:data-uri="@{|/board/vote/${board.id}|}" sec:authorize="isAuthenticated()"
+               th:classappend="${#sets.contains(board.voter, @commonUtil.usernameToUser(#authentication.getPrincipal().getUsername())) ? 'recommended' : 'recommend'}"
+               th:onclick="_vote(this)">
+              <span class="px-2 text-xl" th:text="${#lists.size(board.voter)}"></span>
+            </a>
+            <a class="py-3 px-5 text-2xl rounded-xl border-2 flex justify-center items-center hover:bg-white bg-gray-200 cursor-pointer"
+               th:data-uri="@{|/board/vote/${board.id}|}" sec:authorize="isAnonymous()"
+               th:attr="onclick=|_anonymous('/user/login', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}')|">
+              🤍
+              <span class="px-2 text-xl" th:text="${#lists.size(board.voter)}"></span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<!--  댓글  -->
+    <div class="px-10 pb-5 mt-10 border-b">
+      <div th:text="|댓글 ( ${#lists.size(board.commentList)} )|" class="text-xl font-bold"></div>
+
+      <form th:action="@{|/bcomment/create/${board.id}|}" th:object="${boardCommentForm}" method="post" class="mt-5">
+        <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+        <div class="flex border rounded-xl" th:attr="onclick=|_anonymous('/user/login', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}')|">
+          <textarea sec:authorize="isAnonymous()" class="w-full px-3 rounded-tl-xl rounded-bl-xl resize-none" rows="5"></textarea>
+          <textarea sec:authorize="isAuthenticated()" th:field="*{content}" class="w-full px-3 rounded-tl-xl rounded-bl-xl resize-none" rows="5"></textarea>
+          <input type="submit" value="등록" class="text-center text-xl w-32 h-32 rounded-tr-xl rounded-br-xl p-3 cursor-pointer" style="background:#E9B384;">
+        </div>
+      </form>
+      <div id="c-vote-box">
+        <ul class="card border rounded-xl p-3 bg-gray-50 mt-5" th:each="comment, loop : ${paging}">
+          <a th:id="|comment_${comment.id}|"></a>
+          <li class="card-body">
+            <div class="flex justify-between items-center">
+              <div class="flex">
+                <div th:if="${comment.author != null}" th:text="|🗨️ ${comment.author.loginId}|"></div>
+
+                <div class="mx-2">
+                  <a class="px-1 cursor-pointer border-b border-gray-600 border-opacity-0 hover:border-opacity-100"
+                     th:data-uri="@{|/bcomment/vote/${comment.id}|}" sec:authorize="isAuthenticated()"
+                     th:classappend="${#sets.contains(comment.voter, @commonUtil.usernameToUser(#authentication.getPrincipal().getUsername())) ? 'recommended' : 'recommend'}"
+                     th:onclick="_vote(this)">
+                    <span class="text-sm text-gray-500" th:text="${#lists.size(comment.voter)}"></span>
+                  </a>
+                  <a class="px-1 cursor-pointer border-b border-gray-600 border-opacity-0 hover:border-opacity-100"
+                     th:data-uri="@{|/bcomment/vote/${comment.id}|}" sec:authorize="isAnonymous()"
+                     th:attr="onclick=|_anonymous('/user/login', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}')|">
+                    🤍
+                    <span class="text-sm text-gray-500" th:text="${#lists.size(comment.voter)}"></span>
+                  </a>
+                </div>
+
+                <div class="text-sm flex items-end">
+                  <a th:href="@{|/bcomment/modify/${comment.id}|}" class="px-1 border-b border-gray-600 border-opacity-0 hover:border-opacity-100"
+                     sec:authorize="isAuthenticated()"
+                     th:if="${comment.author != null and #authentication.getPrincipal().getUsername() == comment.author.loginId}"
+                     th:text="수정"></a>
+
+                  <a href="javascript:void(0);" th:data-uri="@{|/bcomment/delete/${comment.id}|}"
+                     class="delete px-1 border-b border-gray-600 border-opacity-0 hover:border-opacity-100" sec:authorize="isAuthenticated()"
+                     th:if="${comment.author != null and #authentication.getPrincipal().getUsername() == comment.author.loginId}"
+                     th:text="삭제"></a>
+                </div>
+              </div>
+
+              <div class="boardDate flex text-gray-500 text-sm">
+                <div th:if="${comment.modifyDate != null}" th:text="|수정 - ${#temporals.format(comment.modifyDate, 'yyMMdd HH:mm')}|"></div>
+                <div th:text="|작성 - ${#temporals.format(comment.createDate, 'yyMMdd HH:mm')}|" class="pl-3"></div>
+              </div>
+            </div>
+
+            <div th:utext="${@commonUtil.markdown(comment.content)}" class="mt-3 border-b pb-3"></div>
+
+  <!--          대댓-->
+            <div class="recomment-box">
+              <div th:text="|대댓글 ( ${#lists.size(comment.recommentList)} )|" class="rcmtBtn cursor-pointer mt-3"></div>
+              <div class="rcmtcon hidden">
+                <div th:each="recomment : ${comment.recommentList}" class="mt-3">
+                  <div class="border-b border-gray-400 py-1 flex justify-between items-center">
+                    <div class="flex">
+                      <div th:if="${recomment.author != null}" th:text="|▶ ${recomment.author.loginId}|"></div>
+
+                      <div class="text-sm flex items-center mx-5">
+                        <a th:href="@{|/brecomment/modify/${recomment.id}|}" class="px-1 border-b border-gray-600 border-opacity-0 hover:border-opacity-100"
+                           sec:authorize="isAuthenticated()"
+                           th:if="${recomment.author != null and #authentication.getPrincipal().getUsername() == recomment.author.loginId}"
+                           th:text="수정"></a>
+
+                        <a href="javascript:void(0);" th:data-uri="@{|/brecomment/delete/${recomment.id}|}"
+                           class="delete px-1 border-b border-gray-600 border-opacity-0 hover:border-opacity-100" sec:authorize="isAuthenticated()"
+                           th:if="${recomment.author != null and #authentication.getPrincipal().getUsername() == recomment.author.loginId}"
+                           th:text="삭제"></a>
+                      </div>
+                    </div>
+
+
+                    <div class="boardDate flex text-gray-500 text-sm justify-self-end ">
+                      <div th:if="${recomment.modifyDate != null}" th:text="|수정 - ${#temporals.format(recomment.modifyDate, 'yyMMdd HH:mm')}|"></div>
+                      <div th:text="|작성 - ${#temporals.format(recomment.createDate, 'yyMMdd HH:mm')}|" class="pl-3"></div>
+                    </div>
+                  </div>
+
+                  <div th:utext="${@commonUtil.markdown(recomment.content)}" class="px-5 pt-2"></div>
+                </div>
+
+                <!--          대댓작성-->
+                <form th:action="@{|/brecomment/create/${comment.id}|}" th:object="${boardRecommentForm}" method="post" class="mt-5">
+                  <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+                  <div class="flex border rounded-xl" th:attr="onclick=|_anonymous('/user/login', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}')|">
+                    <textarea sec:authorize="isAnonymous()" class="w-full px-3 rounded-tl-xl rounded-bl-xl resize-none" rows="1"></textarea>
+                    <textarea sec:authorize="isAuthenticated()" th:field="*{content}" class="w-full px-3 rounded-tl-xl rounded-bl-xl resize-none bg-white" rows="1"></textarea>
+                    <input type="submit" value="등록" class="text-center text-base w-32 rounded-tr-xl rounded-br-xl p-2 cursor-pointer bg-gray-300 hover:bg-gray-400">
+                  </div>
+                </form>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- 페이징 -->
+      <div th:if="${!paging.isEmpty()}" class="w-full flex justify-center mt-5">
+        <ul class="w-full flex justify-center items-center">
+          <li th:classappend="${!paging.hasPrevious} ? 'disabled'" class="py-3 px-1">
+            <a class="page-link" href="javascript:void(0)" th:href="@{|?page=${paging.number-1}|}"><span>이전</span></a>
+          </li>
+
+          <li th:each="cmtPage: ${#numbers.sequence(0, paging.totalPages-1)}" th:if="${cmtPage >= paging.number-5 and cmtPage <= paging.number+5}"
+              th:classappend="${cmtPage == paging.number} ? 'active'">
+            <a th:text="${cmtPage+1}" class="page-link p-3 mx-1 border rounded-lg hover:bg-gray-300" th:href="@{|?cmtPage=${cmtPage}|}"></a>
+          </li>
+
+          <li th:classappend="${!paging.hasNext} ? 'disabled'" class="py-3 px-1">
+            <a class="page-link" href="javascript:void(0)" th:href="@{|?cmtPage=${paging.number+1}|}"><span>다음</span></a>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+
+    <div class="m-8 text-center">
+      <a th:href="@{/board}" class="py-3 px-5 text-xl rounded-xl" style="background:#E9B384;">목록</a>
+    </div>
+  </div>
+</div>
+
+<script layout:fragment="script" type='text/javascript'>
+const delete_elements = document.getElementsByClassName("delete");
+Array.from(delete_elements).forEach(function(element) {
+    element.addEventListener('click', function() {
+        if(confirm("정말로 삭제하시겠습니까?")) {
+            location.href = this.dataset.uri;
+        };
+    });
+});
+
+function _faqBoxInit() {
+    $(".recomment-box").click(function() {
+      $(this).siblings(".hover").find(" > .rcmtcon").stop().slideUp(300);
+      $(this).siblings(".hover").removeClass("hover");
+
+      if ($(this).hasClass("hover")) {
+        $(this).find(" > .rcmtcon").stop().slideUp(300);
+        $(this).removeClass("hover");
+      }
+      else {
+        $(this).find(" > .rcmtcon").stop().slideDown(300);
+        $(this).addClass("hover");
+      }
+    });
+
+    $(".rcmtcon").click(function() {
+      return event.stopPropagation();
+    });
+  }
+  _faqBoxInit();
+
+function _vote(_this) {
+  var isVote;
+  if ($(_this).hasClass("recommended")) {
+    isVote = confirm("정말 추천을 취소하시겠습니까?");
+  } else {
+    isVote = confirm("정말 추천하시겠습니까?");
+  }
+  if (isVote) {
+    $.ajax({
+      url: _this.getAttribute("data-uri"),
+      type: "GET",
+      success: function() {
+        $('#vote-box').load(location.href+' #vote-box');
+        $('#c-vote-box').load(location.href+' #c-vote-box');
+        console.log("성공");
+      },
+      error: function(response) {
+        alert(response.responseJSON.message);
+        console.log(response);
+      }
+    });
+  }
+}
+
+</script>
+</html>

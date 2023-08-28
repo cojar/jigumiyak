@@ -1,19 +1,29 @@
 package com.ll.jigumiyak.survey;
 
+import com.ll.jigumiyak.base.BaseEntity;
+import com.ll.jigumiyak.nutrient_category.NutrientCategory;
+import com.ll.jigumiyak.survey_answer.SurveyAnswer;
 import com.ll.jigumiyak.user.SiteUser;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-@Entity
+import java.util.List;
+
 @Getter
-@Setter
-public class Survey {
+@SuperBuilder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+public class Survey extends BaseEntity {
+    private String question;
+    @OneToMany(mappedBy = "survey", cascade = CascadeType.ALL)
+    private List<SurveyAnswer> surveyAnswerList;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+//    @ManyToOne
+//    private SiteUser surveyee;
     @ManyToOne
-    private SiteUser surveyee;
+    private NutrientCategory nutrientCategory;
 }

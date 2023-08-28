@@ -1,0 +1,33 @@
+<html layout:decorate="~{layout}">
+<head>
+  <title>NOTICE-FORM</title>
+</head>
+<div layout:fragment="content" class="test-Container">
+  <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
+  <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
+    <h5 class="border-b-4 border-double border-gray-300 text-2xl pt-5 mb-4">질문등록</h5>
+    <form th:object="${noticeForm}" method="post">
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+      <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+      <div class="flex items-center justify-between">
+        <div class="w-1/5 mr-4">
+          <label for="category" class="text-xl">카테고리 선택</label>
+          <select th:field="*{category}" name="category" id="category" class="block h-12 rounded-lg border w-full rounded-lg p-3">
+            <option value="">선택하세요</option>
+            <option th:each="category : ${categoryList}" th:value="${category.name}" th:text="${category.name}"></option>
+          </select>
+        </div>
+        <div class="w-4/5">
+          <label for="title" class="text-xl mt-2">제목</label>
+          <input type="text" id="title" th:field="*{title}" class="block h-12 rounded-lg border w-full rounded-lg p-3">
+        </div>
+      </div>
+      <div class="mt-5">
+        <label for="content" class="w-full text-xl">내용</label>
+        <textarea th:field="*{content}" class="block border w-full rounded-lg p-3" rows="20"></textarea>
+      </div>
+      <input type="submit" value="저장하기" class="block text-center w-32 rounded-xl p-3 my-5 cursor-pointer" style="background:#E9B384;">
+    </form>
+  </div>
+</div>
+</html>

@@ -1,0 +1,10 @@
+#login-btn.deactivated {
+    background-color: white;
+    color: black;
+}
+#login-btn.deactivated:hover {
+    background-color: white;
+    border-color: #D1D5DB;
+    color: black;
+    cursor: initial;
+}

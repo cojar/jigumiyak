@@ -1,0 +1,64 @@
+<html layout:decorate="~{layout}">
+<head>
+  <title>INQUIRY-LIST</title>
+</head>
+<div layout:fragment="content" class="test-Container">
+  <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
+  <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
+    <h5 class="border-b-4 border-double border-gray-300 text-2xl pt-5">문의내역</h5>
+
+    <div class="text-lg text-gray-400 py-1 mt-5" th:text="|총 ${#lists.size(inquiryList)}개의 문의가 있습니다.|"></div>
+<!--내역 없을 때-->
+    <div th:if="${#lists.size(inquiryList) == 0}" class="flex flex-wrap justify-center w-full text-2xl text-gray-600 p-56">
+      <div class="w-full text-center">문의 내역이 없습니다.</div>
+      <div><a th:href="@{/inquiry/create}" class="mt-5 mx-2 my-8 text-lg border-b border-green-600 border-opacity-0 hover:border-opacity-100" style="color:#5D9C59;">
+        문의하기</a></div>
+    </div>
+<!--  내역 있을 때  -->
+    <div class="w-full mb-8" th:each="inquiry, loop : ${paging}">
+      <a th:href="@{|/inquiry/list/${inquiry.id}|}" class="block border w-full mt-5 py-8 px-5 flex justify-between">
+        <div class="flex items-center">
+          <div class="text-gray-500" th:if="${inquiry.category == 'order'}">주문/결제</div>
+          <div class="text-gray-500" th:if="${inquiry.category == 'refund'}">환불/반품/교환</div>
+          <div class="text-gray-500" th:if="${inquiry.category == 'delivery'}">배송</div>
+          <div class="text-gray-500" th:if="${inquiry.category == 'user'}">회원</div>
+          <div class="text-gray-500" th:if="${inquiry.category == 'other'}">사이트 이용/기타</div>
+          <div class="mx-8" th:text="${inquiry.subject}"></div>
+          <div class="text-sm text-white bg-gray-400 px-2 pt-1 rounded-lg" th:if="${inquiry.state == false}">답변대기</div>
+          <div class="text-sm text-white bg-green-600 px-2 pt-1 rounded-lg" th:if="${inquiry.state == true}">답변완료</div>
+          <div class="text-sm text-white px-2 pt-1 rounded-lg ml-3" th:if="${inquiry.email == true}" style="background:darkorange;">메일알림</div>
+        </div>
+        <div class="text-gray-500" th:text="${#temporals.format(inquiry.createDate, 'yyyy-MM-dd HH:mm')}"></div>
+      </a>
+    </div>
+
+
+    <!-- 페이징 -->
+    <div th:if="${!paging.isEmpty()}" class="w-full flex justify-center mb-8">
+      <ul class="w-full flex justify-center items-center">
+        <li th:classappend="${!paging.hasPrevious} ? 'disabled'" class="py-3 px-1">
+          <a class="page-link" href="javascript:void(0)" th:href="@{|?page=${paging.number-1}|}"><span>이전</span></a>
+        </li>
+
+        <li th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}" th:if="${page >= paging.number-5 and page <= paging.number+5}"
+            th:classappend="${page == paging.number} ? 'active'">
+          <a th:text="${page+1}" class="page-link p-3 mx-1 border rounded-lg hover:bg-gray-300" th:href="@{/inquiry/list(page=${page})}"></a>
+        </li>
+
+        <li th:classappend="${!paging.hasNext} ? 'disabled'" class="page-item py-3 px-1">
+          <a class="page-link" href="javascript:void(0)" th:href="@{|?page=${paging.number+1}|}"><span>다음</span></a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<script type="text/javascript" th:inline="javascript" th:src="@{/common.js}"></script>
+<script layout:fragment="script" type='text/javascript'>
+    const page_elements = document.getElementsByClassName("page-link");
+    Array.from(page_elements).forEach(function(element) {
+        element.addEventListener('click', function() {
+            document.getElementById('page').value = this.dataset.page;
+        });
+    });
+</script>
+</html>

@@ -1,0 +1,102 @@
+<html layout:decorate="~{layout}">
+<head>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>PRODUCT-FORM</title>
+</head>
+<div layout:fragment="content" class="test-Container">
+    <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
+    <div class="h-screen flex items-center justify-center bg-gray-100">
+        <form th:action="@{/product/create}" th:object="${productForm}" method="post" enctype="multipart/form-data"
+              class="p-8 border bg-white rounded-lg shadow-md max-w-md w-full">
+            <input type="text" th:field="*{name}" placeholder="제품명" class="input-field border mb-2">
+            <input type="text" th:field="*{description}" placeholder="설명" class="input-field border mb-2">
+            <input type="text" th:field="*{price}" placeholder="가격" class="input-field border mb-2">
+            <input type="text" th:field="*{quantity}" placeholder="수량" class="input-field border mb-2">
+            <input type="text" th:field="*{inventory}" placeholder="재고" class="input-field border mb-2">
+            <input type="file" th:value="${thumbnailImage}" th:field="*{thumbnailImage}" class="input-field border mb-2"
+                   th:onchange="_getFileName(this)">
+
+            <div id="nutrientListContainer" class="relative mb-2">
+                <input type="text" id="searchWord" name="searchWord" size="100" autocomplete="off" onkeyup="searchNutrient()" class="input-field border w-full">
+                <div id="displayList" class="absolute border bg-white border-gray-300 mt-1 p-2 hidden"></div>
+            </div>
+
+            <div id="selectedDataContainer" class="mt-2">
+                <!-- 보여주기 data -->
+            </div>
+            <button type="submit" class="btn-primary mt-4">등록하기</button>
+        </form>
+    </div>
+
+    <script type="text/javascript" th:inline="javascript" th:src="@{/common.js}"></script>
+    <script layout:fragment="script" type="text/javascript">
+    function _getFileName(_this) {
+        var fileValue = $(_this).val().split("\\");
+        var fileName = fileValue[fileValue.length - 1];
+
+        $(_this).siblings("div.uploaded-file-name").html(fileName);
+        $(_this).siblings("div.uploaded-file-name").addClass("active");
+    }
+
+    function searchNutrient() {
+        var element = $("#searchWord");
+        var wordLength = element.val().trim().length;
+
+        if (wordLength == 0) {
+            $("#displayList").hide();
+        } else {
+            $.ajax({
+                url: "/product/searchNutrient_ajax",
+                type: "get",
+                data: { "searchWord": element.val() },
+                dataType: "json",
+                success: function(json) {
+                    if (json.length > 0) {
+                        var html = "";
+                        $.each(json, function(index, item) {
+                            var word = item.word;
+                            var index = word.toLowerCase().indexOf(element.val().toLowerCase());
+                            var len = element.val().length;
+                            var result = word.substr(0, index) + "<span style='color:blue;'>" + word.substr(index, len) + "</span>" + word.substr(index + len);
+                            html += "<span class='result' style='cursor:pointer;' data-word='" + word + "'>" + result + "</span><br>";
+                        });
+
+                        var input_width = element.css("width");
+                        $("#displayList").css({ "width": input_width });
+                        $("#displayList").html(html);
+                        $("#displayList").show();
+                    } else {
+                        $("#displayList").hide();
+                    }
+                },
+                error: function(request, status, error) {
+                    console.log("code: " + request.status + "\n" + "message: " + request.responseText + "\n" + "error: " + error);
+                }
+            });
+        }
+    }
+
+   $(document).ready(function() {
+    $("#displayList").hide();
+
+        $(document).on("click", ".result", function() {
+            var word = $(this).data("word");
+            var selectedDataBox = "<div class='selected-data-box'>" + word + "<span class='remove-box'>삭제?</span></div>";
+            $("#selectedDataContainer").append(selectedDataBox);
+
+            var selectedInputBox = "<input type='hidden' name='nutrientList' value='" + word + "'>";
+            $("#nutrientListContainer").append(selectedInputBox);
+
+            $("#searchWordSelected").val(word);
+            $("#displayList").hide();
+        });
+
+        $(document).on("click", ".remove-box", function() {
+            $(this).parent().remove();
+            $("#searchWordSelected").val("");
+        });
+    });
+</script>
+</div>
+</html>

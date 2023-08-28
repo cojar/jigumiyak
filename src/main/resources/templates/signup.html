@@ -1,0 +1,115 @@
+<meta charset="UTF-8">
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<!-- 제이쿼리 불러오기 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+<!-- toastr 불러오기 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+<link rel="stylesheet" href="https://jhs512.github.io/toastr/toastr.css">
+
+<!-- 폰트어썸 아이콘 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- 아이콘 목록 : https://fontawesome.com/search?o=r&m=free -->
+
+<!-- 데이지 UI 불러오기 -->
+<link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.5/dist/full.css" rel="stylesheet" type="text/css" />
+<!-- 테일윈드 불러오기 -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- 주소 api 불러오기 -->
+<script type="text/javascript" src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/css/signup.css}">
+
+<div class="flex-grow flex items-center justify-center border-solid border-2 pt-5">
+  <div class="max-w-2xl w-full px-4">
+    <h1 class="mb-4">
+      <i class="fa-solid fa-user-plus"></i>
+      회원가입
+    </h1>
+
+    <form th:object=${userSignupForm} method="post" id="userSignupForm" class="flex flex-col gap-6">
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">아이디</span>
+          <span class="alert-loginId label-text"></span>
+        </label>
+        <div class="flex gap-2">
+          <input type="text" th:field="*{loginId}" placeholder="아이디" class="input input-bordered flex-auto" autofocus>
+          <button type="button" class="btn border-gray-300 bg-[color:#5B9A8B] flex-[0_0_20%]" th:onclick="_checkLoginId()">중복확인</button>
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">비밀번호</span>
+          <span class="alert-password label-text"></span>
+        </label>
+        <input type="password" th:field="*{password}" placeholder="비밀번호" class="input input-bordered">
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">비밀번호 확인</span>
+          <span class="alert-passwordConfirm label-text"></span>
+        </label>
+        <input type="password" th:field="*{passwordConfirm}" placeholder="비밀번호 확인" class="input input-bordered">
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">이메일</span>
+          <span class="alert-email label-text"></span>
+        </label>
+        <div class="flex gap-2">
+          <input type="text" th:field="*{email}" placeholder="이메일" class="input input-bordered flex-auto">
+          <button type="button" class="btn border-gray-300 bg-[color:#5B9A8B] flex-[0_0_20%]" th:onclick="_genCode()">인증번호받기</button>
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">이메일 인증번호</span>
+          <span class="alert-inputCode label-text"></span>
+        </label>
+        <div class="flex gap-2">
+          <input type="text" th:field="*{inputCode}" placeholder="이메일 인증번호" class="input input-bordered flex-auto">
+          <input type="hidden" th:field="*{genCode}">
+          <button type="button" class="btn border-gray-300 bg-[color:#5B9A8B] flex-[0_0_20%]" th:onclick="_checkCode()">인증번호확인</button>
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">주소</span>
+        </label>
+        <div class="flex gap-2">
+          <input type="text" th:field="*{address.zoneCode}" disabled placeholder="우편번호" class="zoneCode input input-bordered flex-[0_0_40%]" th:onclick="_zoneCode()">
+          <button type="button" class="btn border-gray-300 bg-[color:#5B9A8B]" th:onclick="_zoneCode()">주소찾기</button>
+        </div>
+        <input type="text" th:field="*{address.mainAddress}" disabled placeholder="주소" class="mainAddress my-3 input input-bordered" th:onclick="_zoneCode()">
+        <input type="text" th:field="*{address.subAddress}" placeholder="상세주소" class="subAddress input input-bordered">
+      </div>
+
+      <button type="button" id="signup-btn" class="btn btn-block border-gray-300 bg-[color:#5B9A8B] gap-1 deactivated" th:onclick="_signup()">
+        <i class="fa-solid fa-user-plus"></i>
+        <span>회원가입</span>
+      </button>
+
+      <a href="/user/login" class="btn btn-block btn-outline border-gray-300 gap-1">
+        <i class="fa-solid fa-right-to-bracket"></i>
+        <span>로그인 하러가기</span>
+      </a>
+
+      <a href="/" class="btn btn-block btn-outline border-gray-300 gap-1">
+        <i class="fa-solid fa-house"></i>
+        <span>메인화면</span>
+      </a>
+    </form>
+  </div>
+</div>
+
+<script type="text/javascript" th:src="@{/common.js}"></script>
+<script type="text/javascript" th:src="@{/js/signup.js}"></script>

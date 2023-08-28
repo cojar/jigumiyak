@@ -1,0 +1,7 @@
+input.authority-select:checked+label {
+    background-color: #5B9A8B;
+    color: white;
+}
+input.authority-select:checked+label:hover {
+    background-color: #252933;
+}

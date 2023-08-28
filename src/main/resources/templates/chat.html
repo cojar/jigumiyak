@@ -1,0 +1,469 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <!-- 	style -->
+  <link href="starboot/css/chatStyle.css" rel="stylesheet" />
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+  <!-- 	fontawsome -->
+  <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    @font-face {
+      font-family: 'GmarketSansMedium';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+
+    }
+
+    body {
+      font-family: 'GmarketSansMedium';
+      text-decoration:none;
+      padding:0; margin:0;
+      list-style:none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="grid grid-cols-12 gap-4">
+    <div class="col-span-12 min-h-screen max-h-screen min-w-screen max-w-screen">
+      <div class="card chat-app min-h-screen max-h-screen min-w-screen max-w-screen">
+        <div id="plist" class="people-list">
+          <div class="text-lg">실시간 채팅</div>
+          <div class="text-sm">상담 시간 : 9am ~ 6pm</div>
+          <ul id="online-user" class="list-none mt-2 mb-0">
+
+            <!-- master status -->
+            <li class="clearfix cursor-pointer active p-2 rounded-lg hover:bg-gray-200" @click="activeToggle" id="master">
+              <div class="about flex items-center">
+                <i class="fa-solid fa-user-doctor fa-lg" style="color: #000000;"></i>
+                <div class="ml-5">
+                  <div id="master" class="name">약사 MASTER</div>
+                  <div id="master-status" class="status">
+                    <i id="master-status-icon" class="fas fa-circle offline"></i> <!-- Font Awesome icon here -->
+                    <span id="master-status-content">offline</span>
+                  </div>
+                </div>
+              </div>
+              <div class="circle hidden ">
+                <span class="staging-count"></span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- chat section -->
+        <div class="chat min-h-screen max-h-screen min-w-screen max-w-screen">
+          <div class="chat-header clearfix bg-gray-200 w-full h-16">
+            <div class="flex items-center h-full">
+              <a href="javascript:void(0);" data-toggle="modal"
+                 data-target="#view_info">
+                <i id="myImg" class="fa-solid fa-comment fa-lg text-black"></i>
+              </a>
+              <div class="chat-about">
+                <span id="myId" class="m-b-0" th:text="${session.sessionId}"></span>
+              </div>
+            </div>
+          </div>
+          <div class="chat-history w-full h-full min-h-96 overflow-y-auto">
+            <ul class="w-full" id="chat-content">
+            </ul>
+          </div>
+          <div class="chat-message clearfix w-full h-20">
+            <div class="input-group-prepend d-flex mb-0">
+              <input id="msg" type="text"
+                     @keydown.enter="send" class="form-input"
+                     placeholder="Enter text here...">
+              <button id="button-send" type="button" class="input-group-text"
+                      data-toggle="tooltip">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+              <button id="disconn" type="button" class="input-group-text"
+                      data-toggle="tooltip">
+                <i class="fas fa-sign-out-alt"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript" th:inline="javascript">
+		 var myId = document.getElementById('myId').textContent;
+		 var receiverId;
+	     var preOnlineList;
+	     var masterStatusContent;
+   		 var preMasterStatus;
+	   	 var masterStatus;
+
+	   	 if(myId != 'master') {
+	   		 receiverId = 'master';
+	   	 } else {
+	   	 }
+
+         document.querySelector("#disconn").addEventListener("click", (e) => {
+        	// location.href = "/";
+        	window.close();
+         })
+
+         document.querySelector("#button-send").addEventListener("click", (e) => {
+	        	send();
+         });
+
+         const websocket = new WebSocket("wss://jigumiyak.com/ws/chat");
+	         websocket.onmessage = onMessage;
+	         websocket.onopen = onOpen;
+	         websocket.onclose = onClose;
+
+         // send a message
+         function send(){
+            var message = document.getElementById("msg").value;
+			// don't send when content is empty
+            if(message != "") {
+	        	 let msg = {
+	        		 'receiverId' : receiverId,
+	        		 'message' : message
+	        	 }
+
+	             if(message != null) {
+	             	websocket.send(JSON.stringify(msg));
+	             }
+	             document.getElementById("msg").value = '';
+	         }
+         }
+
+         //on exit chat room
+         function onClose(evt) {
+        	 console.log("close event : " + evt);
+         }
+
+         //on entering chat room
+         function onOpen(evt) {
+        	 console.log("open event : " + evt);
+         }
+
+         // on message controller
+         function onMessage(msg) {
+        	 masterStatusContent = document.getElementById('master-status-content');
+        	 preMasterStatus = masterStatusContent.innerHTML;
+
+        	 console.log('msg.data >>> ', msg.data);
+        	 var data = JSON.parse(msg.data);
+
+        	 var onlineList = data.onlineList;
+        	 console.log('onlineList >>>> ', onlineList);
+
+             var senderId = data.senderId;
+             console.log('senderId >>> ', senderId)
+             // var receiverId = data.receiverId;
+             // console.log('receiverId >>> ', receiverId)
+             var message = data.message;
+             console.log('message >>> ', message)
+             var time = data.time;
+             console.log('time >>> ', time)
+             masterStatus = data.masterStatus;
+             console.log('preMasterStatus >>> ', preMasterStatus)
+             console.log('masterStatus >>> ', masterStatus)
+             var newOne = data.newOne;
+             console.log('newOne >>> ', newOne);
+             var outOne = data.outOne;
+             console.log('outOne >>> ', outOne);
+
+
+
+             // when user login
+             // first login master -> get all onlined user list
+             if(newOne != null) {
+            	 console.log("new One is not null");
+				if(myId == 'master' && newOne == "master") {
+					getOnlineList(onlineList);
+				} else if(myId == "master" && newOne != "master") {
+					console.log("new one login >>>> " , newOne);
+					insertOnlineList(newOne);
+				}
+             }
+             // when user disconnect
+             if(outOne != null && myId == 'master') {
+            	 console.log("user disconnect >>> ", outOne);
+            	 deleteOnlieList(outOne);
+             }
+
+             if (myId === 'master' && senderId !== 'master' && receiverId !== senderId) {
+                  addStagingMessage(senderId, time, message);
+              } else {
+                  insertMessage(senderId, time, message);
+              }
+
+              // 마스터 상태를 업데이트합니다
+              updateMasterStatus();
+
+              // 채팅 내용을 가장 아래로 스크롤합니다
+              scrollDown();
+       	 }
+
+         // insert a message
+         function insertMessage(senderId, time, message) {
+        	  var chatContent =  document.querySelector("#chat-content");
+              if(senderId == myId) {
+             	// insert a message into chat content to myself
+                  var li = document.createElement('li');
+                  li.classList.add('message-li', 'clearfix', 'float-right');
+                  var infoDiv = document.createElement('div');
+                  infoDiv.classList.add('message-data');
+                  li.appendChild(infoDiv);
+                  var timeSpan = document.createElement('span');
+                  timeSpan.classList.add('message-data-time');
+                  timeSpan.textContent = time;
+                  infoDiv.appendChild(timeSpan);
+                  var msgDiv = document.createElement('div');
+                  msgDiv.classList.add('message', 'my-message');
+                  msgDiv.textContent = message;
+                  li.appendChild(msgDiv);
+
+                  chatContent.appendChild(li);
+                  scrollDown();
+              } else {
+ 				// insert a message into chat content to other
+ 	            var li = document.createElement('li');
+                 li.classList.add('message-li', 'clearfix');
+                 var infoDiv = document.createElement('div');
+                 infoDiv.classList.add('message-data');
+                 li.appendChild(infoDiv);
+                 var timeSpan = document.createElement('span');
+                 timeSpan.classList.add('message-data-time');
+                 timeSpan.textContent = time;
+                 infoDiv.appendChild(timeSpan);
+                 var msgDiv = document.createElement('div');
+                 msgDiv.classList.add('message', 'other-message');
+                 msgDiv.textContent = message;
+                 li.appendChild(msgDiv);
+
+                 chatContent.appendChild(li);
+                 scrollDown();
+              }
+         }
+
+         // save staging messages
+         function addStagingMessage(senderId, time, message) {
+
+        	 var container = [];
+      		 var data = {
+      				 "time":time,
+      				 "message":message,
+      				 "senderId":senderId
+      		 		}
+      		 console.log('staging message data >>> ', data)
+        	 if(sessionStorage.getItem(senderId) != null) {
+        	 	 container = JSON.parse(sessionStorage.getItem(senderId));
+        	 	 console.log('stagine message container >>> ', container);
+				 container.push(data);
+        	 } else {
+        		 container.push(data);
+        	 }
+			 sessionStorage.setItem(senderId, JSON.stringify(container));
+
+			 if(document.getElementById(senderId) != null) {
+				 var circle = document.getElementById(senderId).querySelector('.circle');
+				 var count = document.getElementById(senderId).querySelector('.circle > .staging-count');
+				 var n = count.textContent;
+				 if(n == ""){
+					 n = 0
+				 }
+				 n ++;
+				 circle.classList.remove('d-none');
+				 count.textContent = n;
+			 }
+         }
+
+         // onclick onlined user icon
+         function activeToggle(element){
+        	 if(!element.classList.contains('active')){
+        		 element.classList.add('active');
+        	 } else {
+        		 element.classList.remove('active');
+        	 };
+        	 var preReceiverId = receiverId;
+        	 receiverId = element.querySelector('.about > .name').textContent;
+        	 console.log('<<<< toggleAction >>>>>')
+        	 console.log('receiverId >>> ', receiverId);
+        	 console.log('preReceiverId >>> ', preReceiverId);
+
+        	 if(receiverId != preReceiverId && preReceiverId != null)
+	        	 document.getElementById(preReceiverId).classList.remove('active');
+
+        	 setChatHistory(preReceiverId);
+        	 document.getElementById('chat-content').innerHTML = "";
+        	 getChatHistory(receiverId);
+        	 divideChatSection(receiverId);
+        	 if(document.getElementById(receiverId).querySelector('.circle') != null) {
+	        	 document.getElementById(receiverId).querySelector('.circle > .staging-count').textContent = "";
+	        	 document.getElementById(receiverId).querySelector('.circle').classList.add('d-none');
+        	 }
+         }
+
+	      // insert all users into online list
+         function getOnlineList(onlineList){
+	        var onlineUser =  document.querySelector("#online-user");
+        	onlineUser.innerHTML = "";
+			onlineList.forEach(user => {
+	        	insertOnlineList(user);
+			});
+         }
+
+         // insert online user list
+         function insertOnlineList(user) {
+
+        	 if(document.getElementById(user) == null) {
+	        	var onlineUser =  document.querySelector("#online-user");
+
+	       		var li = document.createElement('li');
+	            li.classList.add('clearfix');
+	            li.setAttribute('onclick', 'activeToggle(this)');
+	            li.setAttribute('id', user);
+
+	            var aboutDiv = document.createElement('div');
+	            aboutDiv.classList.add('about');
+	            var name = document.createElement('div');
+	            name.classList.add('name');
+	            name.textContent = user;
+	            aboutDiv.appendChild(name);
+
+	            var statusDiv = document.createElement('div');
+	            statusDiv.classList.add('status');
+	            var icon = document.createElement('i');
+	            icon.setAttribute('id', 'master-status-icon');
+	            icon.classList.add('fa', 'fa-circle', 'online');
+	            var span = document.createElement('span');
+	            span.setAttribute('id', 'master-status-content');
+	            span.textContent = 'online';
+	            statusDiv.appendChild(icon);
+	            statusDiv.appendChild(span);
+
+	            aboutDiv.appendChild(statusDiv);
+
+	            li.appendChild(aboutDiv);
+
+	            var alertDiv = document.createElement('div');
+	            alertDiv.classList.add('circle', 'd-flex', 'align-items-center', 'justify-content-center', 'd-none');
+	            aspan = document.createElement('span');
+	            aspan.classList.add('staging-count');
+	            alertDiv.appendChild(aspan);
+	            li.appendChild(alertDiv);
+
+	            onlineUser.appendChild(li);
+        	 }
+         };
+
+         // delete outOne from onlineList
+         function deleteOnlieList(outOne) {
+	     	var element =  document.getElementById(outOne);
+			element.parentNode.removeChild(element);
+         }
+
+         // insert division of receiver
+         function divideChatSection(receiverId){
+        	  var div = document.createElement('div');
+              div.classList.add('clearfix');
+              var str = receiverId + '님과의 대화 시작 ';
+              var hr = document.createElement('hr');
+
+              div.textContent = str;
+              div.appendChild(hr);
+              var chatContent =  document.querySelector("#chat-content");
+              chatContent.appendChild(div);
+
+              scrollDown();
+         };
+
+         // update master status
+         function updateMasterStatus(){
+        	 if(preMasterStatus != masterStatus) {
+ 				var icon = document.getElementById('master-status-icon');
+
+ 				if(masterStatus == "online") {
+ 	            	 icon.classList.remove('offline');
+ 	            	 icon.classList.add('online');
+ 	             } else {
+ 	            	 icon.classList.remove('online');
+ 	            	 icon.classList.add('offline');
+ 	             }
+ 				masterStatusContent.innerHTML = masterStatus;
+ 			}
+         };
+
+         // save chat history
+         function setChatHistory(name){
+        	 var value =[];
+        	 document.querySelectorAll('.message-li').forEach(item => {
+
+        		 var time = item.querySelector('.message-data > .message-data-time').textContent;
+        		 var message = item.querySelector('.message').textContent;
+        		 var senderId;
+        		 var type = item.querySelector('.message').classList[1];
+        		 if(type == 'my-message'){
+        			 senderId = myId;
+        		 } else {
+        			 senderId = name;
+        		 }
+
+        		 data = {
+        				 "time":time,
+        				 "message":message,
+        				 "senderId":senderId
+        		 }
+        		 value.push(data);
+
+        	 })
+
+        	 sessionStorage.setItem(name, JSON.stringify(value));
+         };
+
+         // insert pre chat history
+         function getChatHistory(name){
+        	 var data = JSON.parse(sessionStorage.getItem(name));
+
+        	 if(data != null) {
+	        	 data.forEach(item => {
+	        		 var time = item.time;
+	        		 var message = item.message;
+	        		 var senderId = item.senderId;
+
+	        		 insertMessage(senderId, time, message);
+	        	 })
+        	 }
+         };
+
+         // scroll down event
+         function scrollDown() {
+              var chatContent = document.querySelector("#chat-content");
+              chatContent.scrollTop = chatContent.scrollHeight;
+          }
+
+          document.getElementById("msg").addEventListener("keydown", function(event) {
+              if (event.keyCode === 13) {
+                  event.preventDefault(); // Prevent the default behavior (line break)
+                  send(); // Call the send function to send the message
+              }
+          });
+	</script>
+
+<!-- bootstrap function -->
+<script type="text/javascript">
+		$(function() {
+			$('[data-toggle="tooltip"]').tooltip();
+		});
+	</script>
+
+</body>
+</html>

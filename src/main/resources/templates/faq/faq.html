@@ -1,0 +1,121 @@
+<html layout:decorate="~{layout}">
+<head>
+  <title>INQUIRY-LIST</title>
+</head>
+<div layout:fragment="content" class="test-Container">
+  <style>
+    .inquiry-list-box > li > .inquiry-question::after {
+      color:green;
+      content: "∨";
+      justify-self:end;
+    }
+
+    .inquiry-list-box > li.hover > .inquiry-question::after {
+    content: "∧";
+    }
+  </style>
+  <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
+    <div class="border-b-4 border-double border-gray-300 text-2xl pt-5">자주찾는 문의</div>
+
+    <div class="border-b border-gray-300 search-area w-full flex justify-center items-center flex-wrap">
+      <!--      검색-->
+      <div class="search-box border border-gray-300 rounded-lg h-10 w-3/4 flex items-center my-10">
+        <input type="text" id="search_kw" class="inline-block h-full w-9/12 bg-transparent" th:value="${kw}">
+        <button class="h-full w-3/12 inline-block border-l" type="button" id="btn_search">찾기</button>
+      </div>
+      <form th:action="@{/faq}" method="get" id="searchForm">
+        <input type="hidden" id="category" name="category" th:value="${category}">
+        <input type="hidden" id="kw" name="kw" th:value="${kw}">
+      </form>
+
+      <!--      카테고리-->
+      <ul class="w-3/4 h-12 flex text-sm text-center mb-10">
+        <li class="category-link w-1/5 h-12 border border-gray-300 border-r-0 hover:bg-gray-200">
+          <a th:href="@{|faq?category=order|}" class="w-full h-full flex items-center justify-center">주문 / 결제</a>
+        </li>
+        <li class="category-link w-1/5 h-12 border border-gray-300 border-r-0 hover:bg-gray-200">
+          <a th:href="@{|faq?category=refund|}" class="w-full h-full flex items-center justify-center">환불 / 반품 / 교환</a>
+        </li>
+        <li class="category-link w-1/5 h-12 border border-gray-300 border-r-0 hover:bg-gray-200">
+          <a th:href="@{|faq?category=delivery|}" class="w-full h-full flex items-center justify-center">배송</a>
+        </li>
+        <li class="category-link w-1/5 h-12 border border-gray-300 border-r-0 hover:bg-gray-200">
+          <a th:href="@{|faq?category=user|}" class="w-full h-full flex items-center justify-center">회원</a>
+        </li>
+        <li class="category-link w-1/5 h-12 border border-gray-300 hover:bg-gray-200">
+          <a th:href="@{|faq?category=other|}" class="w-full h-full flex items-center justify-center">사이트 이용 / 기타</a>
+        </li>
+      </ul>
+    </div>
+
+
+    <!--      목록-->
+    <div class="w-full">
+      <div class="w-full flex flex-wrap text-2xl text-gray-600 p-56" th:if="${#lists.size(faqList) == 0}">
+        <div class="w-full text-center">검색 결과가 없습니다.</div>
+        <div class="w-full text-center">
+          <a th:href="@{/inquiry/create}" class="mt-5 mx-2 my-8 text-lg border-b border-green-600 border-opacity-0 hover:border-opacity-100" style="color:#5D9C59;">문의하기</a>
+          <span class="text-lg border"></span>
+          <a href="#" class="mt-5 mx-2 my-8 text-lg border-b border-green-600 border-opacity-0 hover:border-opacity-100" style="color:#5D9C59;">채팅 상담</a>
+        </div>
+      </div>
+      <ul th:each="faq, loop : ${faqList}" class="inquiry-list-box w-3/4 my-3 mx-auto">
+        <li>
+          <div class="inquiry-question text-lg text-bold py-4 cursor-pointer flex">
+            <div class="w-1/4 text-gray-500" th:if="${faq.category == 'order'}">주문/결제</div>
+            <div class="w-1/4 text-gray-500" th:if="${faq.category == 'refund'}">환불/반품/교환</div>
+            <div class="w-1/4 text-gray-500" th:if="${faq.category == 'delivery'}">배송</div>
+            <div class="w-1/4 text-gray-500" th:if="${faq.category == 'user'}">회원</div>
+            <div class="w-1/4 text-gray-500" th:if="${faq.category == 'other'}">사이트 이용/기타</div>
+            <div th:text="|Q. ${faq.question}" class="w-full"></div>
+          </div>
+          <div class="inquiry-answer hidden bg-gray-100 p-10">
+            <div th:utext="|A. ${@commonUtil.markdown(faq.answer)}|"></div>
+            <div class="my-5">답변이 충분하지 않으시다면 1:1상담신청을 이용해 주세요.</div>
+            <div>
+              <a href="#" class="border py-3 px-5 bg-white">1:1 상담하기</a>
+            </div>
+          </div>
+        </li>
+     </ul>
+   </div>
+ </div>
+</div>
+<script layout:fragment="script" type="text/javascript">
+ function _faqBoxInit() {
+   $(".inquiry-list-box > li").click(function() {
+     $(this).siblings(".hover").find(" > .inquiry-answer").stop().slideUp(300);
+     $(this).siblings(".hover").removeClass("hover");
+
+     if ($(this).hasClass("hover")) {
+       $(this).find(" > .inquiry-answer").stop().slideUp(300);
+       $(this).removeClass("hover");
+     }
+     else {
+       $(this).find(" > .inquiry-answer").stop().slideDown(300);
+       $(this).addClass("hover");
+     }
+   });
+
+   $(".inquiry-answer").click(function() {
+     return false;
+   });
+ }
+ _faqBoxInit();
+
+    const btn_search = document.getElementById("btn_search");
+    btn_search.addEventListener('click', function() {
+        const search_kw = document.getElementById('search_kw').value;
+
+        // 현재 URL에서 category 값을 가져오기
+        const currentUrl = new URL(window.location.href);
+        const currentCategory = currentUrl.searchParams.get("category");
+
+        // 변경된 검색어 값으로 URL 생성
+        const updatedUrl = `/faq?category=${currentCategory}&kw=${encodeURIComponent(search_kw)}`;
+
+        // 생성된 URL로 페이지 이동
+        window.location.href = updatedUrl;
+    });
+</script>
+</html>

@@ -1,0 +1,68 @@
+# SERVER PORT SETTING
+server.port=4000
+
+# JPA
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MariaDBDialect
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.properties.hibernate.format_sql=false
+spring.jpa.properties.hibernate.show_sql=false
+
+# Api ConnTest
+api.address=http://openapi.foodsafetykorea.go.kr/api/sample/I-0040/json/1/5
+api.auth.key={key}
+
+# DATABASE
+spring.datasource.url=jdbc:mariadb://{address}/{db}?useUnicode=true&characterEncoding=utf8&serverTimeZone=Asia/Seoul
+spring.datasource.driverClassName=org.mariadb.jdbc.Driver
+spring.datasource.username={username}
+spring.datasource.password={password}
+
+# File
+spring.servlet.multipart.max-file-size=10MB
+spring.servlet.multipart.max-request-size=10MB
+
+file.root.path=/file
+file.resource.path=file:///file/
+file.request.path=/file/**
+file.origin.path=/file/
+
+# MAIL
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username={username}
+spring.mail.password={password}
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+
+spring.mail.transport.protocol=smtp
+spring.mail.debug=true
+spring.mail.default.encoding=UTF-8
+
+# KAKAO
+spring.security.oauth2.client.registration.kakao.client-id={client-id}
+spring.security.oauth2.client.registration.kakao.client-secret={client-secret}
+spring.security.oauth2.client.registration.kakao.scope=account_email, profile_nickname
+spring.security.oauth2.client.registration.kakao.authorization-grant-type=authorization_code
+spring.security.oauth2.client.registration.kakao.redirect-uri={redirect-uri}
+spring.security.oauth2.client.registration.kakao.redirect-uri-code={redirect-uri-code}
+spring.security.oauth2.client.registration.kakao.client-name=Kakao
+spring.security.oauth2.client.registration.kakao.client-authentication-method=client_secret_post
+
+spring.security.oauth2.client.provider.kakao.authorization-uri=https://kauth.kakao.com/oauth/authorize
+spring.security.oauth2.client.provider.kakao.token-uri=https://kauth.kakao.com/oauth/token
+spring.security.oauth2.client.provider.kakao.user-info-uri=https://kapi.kakao.com/v2/user/me
+spring.security.oauth2.client.provider.kakao.user-name-attribute=id
+
+# GOOGLE
+spring.security.oauth2.client.registration.google.client-id={client-id}
+spring.security.oauth2.client.registration.google.client-secret={client-secret}
+spring.security.oauth2.client.registration.google.redirect-uri={redirect-uri}
+spring.security.oauth2.client.registration.google.scope=email, profile
+
+custom.google.authorization-uri=https://accounts.google.com/o/oauth2/v2/auth
+custom.google.redirect-uri-code={redirect-uri-code}
+custom.google.token-uri={token-uri}
+custom.google.user-info-uri=https://www.googleapis.com/userinfo/v2/me
+
+# TOSS PAYMENTS
+custom.toss.payments.secret-key={secret-key}

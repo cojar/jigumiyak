@@ -1,0 +1,14 @@
+<div th:fragment="sidebarFragment" class="sidebar-Container">
+  <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
+  <div class="rounded-full fixed bottom-20 right-5 border border-gray-300 bg-white p-1">
+    <a href="#" th:attr="onclick=|_anonymous('/user/mypage', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}')|">
+      <span><i class="fa-solid fa-heart w-full text-center font-lg mt-5"></i></span>
+    </a>
+    <a th:attr="onclick=|_anonymous('/cart', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}')|">
+      <span><i class="fa-solid fa-cart-shopping w-full text-center font-lg my-3"></i></span>
+    </a>
+    <a href="#top">
+      <div class="w-full text-center text-sm mb-5">▲ top</div>
+    </a>
+  </div>
+</div>

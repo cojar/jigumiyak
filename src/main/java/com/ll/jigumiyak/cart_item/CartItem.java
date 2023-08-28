@@ -1,18 +1,25 @@
 package com.ll.jigumiyak.cart_item;
 
+import com.ll.jigumiyak.base.BaseEntity;
 import com.ll.jigumiyak.cart.Cart;
+import com.ll.jigumiyak.product.Product;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-@Entity
 @Getter
-@Setter
-public class CartItem {
+@SuperBuilder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+public class CartItem extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer count;
+
+    @ManyToOne
+    private Product product;
 
     @ManyToOne
     private Cart cart;
