@@ -15,6 +15,8 @@ public interface NutrientRepository extends JpaRepository<Nutrient, Long> {
 
     boolean existsByName(String name);
 
+    @Query("SELECT n FROM Nutrient n JOIN n.categoryList nc WHERE nc.id = :nutrientCategoryId")
+    List<Nutrient> findByNutrientCategoryId(@Param("nutrientCategoryId") Long nutrientCategoryId);
 
     @Query("SELECT n.name FROM Nutrient n WHERE LOWER(n.name) LIKE %:searchWord%")
     List<String> findNutrientByNutrientName(@Param("searchWord") String searchWord);

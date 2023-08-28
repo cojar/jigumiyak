@@ -1,7 +1,8 @@
-package com.ll.jigumiyak.nutrient_category;
+package com.ll.jigumiyak.survey_answer;
 
 import com.ll.jigumiyak.base.BaseEntity;
 import com.ll.jigumiyak.nutrient.Nutrient;
+import com.ll.jigumiyak.nutrient_answer.NutrientAnswer;
 import com.ll.jigumiyak.survey.Survey;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -16,14 +18,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class NutrientCategory extends BaseEntity {
+public class SurveyAnswer extends BaseEntity {
     @Column
-    private String categoryName;
+    private String answerText;
 
-    //눈 체력 체지방 뼈 등등
-    @ManyToMany(mappedBy = "categoryList")
-    private List<Nutrient> nutrientList;
+    @ManyToOne
+    private Survey survey;
 
-    @OneToMany(mappedBy = "nutrientCategory")
-    private List<Survey> surveyList;
+    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL)
+    private List<NutrientAnswer> nutrientAnswerList;
 }

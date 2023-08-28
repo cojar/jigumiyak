@@ -36,4 +36,17 @@ public class NutrientService {
     public List<String> containingNutrientName(Map<String, String> paraMap) {
         return nutrientRepository.findNutrientByNutrientName(paraMap.get("searchWord"));
     }
+
+    public Nutrient getNutrient(long id) {
+        Optional<Nutrient> optionalNutrient = nutrientRepository.findById(id);
+        if(optionalNutrient.isPresent()){
+            return optionalNutrient.get();
+        } else {
+            throw new DataNotFoundException("not found nutrient");
+        }
+    }
+
+    public List<Nutrient> getNutrientListByNutrientCategory(Long id){
+        return nutrientRepository.findByNutrientCategoryId(id);
+    }
 }

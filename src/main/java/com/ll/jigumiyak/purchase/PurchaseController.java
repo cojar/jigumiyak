@@ -6,6 +6,7 @@ import com.ll.jigumiyak.cart.Cart;
 import com.ll.jigumiyak.cart.CartService;
 import com.ll.jigumiyak.cart_item.CartItem;
 import com.ll.jigumiyak.cart_item.CartItemService;
+import com.ll.jigumiyak.file.FileService;
 import com.ll.jigumiyak.purchase_item.PurchaseItem;
 import com.ll.jigumiyak.purchase_item.PurchaseItemService;
 import com.ll.jigumiyak.user.SiteUser;
@@ -55,6 +56,7 @@ public class PurchaseController {
     private final CartItemService cartItemService;
     private final UserService userService;
     private final AddressService addressService;
+    private final FileService fileService;
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("")
@@ -310,5 +312,57 @@ public class PurchaseController {
         model.addAttribute("uri", "/purchase?" + purchaseQuery);
 
         return "purchase/fail";
+    }
+
+    @PreAuthorize("hasAuthority('admin')")
+    @GetMapping("/detail")
+    @ResponseBody
+    public ResponseEntity detail(@RequestParam("id") Long id) {
+
+        Purchase purchase = this.purchaseService.getPurchase(id);
+
+        if (purchase == null) {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new RsData<>("F-1", "해당 주문 ID가 존재하지 않습니다", ""));
+        }
+
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("purchaseName", purchase.getPurchaseName());
+
+        // 주문고객 정보
+        attributes.put("loginId", purchase.getPurchaser().getLoginId());
+        attributes.put("email", purchase.getPurchaser().getEmail());
+        attributes.put("purchaserName", purchase.getPurchaserName());
+        attributes.put("purchaserPhoneNumber", purchase.getPurchaserPhoneNumber());
+
+        // 배송지 정보
+        attributes.put("receiverName", purchase.getReceiverName());
+        attributes.put("receiverPhoneNumber", purchase.getReceiverPhoneNumber());
+        String receiverAddress = String.format("(%s) %s %s", purchase.getReceiverAddress().getZoneCode(), purchase.getReceiverAddress().getMainAddress(),
+                purchase.getReceiverAddress().getSubAddress() != null ? purchase.getReceiverAddress().getSubAddress() : "");
+        attributes.put("receiverAddress", receiverAddress);
+        attributes.put("deliveryRequest", purchase.getDeliveryRequest());
+
+        // 결제 정보
+        attributes.put("totalAmount", purchase.getTotalAmount());
+        attributes.put("method", purchase.getMethod());
+        attributes.put("paymentDetail", purchase.getPaymentDetail());
+        attributes.put("payDate", purchase.getPayDate());
+        attributes.put("purchaseState", purchase.getPurchaseState().getStateKor());
+
+        // 주문상품 정보
+        List<Map<String, Object>> purchaseItem = new ArrayList<>();
+        for (PurchaseItem item : purchase.getPurchaseItemList()) {
+            Map<String, Object> itemAttributes = new HashMap<>();
+            itemAttributes.put("count", item.getCount());
+            itemAttributes.put("name", item.getProduct().getName());
+            itemAttributes.put("price", item.getProduct().getPrice());
+            itemAttributes.put("imgPath", this.fileService.getFilePath(item.getProduct().getThumbnailImg()));
+            purchaseItem.add(itemAttributes);
+        }
+        attributes.put("purchaseItem", purchaseItem);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new RsData<>("S-1", "해당 주문 ID에 대한 정보를 반환합니다", attributes));
     }
 }
