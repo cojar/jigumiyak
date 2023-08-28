@@ -61,7 +61,7 @@
             <div class="h-auto w-[75%] mr-auto px-4 py-4 my-[20px]">
                 <h6 class="text-xl border-b-2 border-gray-300 relative">
                     배송지 정보
-                    <button class="btn btn-sm absolute right-0 bottom-1 px-2 border-gray-300 bg-[#A5CDCD]"
+                    <button class="btn btn-sm absolute right-0 bottom-1 px-2 border-gray-300 bg-[#5B9A8B]"
                             type="button" th:onclick="_copyPurchaserInfo()">주문 고객과 동일</button>
                 </h6>
                 <div class="flex mt-5 items-center">
@@ -89,7 +89,7 @@
                     <div class="flex gap-2">
                         <input type="text" th:field="*{receiverAddress.zoneCode}"
                                disabled placeholder="우편번호" class="zoneCode input input-bordered flex-[0_0_40%]" th:onclick="_zoneCode()">
-                        <button type="button" class="btn border-gray-300 bg-[#A5CDCD]" th:onclick="_zoneCode()">주소찾기</button>
+                        <button type="button" class="btn border-gray-300 bg-[#5B9A8B]" th:onclick="_zoneCode()">주소찾기</button>
                     </div>
                 </div>
                 <div class="flex mt-3 items-center">
@@ -149,7 +149,7 @@
                 <span>최종 결제 금액</span>
                 <span id="total-amount" th:text="|${#numbers.formatInteger(totalAmount, 0, 'COMMA')}원|"></span>
             </div>
-            <div class="px-5 py-3 border-b border-l border-r border-gray-300 rounded-b-xl cursor-pointer text-center bg-[#A5CDCD]" th:onclick="_payment()">
+            <div class="px-5 py-3 border-b border-l border-r border-gray-300 rounded-b-xl cursor-pointer text-center bg-[#5B9A8B]" th:onclick="_payment()">
                 <span class="text-white">결제하기</span>
             </div>
         </div>
