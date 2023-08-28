@@ -147,7 +147,7 @@ public class BoardController {
         String referUri = refer.replaceFirst(path, "");
         System.out.println(referUri);
 
-        if (!referUri.startsWith("/board") && !referUri.equals("/index") && !referUri.startsWith("/user/mypage"))
+        if (!referUri.contains("/board") && !referUri.contains("/index") && !referUri.contains("/user/mypage"))
             return false;
 
         Cookie oldCookie = null;

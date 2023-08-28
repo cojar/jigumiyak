@@ -28,7 +28,7 @@
                         <span class="text-lg">⭐⭐⭐⭐⭐</span>
                     </div>
                     <div class="flex items-center"><a href="#review_anchor" class="text-gray-600"
-                                                       th:text=${"|REVIEW(${#lists.size(product.reviewList)} >>|"}></a></div>
+                                                       th:text="|REVIEW(${#lists.size(product.reviewList)}) >>|"></a></div>
                 </div>
             </div>
 
@@ -112,18 +112,6 @@
                     <img th:if="${product.detailImg == null}" src="https://picsum.photos/id/237/752/442"
                          alt="" class="object-cover w-full h-full">
                 </div>
-            </div>
-
-            <!--  상품 정보  -->
-            <div class="mx-10">
-                <div class="pt-5 border-b border-gray-400 text-center text-xl">제품 고시 내용</div>
-                <div class="bg-gray-100 h-96">상품 필수 기입 정보????</div>
-            </div>
-
-            <!--  상품 추천  -->
-            <div class="mx-10">
-                <div class="pt-5 text-3xl">이런 제품은 어떠세요?</div>
-                <div class="bg-gray-100 h-96">상품 추천 리스트 알아서 만들기</div>
             </div>
         </div>
 

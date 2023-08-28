@@ -1,8 +1,5 @@
 package com.ll.jigumiyak.notice;
 
-import com.ll.jigumiyak.board.Board;
-import com.ll.jigumiyak.board.BoardForm;
-import com.ll.jigumiyak.cart_item.CartItemService;
 import com.ll.jigumiyak.notice_category.NoticeCategory;
 import com.ll.jigumiyak.notice_category.NoticeCategoryService;
 import com.ll.jigumiyak.notice_comment.NoticeCommentForm;
@@ -158,7 +155,7 @@ public class NoticeController {
         System.out.println(referUri);
 
         // 게시판에서 접근한 경우가 아니면 reject
-        if (!referUri.startsWith("/notice") && !referUri.equals("/index") && !referUri.startsWith("/user/mypage"))
+        if (!referUri.contains("/notice") && !referUri.contains("/index") && !referUri.contains("/user/mypage"))
             return false;
 
         Cookie oldCookie = null;
