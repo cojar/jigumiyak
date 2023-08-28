@@ -1,9 +1,59 @@
-<html layout:decorate="~{admin/ad_navbar}">
+<html>
 <head>
+    <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>JIGUMIYAK_ADMIN</title>
 </head>
-<div layout:fragment="content" class="relative">
-<div>왜 안돼으아아ㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㄱ 됐다</div>
-</div>
+<body>
+    <div class="fixed top-[10%] bottom-[10%] left-[15%] right-[15%]">
+        <div class="gap-10 mb-10 flex h-1/2">
+            <div th:onclick="|location.href='@{|/admin/user|}'|"
+                 class="cursor-pointer border-4 rounded-3xl border-gray-300 bg-[#5B9A8B] w-1/3 h-full flex flex-col items-center justify-evenly hover:bg-[#252933] hover:border-[#252933]">
+                <i class="fa-solid fa-users fa-lg text-white text-8xl"></i>
+                <span class="text-white text-5xl">User</span>
+            </div>
+            <div th:onclick="|location.href='@{|/admin/notice|}'|"
+                 class="cursor-pointer border-4 rounded-3xl border-gray-300 bg-[#5B9A8B] w-1/3 h-full flex flex-col items-center justify-evenly hover:bg-[#252933] hover:border-[#252933]">
+                <i class="fa-solid fa-bullhorn fa-lg text-white text-8xl"></i>
+                <span class="text-white text-5xl">Notice</span>
+            </div>
+            <div th:onclick="|location.href='@{|/admin/board|}'|"
+                 class="cursor-pointer border-4 rounded-3xl border-gray-300 bg-[#5B9A8B] w-1/3 h-full flex flex-col items-center justify-evenly hover:bg-[#252933] hover:border-[#252933]">
+                <i class="fa-solid fa-newspaper fa-lg text-white text-8xl"></i>
+                <span class="text-white text-5xl">Board</span>
+            </div>
+        </div>
+        <div class="gap-10 flex h-1/2">
+            <div
+                 class="cursor-pointer border-4 rounded-3xl border-gray-300 bg-[#5B9A8B] w-1/3 h-full flex flex-col items-center justify-evenly hover:bg-[#252933] hover:border-[#252933]">
+                <i class="fa-solid fa-boxes-stacked fa-lg text-white text-8xl"></i>
+                <span class="text-white text-5xl">Product</span>
+            </div>
+            <div th:onclick="|location.href='@{|/admin/purchase|}'|"
+                 class="cursor-pointer border-4 rounded-3xl border-gray-300 bg-[#5B9A8B] w-1/3 h-full flex flex-col items-center justify-evenly hover:bg-[#252933] hover:border-[#252933]">
+                <i class="fa-solid fa-credit-card fa-lg text-white text-8xl"></i>
+                <span class="text-white text-5xl">Purchase</span>
+            </div>
+            <div th:onclick="|location.href='@{|/admin/inquiry|}'|"
+                 class="cursor-pointer border-4 rounded-3xl border-gray-300 bg-[#5B9A8B] w-1/3 h-full flex flex-col items-center justify-evenly hover:bg-[#252933] hover:border-[#252933]">
+                <i class="fa-solid fa-comment-dots fa-lg text-white text-8xl"></i>
+                <span class="text-white text-5xl">Inquiry</span>
+            </div>
+        </div>
+    </div>
+    <div class="flex items-center justify-between bg-gray-100 p-5 rounded-lg fixed top-5 right-5 gap-5">
+        <a sec:authorize="isAuthenticated()" href="/index">
+            <i class="fa-solid fa-capsules fa-xl"></i>
+        </a>
+        <a sec:authorize="isAnonymous()" href="/user/login">
+            <i class="fa-solid fa-arrow-right-to-bracket fa-xl"></i>
+        </a>
+        <a sec:authorize="isAuthenticated()" href="/user/logout">
+            <i class="fa-solid fa-arrow-right-from-bracket fa-xl"></i>
+        </a>
+    </div>
+</body>
 </html>
 
