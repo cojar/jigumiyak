@@ -5,49 +5,48 @@
 <div layout:fragment="content" class="test-Container">
     <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
     <div class="test-con mx-auto pr-1 h-full" style="margin-top:128px;">
-        <div class="flex justify-between items-end">
-            <h5 class="border-b-4 border-double border-gray-300 text-2xl pt-5">공지사항</h5>
-            <select th:value="${pageSize}" id="pageSizeSelect" name="pageSizeSelect"
-                    class="border border-gray-400 rounded py-2 mt-auto">
-                <option value="5" th:selected="${pageSize} == 5">5개씩보기</option>
-                <option value="10" th:selected="${pageSize} == 10">10개씩보기</option>
-                <option value="20" th:selected="${pageSize} == 20">20개씩보기</option>
-                <option value="50" th:selected="${pageSize} == 50">50개씩보기</option>
-            </select>
-        </div>
+        <h5 class="border-b-4 border-double border-gray-300 text-2xl pt-5">공지사항</h5>
 
         <!-- 검색  -->
-        <div class="search-area flex py-4">
-            <form action="/notice" method="get" class="flex flex-grow gap-2" id="noticeForm">
-                <input type="hidden" id="page" name="page" th:value="${page}">
-                <input type="hidden" id="pageSize" name="pageSize" th:value="${pageSize}">
-                <select th:value="${keywordCategory}" name="keywordCategory"
-                        class="h-full border border-gray-400 rounded py-2" id="keywordCategory">
-                    <option value="title" th:selected="${keywordCategory == 'title'}">제목</option>
-                    <option value="content" th:selected="${keywordCategory == 'content'}">내용</option>
-                    <option value="author" th:selected="${keywordCategory == 'author'}">작성자</option>
-                    <option value="all" th:selected="${keywordCategory == 'all'}">제목+내용</option>
-                </select>
-                <select th:value="${noticeCategory}" name="noticeCategory"
-                        class="h-full border border-gray-400 rounded py-2" id="noticeCategory">
-                    <option value="">선택하세요</option>
-                    <option value="공지사항" th:selected="${noticeCategory == '공지사항'}">공지사항</option>
-                    <option value="이벤트" th:selected="${noticeCategory == '이벤트'}">이벤트</option>
-                </select>
-                <input type="text" id="keyword" name="keyword" th:value="${keyword}"
-                       class="h-full flex-grow border border-gray-400 rounded py-2">
-                <button type="submit" id="btn_search" class="h-full border border-gray-400 rounded px-4 py-2">찾기
-                </button>
-            </form>
+        <div class="search-area w-full h-32 border-b-4 border-double border-gray-300 flex justify-center items-center flex-wrap">
+            <div class="search-box border border-gray-300 rounded-lg h-10 w-2/3 flex items-center">
+                <form action="/notice" method="get" class="flex w-full h-10" id="noticeForm">
+                    <input type="hidden" id="page" name="page" th:value="${page}">
+                    <input type="hidden" id="pageSize" name="pageSize" th:value="${pageSize}">
+                    <select th:value="${keywordCategory}" name="keywordCategory" id="keywordCategory" class="bg-transparent">
+                        <option value="title" th:selected="${keywordCategory == 'title'}">제목</option>
+                        <option value="content" th:selected="${keywordCategory == 'content'}">내용</option>
+                        <option value="author" th:selected="${keywordCategory == 'author'}">작성자</option>
+                        <option value="all" th:selected="${keywordCategory == 'all'}">제목+내용</option>
+                    </select>
+                    <select th:value="${noticeCategory}" name="noticeCategory" id="noticeCategory" class="bg-transparent">
+                        <option value="">선택하세요</option>
+                        <option value="공지사항" th:selected="${noticeCategory == '공지사항'}">공지사항</option>
+                        <option value="이벤트" th:selected="${noticeCategory == '이벤트'}">이벤트</option>
+                    </select>
+                    <input type="text" id="keyword" name="keyword" th:value="${keyword}"
+                           class="w-full bg-transparent">
+                    <button type="submit" id="btn_search" class="w-20 bg-transparent">찾기
+                    </button>
+                </form>
+            </div>
         </div>
 
         <!--테이블-->
         <table class="w-full">
             <thead>
             <tr class="border-b">
-                <th class="py-3">번호</th>
+                <th>
+                    <select th:value="${pageSize}" id="pageSizeSelect" name="pageSizeSelect"
+                            class="border border-gray-400 rounded py-2 mt-auto">
+                        <option value="5" th:selected="${pageSize} == 5">5개</option>
+                        <option value="10" th:selected="${pageSize} == 10">10개</option>
+                        <option value="20" th:selected="${pageSize} == 20">20개</option>
+                        <option value="50" th:selected="${pageSize} == 50">50개</option>
+                    </select>
+                </th>
+                <th>카테고리</th>
                 <th>제목</th>
-                <th>작성자</th>
                 <th>작성일시</th>
                 <th>조회수</th>
             </tr>
@@ -56,17 +55,17 @@
             <tr th:each="notice, loop : ${paging}" class="border-b">
                 <td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}"
                     class="w-1/12 text-center"></td>
-                <td class="w-5/12 py-2 text-center">
+                <td class="w-1/12 text-center">
                     <span class="text-lg w-full" th:if="${notice.category.name == '공지사항'}">[공지사항]</span>
                     <span class="text-lg w-full" th:if="${notice.category.name == '이벤트'}">[이벤트]</span>
+                </td>
+                <td class="w-5/12 py-2 text-center">
                     <a th:href="@{|/notice/${notice.id}|}" th:text="${notice.title}" class="text-lg w-full"></a>
                     <span class="text-sm text-green-600 px-3"
                           th:if="${#lists.size(notice.commentList) > 0}"
                           th:text="${#lists.size(notice.commentList)}">
                     </span>
                 </td>
-                <td class="w-2/12 text-center"><span th:if="${notice.author != null}"
-                                                     th:text="${notice.author.loginId}"></span></td>
                 <td th:text="${#temporals.format(notice.createDate, 'yyyy-MM-dd HH:mm')}"
                     class="text-sm w-2/12 text-center"></td>
                 <td class="w-1/12 text-center" th:text="${notice.hit}"></td>
@@ -76,7 +75,7 @@
 
 
         <!-- 페이징 -->
-        <div th:if="${!paging.isEmpty()}" class="w-full flex justify-center mt-5">
+        <div th:if="${!paging.isEmpty()}" class="w-full flex justify-center my-8">
             <ul class="w-full flex justify-center items-center">
                 <li th:classappend="${!paging.hasPrevious} ? 'disabled'" class="py-3 px-1">
                     <a class="page-link" href="javascript:void(0)" th:data-page="${0}"><span><<</span></a>
@@ -110,8 +109,6 @@
             </ul>
         </div>
 
-
-        <a th:attr="onclick=|_anonymous('/notice/create', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}')|" class="cursor-pointer block text-center w-32 rounded-xl p-3 my-5" style="background:#E9B384;">글 작성하기</a>
     </div>
 
 </div>
