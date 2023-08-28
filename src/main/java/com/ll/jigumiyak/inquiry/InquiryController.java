@@ -110,7 +110,7 @@ public class InquiryController {
         }
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new RsData<>("S-1", "이메일이 완료되었습니다", null));
+                .body(new RsData<>("S-1", "이메일을 발송했습니다", null));
     }
 
 }
