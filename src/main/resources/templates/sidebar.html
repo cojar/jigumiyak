@@ -4,7 +4,7 @@
     <a href="#" th:attr="onclick=|_anonymous('/user/mypage', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}')|">
       <span><i class="fa-solid fa-heart w-full text-center font-lg mt-5"></i></span>
     </a>
-    <a href="#" th:attr="onclick=|_anonymous('/user/mypage', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}')|">
+    <a th:attr="onclick=|_anonymous('/cart', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}')|">
       <span><i class="fa-solid fa-cart-shopping w-full text-center font-lg my-3"></i></span>
     </a>
     <a href="#top">

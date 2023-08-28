@@ -53,7 +53,7 @@
         </div>
         <!--문의-->
         <div class="">
-            <div class="text-xl mt-3 py-2 border-b"></div>
+            <div class="text-xl mt-3 py-2 border-b">문의내역 (답변대기)</div>
             <div class="w-full mb-8" th:each="inquiry, loop : ${paging}">
                 <a th:href="@{|/inquiry/list/${inquiry.id}|}" class="block border w-full mt-5 py-4 px-5 flex justify-between"
                 th:if="${inquiry.state == false}">
