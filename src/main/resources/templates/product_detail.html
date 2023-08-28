@@ -94,7 +94,8 @@
                             th:attr="onclick=|_addCart('/user/login', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}', '${product.id}')|">
                         <i class="fa-solid fa-cart-shopping fa-xl" style="color: #5d9c59;"></i>
                     </button>
-                    <button class="w-4/5 p-4 mt-5 bg-gray-500 text-white text-xl border">바로 구매하기</button>
+                    <button type="button" class="w-4/5 p-4 mt-5 bg-gray-500 text-white text-xl border"
+                            th:attr="onclick=|_directPurchase('/user/login', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}', '${product.id}')|">바로 구매하기</button>
                 </div>
             </div>
         </div>

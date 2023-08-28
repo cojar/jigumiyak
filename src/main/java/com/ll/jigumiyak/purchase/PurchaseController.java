@@ -316,7 +316,7 @@ public class PurchaseController {
     @PreAuthorize("hasAuthority('admin')")
     @GetMapping("/detail")
     @ResponseBody
-    public ResponseEntity detail(@RequestParam("id") Long id) {
+    public ResponseEntity getDetail(@RequestParam("id") Long id) {
 
         Purchase purchase = this.purchaseService.getPurchase(id);
 
@@ -367,7 +367,7 @@ public class PurchaseController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
-    public String detail(@PathVariable("id") Long id,
+    public String showDetail(@PathVariable("id") Long id,
                          Model model,
                          Principal principal) {
 

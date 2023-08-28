@@ -59,6 +59,7 @@ public class CartController {
     @ResponseBody
     public ResponseEntity addCartItem(@RequestParam("productId") Long productId,
                                       @RequestParam(value = "count", defaultValue = "-1") Integer count,
+                                      @RequestParam("target") String target,
                                       Principal principal) {
 
         log.info("productId: " + productId);
@@ -82,7 +83,15 @@ public class CartController {
 
         this.cartItemService.updateCount(count, cartItem);
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(new RsData<>("S-1", "장바구니에 상품을 담았습니다.\n이동하시겠습니까?", "/cart"));
+        if (target.equals("cart")) {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new RsData<>("S-1", "장바구니에 상품을 담았습니다.\n이동하시겠습니까?", "/cart"));
+        } else if (target.equals("purchase")) {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new RsData<>("S-2", "해당 상품의 주문 페이지로 이동합니다", String.format("/purchase?cartItemId=%s", cartItem.getId())));
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-3", "엔드 포인트가 올바르지 않습니다", ""));
+        }
     }
 }
