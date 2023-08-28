@@ -6,6 +6,8 @@ import com.ll.jigumiyak.board_comment.BoardComment;
 import com.ll.jigumiyak.board_comment.BoardCommentService;
 import com.ll.jigumiyak.board_recomment.BoardRecomment;
 import com.ll.jigumiyak.board_recomment.BoardRecommentService;
+import com.ll.jigumiyak.cash_log.CashLog;
+import com.ll.jigumiyak.cash_log.CashLogService;
 import com.ll.jigumiyak.faq.Faq;
 import com.ll.jigumiyak.faq.FaqService;
 import com.ll.jigumiyak.inquiry.Inquiry;
@@ -47,6 +49,7 @@ public class AdminController {
     private final PurchaseService purchaseService;
     private final NoticeService noticeService;
     private final NoticeCommentService noticeCommentService;
+    private final CashLogService cashLogService;
 
     @GetMapping("")
     public String admin() {
@@ -148,6 +151,13 @@ public class AdminController {
 
         List<Purchase> purchaseList = this.purchaseService.getList();
         model.addAttribute("purchaseList", purchaseList);
+
+        List<CashLog> cashLogList = this.cashLogService.getList();
+        Integer cashAmount = 0;
+        for (CashLog cashLog : cashLogList) {
+            cashAmount += cashLog.getTotalAmount();
+        }
+        model.addAttribute("cashAmount", cashAmount);
 
         return "admin/admin_purchase";
     }
