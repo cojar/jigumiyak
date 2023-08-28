@@ -54,4 +54,21 @@ public class Product extends BaseEntity {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "nutrient_id"))
     private List<Nutrient> nutrientList;
+
+    public Double averageRating() {
+        if (reviewList == null || reviewList.isEmpty()) {
+            return 0.0;
+        }
+
+        int totalRating = 0;
+        int reviewCount = 0;
+
+        for (ProductReview review : reviewList) {
+            totalRating += review.getStar_rating();
+            reviewCount++;
+        }
+
+        double average = (double) totalRating / reviewCount;
+        return Math.round(average * 10.0) / 10.0; // 소수점 한 자리까지 반올림
+    }
 }

@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -71,7 +72,7 @@ public class ProductService {
     }
 
     public void vote(Product product, SiteUser siteUser) {
-        if(product.getVoter().contains(siteUser)){
+        if (product.getVoter().contains(siteUser)) {
             product.getVoter().remove(siteUser);
         } else {
             product.getVoter().add(siteUser);
@@ -81,5 +82,9 @@ public class ProductService {
 
     public List<Product> findProductsByNutrientName(String nutrientName) {
         return productRepository.findByNutrientListName(nutrientName);
+    }
+
+    public List<Product> getList() {
+        return productRepository.findAll();
     }
 }
