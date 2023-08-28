@@ -4,6 +4,8 @@ import com.ll.jigumiyak.address.Address;
 import com.ll.jigumiyak.address.AddressService;
 import com.ll.jigumiyak.inquiry.Inquiry;
 import com.ll.jigumiyak.inquiry.InquiryService;
+import com.ll.jigumiyak.purchase.Purchase;
+import com.ll.jigumiyak.purchase.PurchaseService;
 import com.ll.jigumiyak.security.CustomRole;
 import com.ll.jigumiyak.util.RsData;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,6 +37,7 @@ public class UserController {
 
     private final UserService userService;
     private final AddressService addressService;
+    private final PurchaseService purchaseService;
     private final InquiryService inquiryService;
 
     @GetMapping("/signup")
@@ -310,6 +313,9 @@ public class UserController {
 
         SiteUser user = this.userService.getUserByLoginId(principal.getName());
         model.addAttribute("user", user);
+
+        List<Purchase> purchaseList = this.purchaseService.getListByPurchaser(user);
+        model.addAttribute("purchaseList", purchaseList);
 
         Page<Inquiry> paging = this.inquiryService.getList(0, user);
         model.addAttribute("paging", paging);

@@ -82,4 +82,17 @@ public class PurchaseService {
 
         this.purchaseRepository.save(purchase);
     }
+
+    public void updateConfirm(Purchase purchase) {
+
+        purchase = purchase.toBuilder()
+                .purchaseState(PurchaseState.CONFIRMED)
+                .build();
+
+        this.purchaseRepository.save(purchase);
+    }
+
+    public List<Purchase> getListByPurchaser(SiteUser purchaser) {
+        return this.purchaseRepository.findByPurchaser(purchaser);
+    }
 }
