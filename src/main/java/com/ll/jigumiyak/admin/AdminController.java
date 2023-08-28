@@ -14,6 +14,10 @@ import com.ll.jigumiyak.inquiry.Inquiry;
 import com.ll.jigumiyak.inquiry.InquiryForm;
 import com.ll.jigumiyak.inquiry.InquiryService;
 import com.ll.jigumiyak.inquiry_answer.InquiryAnswerForm;
+import com.ll.jigumiyak.nutrient_category.NutrientCategory;
+import com.ll.jigumiyak.product.Product;
+import com.ll.jigumiyak.product.ProductService;
+import com.ll.jigumiyak.product_review.ProductReviewService;
 import com.ll.jigumiyak.purchase.Purchase;
 import com.ll.jigumiyak.purchase.PurchaseService;
 import com.ll.jigumiyak.notice.Notice;
@@ -50,6 +54,8 @@ public class AdminController {
     private final NoticeService noticeService;
     private final NoticeCommentService noticeCommentService;
     private final CashLogService cashLogService;
+    private final ProductService productService;
+    private final ProductReviewService productReviewService;
 
     @GetMapping("")
     public String admin() {
@@ -208,5 +214,13 @@ public class AdminController {
         NoticeComment noticeComment = this.noticeCommentService.getCommentById(id);
         this.noticeCommentService.delete(noticeComment);
         return String.format("redirect:/admin/notice/%s", noticeComment.getNotice().getId());
+    }
+
+    @GetMapping("/product")
+    public String product(Model model) {
+        List<Product> productList = productService.getList();
+        model.addAttribute("productList", productList);
+        model.addAttribute("nav", "product");
+        return "admin/product";
     }
 }

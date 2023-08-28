@@ -1,0 +1,60 @@
+<html layout:decorate="~{admin/ad_navbar}">
+<head>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+
+    <!-- 데이지 UI 불러오기 -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.5/dist/full.css" rel="stylesheet" type="text/css"/>
+    <!-- 테일윈드 불러오기 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!--    <link rel="stylesheet" type="text/css" th:href="@{/css/admin_user.css}">-->
+    <title>ADMIN-PRODUCT</title>
+</head>
+<div layout:fragment="content" class="relative">
+    <a th:href="@{/product/create}" class="cursor-pointer block text-center w-32 rounded-xl p-1 mt-5 ml-5 border">추가하기</a>
+    <table class="w-11/12 mx-auto border-collapse" style="min-width:1500px">
+        <thead>
+        <tr class="border-b-4 border-double border-gray-500 h-12">
+            <th class="border-l-2 border-r-2 border-gray-300 w-24 px-2">상품ID</th>
+            <th class="border-l-2 border-r-2 border-gray-300 px-2">상품명</th>
+            <th class="border-l-2 border-r-2 border-gray-300 w-100 px-2">상품설명</th>
+            <th class="border-l-2 border-r-2 border-gray-300 w-100 px-2">상품가격</th>
+            <th class="border-l-2 border-r-2 border-gray-300 px-2">상품수량</th>
+            <th class="border-l-2 border-r-2 border-gray-300 px-2">상품재고</th>
+            <th class="border-l-2 border-r-2 border-gray-300 px-2">리뷰 수</th>
+            <th class="border-l-2 border-r-2 border-gray-300 px-2">별점</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="product, loop : ${productList}" class="border h-9 text-sm">
+            <td th:text="${product.id}" class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
+            <td th:text="${product.name}" class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"
+                th:attr="onclick=|_showDetail('${product.id}')|"></td>
+            <td th:text="${product.description}"
+                class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
+            <td th:text="${product.price}"
+                class="border-l-2 border-r-2 border-b-2 border-gray-300 text-start px-2 cursor-pointer"></td>
+            <td th:text="${product.quantity}"
+                class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
+            <td th:text="${product.inventory}"
+                class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
+            <td th:text="${product.reviewList.size()}"
+                class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
+            <td th:text="${product.averageRating()}"
+                class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script layout:fragment="script" type='text/javascript'>
+const btn_search = document.getElementById("btn_search");
+btn_search.addEventListener('click', function() {
+    console.log("Search button clicked");
+    document.getElementById('kw').value = document.getElementById('search_kw').value;
+    document.getElementById('page').value = 0;
+    document.getElementById('searchForm').submit();
+});
+</script>
+</html>
