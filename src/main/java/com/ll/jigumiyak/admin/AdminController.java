@@ -63,6 +63,7 @@ public class AdminController {
         Page<Board> paging = this.boardService.getList(page, kw);
         model.addAttribute("paging", paging);
         model.addAttribute("kw", kw);
+        model.addAttribute("nav", "board");
         return "admin/admin_board";
     }
 
@@ -74,6 +75,7 @@ public class AdminController {
 
         Page<BoardComment> paging = this.boardCommentService.getList(board, 20,cmtPage);
         model.addAttribute("paging", paging);
+        model.addAttribute("nav", "board");
         return "admin/admin_board_comment";
     }
 
@@ -98,6 +100,7 @@ public class AdminController {
 
         List<BoardRecomment> recommentList = this.boardRecommentService.getList(boardComment);
         model.addAttribute("recommentList", recommentList);
+        model.addAttribute("nav", "board");
         return "admin/admin_board_recomment";
     }
 
@@ -113,6 +116,7 @@ public class AdminController {
     public String inquiry(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
         Page<Inquiry> paging = this.inquiryService.getList(page, false);
         model.addAttribute("paging", paging);
+        model.addAttribute("nav", "inquiry");
         return "admin/admin_inquiry";
     }
 
@@ -120,6 +124,7 @@ public class AdminController {
     public String inquiryDetail (Model model, @PathVariable("id") Long id, InquiryForm inquiryForm, InquiryAnswerForm inquiryAnswerForm) {
         Inquiry inquiry = this.inquiryService.getInquiry(id);
         model.addAttribute("inquiry", inquiry);
+        model.addAttribute("nav", "inquiry");
         return "admin/inquiry_detail";
     }
 
@@ -127,6 +132,7 @@ public class AdminController {
     public String inquiryDone(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
         Page<Inquiry> paging = this.inquiryService.getList(page,true);
         model.addAttribute("paging", paging);
+        model.addAttribute("nav", "inquiry");
         return "admin/inquiry_done";
     }
 
@@ -134,6 +140,7 @@ public class AdminController {
     public String faq(Model model) {
         List<Faq> faqList = this.faqService.getList();
         model.addAttribute("faqList", faqList);
+        model.addAttribute("nav", "inquiry");
         return "admin/admin_faq";
     }
 
@@ -143,6 +150,7 @@ public class AdminController {
         List<SiteUser> userList = this.userService.getList();
         model.addAttribute("userList", userList);
 
+        model.addAttribute("nav", "user");
         return "admin/admin_user";
     }
 
@@ -159,6 +167,7 @@ public class AdminController {
         }
         model.addAttribute("cashAmount", cashAmount);
 
+        model.addAttribute("nav", "purchase");
         return "admin/admin_purchase";
     }
 
@@ -169,6 +178,8 @@ public class AdminController {
         Page<Notice> paging = this.noticeService.getList(page, kw);
         model.addAttribute("paging", paging);
         model.addAttribute("kw", kw);
+
+        model.addAttribute("nav", "notice");
         return "admin/notice";
     }
 
@@ -180,6 +191,8 @@ public class AdminController {
 
         Page<NoticeComment> paging = this.noticeCommentService.getList(notice, 20, cmtPage);
         model.addAttribute("paging", paging);
+
+        model.addAttribute("nav", "notice");
         return "admin/notice_comment";
     }
 

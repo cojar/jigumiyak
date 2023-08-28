@@ -34,7 +34,7 @@
         </div>
         <div class="flex-auto gap-2 flex">
           <input type="text" class="input input-bordered flex-auto" disabled th:value="${user.loginId}">
-          <label for="modifyPasswordModal" class="btn border-gray-300 bg-[#A5CDCD] flex-[0_0_25%]">비밀번호변경</label>
+          <label for="modifyPasswordModal" class="btn border-gray-300 bg-[#5B9A8B] flex-[0_0_25%]">비밀번호변경</label>
           <!-- 모달 영역 컨트롤 -->
           <input type="checkbox" id="modifyPasswordModal" class="modal-toggle" />
           <!-- 모달 영역 시작 -->
@@ -67,7 +67,7 @@
                 </div>
               </form>
               <div class="modal-action">
-                <button id="modify-password-btn" class="btn border-gray-300 bg-[#A5CDCD] deactivated" th:onclick="_modifyPassword()">변경하기</button>
+                <button id="modify-password-btn" class="btn border-gray-300 bg-[#5B9A8B] deactivated" th:onclick="_modifyPassword()">변경하기</button>
                 <label for="modifyPasswordModal" class="btn border-gray-300 bg-gray-400">닫기</label>
               </div>
             </div>
@@ -107,7 +107,7 @@
         <div class="flex gap-2">
           <input type="text" th:value="${user.address != null} ? ${user.address.zoneCode} : ''" id="zoneCode" name="zoneCode"
                  disabled placeholder="우편번호" class="zoneCode input input-bordered flex-[0_0_40%]" th:onclick="_zoneCode()">
-          <button type="button" class="btn border-gray-300 bg-[#A5CDCD]" th:onclick="_zoneCode()">주소찾기</button>
+          <button type="button" class="btn border-gray-300 bg-[#5B9A8B]" th:onclick="_zoneCode()">주소찾기</button>
         </div>
       </div>
       <div class="flex mt-3 items-center">
@@ -124,7 +124,7 @@
                  placeholder="상세주소" class="subAddress input input-bordered w-full">
         </div>
       </div>
-      <button type="button" id="modify-btn" class="btn btn-block border-gray-300 bg-[#A5CDCD] gap-1 deactivated mt-5" th:onclick="_modifyAddress()">
+      <button type="button" id="modify-btn" class="btn btn-block border-gray-300 bg-[#5B9A8B] gap-1 deactivated mt-5" th:onclick="_modifyAddress()">
         <i class="fa-solid fa-user-pen"></i>
         <span>저장하기</span>
       </button>

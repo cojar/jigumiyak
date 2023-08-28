@@ -129,7 +129,7 @@
                 </div>
                 <div>
                     <span id="purchaseState" class="label-text" th:text="${purchase.purchaseState.stateKor}"></span>
-                    <button class="btn btn-sm ml-5 bg-[#A5CDCD] border-gray-300" th:if="${purchase.purchaseState.stateKor != '구매확정'}"
+                    <button class="btn btn-sm ml-5 bg-[#5B9A8B] border-gray-300" th:if="${purchase.purchaseState.stateKor != '구매확정'}"
                             id="confirm-btn" th:attr="onclick=|_purchaseConfirm('${purchase.id}')|">구매확정</button>
                 </div>
             </div>
