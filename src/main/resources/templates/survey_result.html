@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Survey Result</h1>
+<div>
+  <ul th:each="nutrient, loop : ${highestNutrients}">
+    <li th:text="${nutrient.name}">
+        <h1 th:text="${nutrient.name}"></h1>
+    </li>
+  </ul>
+</div>
+</body>
+</html>

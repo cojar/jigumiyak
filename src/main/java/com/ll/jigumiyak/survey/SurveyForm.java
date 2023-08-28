@@ -9,5 +9,6 @@ import java.util.Map;
 @Getter
 @Setter
 public class SurveyForm {
-    private Map<Long, Long> answerIdMap;
+//    private Map<Long, Long> answerIdMap;
+    private String answerIdMap;
 }

@@ -23,7 +23,6 @@
                     </ul>
                 </li>
             </ul>
-            </ul>
             <!-- 페이지네이션 UI -->
             <ul class="pagination flex">
                 <li th:if="${surveyList.hasPrevious}" class="page-item">
@@ -33,43 +32,33 @@
                     <a class="page-link" th:href="@{/survey(page=${surveyList.nextPageable.pageNumber})}">Next</a>
                 </li>
             </ul>
-            <button id="submitBtn">Submit</button>
+            <form th:action="@{/survey/submit}" th:object="${surveyForm}" method="post">
+                <input type="hidden" id="answerIdMap" name="answerIdMap">
+                <button th:if="${!surveyList.hasNext}" id="submitBtn">Submit</button>
+            </form>
         </div>
     </div>
     <script type="text/javascript" th:inline="javascript" th:src="@{/common.js}"></script>
     <script type="text/javascript">
-    var storedData = localStorage.getItem('answerIdMap');
-    var answerIdMap = storedData ? JSON.parse(storedData) : {};
-
-    $("input[type=radio]").change(function() {
-        var surveyId = $(this).attr("name").match(/\[(\d+)\]/)[1];
-        var answerId = $(this).val();
-        answerIdMap[surveyId] = parseInt(answerId);
-        localStorage.setItem('answerIdMap', JSON.stringify(answerIdMap));
-    });
-
-    $("#submitBtn").click(function() {
-        $.ajax({
-            type: "POST",
-            url: "/survey/submit",
-            contentType: "application/json;charset=UTF-8",
-            data: JSON.stringify(answerIdMap),
-            beforeSend: function() {
-                var token = $("meta[name='_csrf']").attr("content");
-                var header = $("meta[name='_csrf_header']").attr("content");
-                $(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
-            },
-            success: function(res) {
-                console.log(res.code + ": " + res.message);
-
-                // 로컬 스토리지 초기화
-                localStorage.removeItem('answerIdMap');
-            },
-            error: function(res) {
-                console.log("와 안되는교");
+        $(document).ready(function() {
+            var answerIdMap = localStorage.getItem('answerIdMap');
+            if (answerIdMap) {
+                answerIdMap = JSON.parse(answerIdMap);
+            } else {
+                answerIdMap = {};
             }
+
+            $("input[type=radio]").change(function() {
+                var surveyId = $(this).attr("name").match(/\[(\d+)\]/)[1];
+                var answerId = $(this).val();
+                answerIdMap[surveyId] = parseInt(answerId);
+                localStorage.setItem('answerIdMap', JSON.stringify(answerIdMap));
+            });
+
+            $("#submitBtn").click(function() {
+                $("#answerIdMap").val(JSON.stringify(answerIdMap));
+            });
         });
-    });
-</script>
+    </script>
 </div>
 </html>
