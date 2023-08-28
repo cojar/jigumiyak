@@ -12,6 +12,9 @@
     <title>ADMIN-PURCHASE</title>
 </head>
 <div layout:fragment="content" class="relative">
+    <div class="w-11/12 mx-auto pl-8 py-8 border-b-2 border-gray-300" style="min-width:1500px">
+        <span class="text-xl" th:text="|정산 총액: ${#numbers.formatInteger(cashAmount, 0, 'COMMA')}원|"></span>
+    </div>
     <table class="w-11/12 mx-auto border-collapse" style="min-width:1500px">
         <thead>
         <tr class="border-b-4 border-double border-gray-500 h-12">

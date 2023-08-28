@@ -9,8 +9,6 @@
     <!-- 테일윈드 불러오기 -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-<!--    <link rel="stylesheet" type="text/css" th:href="@{/css/purchase.css}">-->
-
     <title>PURCHASE-DETAIL</title>
 </head>
 <div layout:fragment="content" class="test-Container">
@@ -130,7 +128,9 @@
                     <span class="label-text ml-5">결제 상태</span>
                 </div>
                 <div>
-                    <span class="label-text" th:text="${purchase.purchaseState.stateKor}"></span>
+                    <span id="purchaseState" class="label-text" th:text="${purchase.purchaseState.stateKor}"></span>
+                    <button class="btn btn-sm ml-5 bg-[#A5CDCD] border-gray-300" th:if="${purchase.purchaseState.stateKor != '구매확정'}"
+                            id="confirm-btn" th:attr="onclick=|_purchaseConfirm('${purchase.id}')|">구매확정</button>
                 </div>
             </div>
         </div>
@@ -147,20 +147,8 @@
                     <span th:text="|${#numbers.formatInteger(purchaseItem.count*purchaseItem.product.price, 0, 'COMMA')}원/${purchaseItem.count}개|"></span>
                 </div>
             </div>
-            <!--                <div th:each="cartItem : ${cartItemList}" class="border-b border-gray-300 flex items-center justify-between px-8 py-8">-->
-            <!--                    <div class="flex-[0_0_40%] flex items-center gap-5">-->
-            <!--                        <img th:if="${cartItem.product.thumbnailImg != null}"-->
-            <!--                             th:attr="src=${@commonUtil.getFilePath(cartItem.product.thumbnailImg.id)}" alt=""-->
-            <!--                             style="max-width: 100px; max-height: 75px;">-->
-            <!--                        <span th:text="${cartItem.product.name}" class="overflow-auto text-sm"></span>-->
-            <!--                    </div>-->
-            <!--                    <div class="flex">-->
-            <!--                        <span th:id="|${cartItem.id}_amount|" th:text="|${#numbers.formatInteger(cartItem.count*cartItem.product.price, 0, 'COMMA')}원/${cartItem.count}개|"></span>-->
-            <!--                    </div>-->
-            <!--                    <input type="hidden" name="cartItemId" th:value="${cartItem.id}">-->
-            <!--                </div>-->
         </div>
     </div>
 </div>
-<!--<script layout:fragment="script" th:src="@{/js/purchase.js}"></script>-->
+<script layout:fragment="script" th:src="@{/js/purchase_detail.js}"></script>
 </html>

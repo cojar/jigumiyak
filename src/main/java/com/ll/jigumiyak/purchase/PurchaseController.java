@@ -6,6 +6,8 @@ import com.ll.jigumiyak.cart.Cart;
 import com.ll.jigumiyak.cart.CartService;
 import com.ll.jigumiyak.cart_item.CartItem;
 import com.ll.jigumiyak.cart_item.CartItemService;
+import com.ll.jigumiyak.cash_log.CashLog;
+import com.ll.jigumiyak.cash_log.CashLogService;
 import com.ll.jigumiyak.file.FileService;
 import com.ll.jigumiyak.purchase_item.PurchaseItem;
 import com.ll.jigumiyak.purchase_item.PurchaseItemService;
@@ -58,6 +60,7 @@ public class PurchaseController {
     private final UserService userService;
     private final AddressService addressService;
     private final FileService fileService;
+    private final CashLogService cashLogService;
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("")
@@ -377,5 +380,25 @@ public class PurchaseController {
         model.addAttribute("purchase", purchase);
 
         return "purchase/detail";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/confirm")
+    @ResponseBody
+    public ResponseEntity confirm(@RequestParam("id") Long id, Principal principal) {
+
+        Purchase purchase = this.purchaseService.getPurchase(id);
+
+        if (!purchase.getPurchaser().getLoginId().equals(principal.getName())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new RsData<>("F-1", "해당 주문 ID에 대한 접근 권한이 없습니다", ""));
+        }
+
+        this.purchaseService.updateConfirm(purchase);
+
+        CashLog cashLog = this.cashLogService.create(purchase);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new RsData<>("S-1", "구매확정을 완료했습니다", purchase.getPurchaseState().getStateKor()));
     }
 }
