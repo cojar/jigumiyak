@@ -18,38 +18,42 @@
   <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
   <div class="min-h-screen w-full flex justify-between">
     <div class="fixed h-screen flex flex-col justify-between items-center w-64 bg-white shadow p-6 z-50">
-      <div class="w-64 space-y-2 mx-auto">
-
-        <a th:href="@{/admin}" class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
+      <div class="w-full space-y-2 mx-auto">
+        <a th:href="@{/admin}" class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:text-white">
           <i class="fa-solid fa-house fa-lg" style="color: #5B9A8B; width:40px;"></i>
           <span>HOME</span>
         </a>
-
-        <a th:href="@{/admin/user}" class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
+        <a th:href="@{/admin/user}" th:classappend="${nav} == 'user' ? 'bg-gray-200'"
+           class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:text-white">
           <i class="fa-solid fa-users fa-lg" style="color: #5B9A8B; width:40px;"></i>
-          <span>User manager</span>
+          <span>User</span>
         </a>
-        <a th:href="@{/admin/notice}" class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
+        <a th:href="@{/admin/notice}" th:classappend="${nav} == 'notice' ? 'bg-gray-200'"
+           class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:text-white">
           <i class="fa-solid fa-bullhorn fa-lg" style="color: #5B9A8B; width:40px;"></i>
-          <span>Notice manager</span>
+          <span>Notice</span>
         </a>
-        <a th:href="@{/admin/board}" class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
+        <a th:href="@{/admin/board}" th:classappend="${nav} == 'board' ? 'bg-gray-200'"
+           class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:text-white">
           <i class="fa-solid fa-newspaper fa-lg" style="color: #5B9A8B; width:40px;"></i>
-          <span>Board manager</span>
+          <span>Board</span>
         </a>
-        <a href="#" class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
+        <a href="#" th:classappend="${nav} == 'product' ? 'bg-gray-200'"
+           class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:text-white">
           <i class="fa-solid fa-boxes-stacked fa-lg" style="color: #5B9A8B; width:40px;"></i>
-          <span>Product manager</span>
+          <span>Product</span>
         </a>
-        <a th:href="@{/admin/purchase}" class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
+        <a th:href="@{/admin/purchase}" th:classappend="${nav} == 'purchase' ? 'bg-gray-200'"
+           class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:text-white">
           <i class="fa-solid fa-credit-card fa-lg" style="color: #5B9A8B; width:40px;"></i>
-          <span>Purchase manager</span>
+          <span>Purchase</span>
         </a>
-        <a th:href="@{/admin/inquiry}" class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
+        <a th:href="@{/admin/inquiry}" th:classappend="${nav} == 'inquiry' ? 'bg-gray-200'"
+           class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:text-white">
           <i class="fa-solid fa-comment-dots fa-lg" style="color: #5B9A8B; width:40px;"></i>
-          <span>Inquiry manager</span>
+          <span>Inquiry</span>
         </a>
-        <a th:href="@{/index}" class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:bg-gray-400 focus:text-white">
+        <a th:href="@{/index}" class="flex items-center py-2 cursor-pointer hover:bg-gray-200 rounded-2xl px-2 focus:text-white">
           <i class="fa-solid fa-capsules fa-lg" style="color: #5B9A8B; width:40px;"></i>
           <span>JIGUMIYAK</span>
         </a>
@@ -70,10 +74,7 @@
           <i class="fa-solid fa-arrow-right-from-bracket fa-xl"></i>
         </a>
       </div>
-
-
     </div>
-
 
     <div class="w-full ml-64">
       <th:block layout:fragment="content"></th:block>
