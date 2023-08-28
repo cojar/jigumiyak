@@ -47,7 +47,7 @@ html > body {
 
 /* 탑바 */
 .top-bar {
-  --color:#A5CDCD;
+  --color:#5B9A8B;
   height:var(--top-bar__height);
   color:var(--color);
   top:0;
@@ -58,7 +58,7 @@ html > body {
 
 .top-bar.hover {
   --color:white;
-  --inverse-color:#A5CDCD;
+  --inverse-color:#5B9A8B;
   background-color:var(--inverse-color);
 }
 
