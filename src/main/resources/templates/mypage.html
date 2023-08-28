@@ -1,5 +1,10 @@
 <html layout:decorate="~{layout}">
 <head>
+    <!-- 데이지 UI 불러오기 -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.5/dist/full.css" rel="stylesheet" type="text/css" />
+    <!-- 테일윈드 불러오기 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <title>JIGUMIYAK</title>
 </head>
 <div layout:fragment="content" class="test-Container">
@@ -81,7 +86,10 @@
         </div>
         <!--문의-->
         <div class="">
-            <div class="text-xl mt-3 py-2 border-b">문의내역 (답변대기)</div>
+            <div class="text-xl mt-3 py-2 border-b">
+                <span>문의내역 (답변대기)</span>
+                <a th:href="@{/inquiry/create}" class="btn btn-sm bg-[#5B9A8B] border-gray-300">문의하기</a>
+            </div>
             <div class="w-full mb-8" th:each="inquiry, loop : ${paging}">
                 <a th:href="@{|/inquiry/list/${inquiry.id}|}"
                    class="block border w-full mt-5 py-4 px-5 flex justify-between"
