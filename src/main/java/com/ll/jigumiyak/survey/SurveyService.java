@@ -26,7 +26,6 @@ public class SurveyService {
     private final SurveyRepository surveyRepository;
     private final NutrientAnswerService nutrientAnswerService;
     private final NutrientCategoryRepository nutrientCategoryRepository;
-    private final SurveyAnswerService surveyAnswerService;
     private final NutrientCategoryService nutrientCategoryService;
 
     public Survey createSurvey(String question, NutrientCategory nutrientCategory) {
@@ -55,7 +54,7 @@ public class SurveyService {
         return surveyRepository.findByNutrientCategoryId(surveyCategoryId);
     }
 
-    public Page<Survey> getSurvetList(int page, int pageSize) {
+    public Page<Survey> getSurveyList(int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "id"));
         return surveyRepository.findAll(pageable);
     }
@@ -69,6 +68,7 @@ public class SurveyService {
         Map<Nutrient, List<Double>> nutrientScoresMap = groupScoresByNutrient(answerIdMap);
         return findNutrientsWithHighestScores(nutrientScoresMap);
     }
+
     private Map<Nutrient, List<Double>> groupScoresByNutrient(Map<Long, Long> answerIdMap) {
         Map<Nutrient, List<Double>> nutrientScoresMap = new HashMap<>();
 
@@ -109,6 +109,7 @@ public class SurveyService {
     private double calculateAverage(List<Double> scores) {
         return scores.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
     }
+
     private List<Nutrient> findNutrientsWithHighestScores(Map<Nutrient, List<Double>> nutrientScoresMap) {
         List<Nutrient> nutrientsWithHighestScores = new ArrayList<>();
 
@@ -125,6 +126,35 @@ public class SurveyService {
         }
 
         return nutrientsWithHighestScores;
+    }
+
+    public List<Nutrient> top3ScoresByNutrient(Map<Long, Long> answerIdMap) {
+        return findTop3NutrientsWithHighestScores(groupScoresByNutrient(answerIdMap));
+    }
+
+    private List<Nutrient> findTop3NutrientsWithHighestScores(Map<Nutrient, List<Double>> nutrientScoresMap) {
+        List<Nutrient> nutrientsWithTopScores = new ArrayList<>();
+
+        // 영양성분과 해당 점수 리스트를 내림차순으로 정렬하여 가장 높은 점수를 가진 순서대로 처리
+        nutrientScoresMap.entrySet().stream()
+                .sorted((entry1, entry2) -> {
+                    double maxScore1 = entry1.getValue().stream().mapToDouble(Double::doubleValue).max().orElse(0.0);
+                    double maxScore2 = entry2.getValue().stream().mapToDouble(Double::doubleValue).max().orElse(0.0);
+                    return Double.compare(maxScore2, maxScore1);
+                })
+                .limit(3) // 상위 3개의 영양성분만 선택
+                .forEach(entry -> {
+                    Nutrient nutrient = entry.getKey();
+                    List<Double> scores = entry.getValue();
+
+                    // 점수가 3.0 이상인 경우에만 추가
+                    double highestScore = scores.stream().mapToDouble(Double::doubleValue).max().orElse(0.0);
+                    if (highestScore >= 3.0) {
+                        nutrientsWithTopScores.add(nutrient);
+                    }
+                });
+
+        return nutrientsWithTopScores;
     }
 }
 

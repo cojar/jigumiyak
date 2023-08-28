@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}">
+<head>
+    <title>SURVEY-BEFORE</title>
+</head>
+<div layout:fragment="content" class="test-Container flex justify-center items-center min-h-screen">
+    <link rel="stylesheet" type="text/css" th:href="@{/test.css}">
+    <div class="test-con mx-auto py-8 text-center">
+        <h1 class="text-2xl font-bold mb-4">지금 나에게 필요한 영양제는?</h1>
+        <div class="img-box mb-4">
+            <img src="https://i.imgur.com/1UJmWqL.png" alt="" class="max-w-full h-auto">
+        </div>
+        <a href="/survey" class="px-6 py-4 bg-indigo-500 text-white rounded hover:bg-indigo-600 focus:outline-none focus:ring focus:ring-indigo-200">지금이약 설문 시작하기</a>
+    </div>
+</div>
+</html>

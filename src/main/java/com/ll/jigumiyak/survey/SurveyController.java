@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -36,7 +37,7 @@ public class SurveyController {
     private final NutrientService nutrientService;
     private final NutrientAnswerService nutrientAnswerService;
 
-
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping("/nutrient/answer1")
     @ResponseBody
     public String createNutrientAnswer1() {
@@ -59,12 +60,18 @@ public class SurveyController {
         return "nutrientAnswerList are created";
     }
 
+    @GetMapping("/ready")
+    public String beforeSurvey(){
+        return "survey_ready";
+    }
+
+
     @GetMapping("")
     public String doSurvey(Model model,
                            SurveyForm surveyForm,
                            @RequestParam(value = "page", defaultValue = "0") int page,
                            @RequestParam(value = "pageSize", defaultValue = "1") int pageSize) {
-        Page<Survey> surveyList = surveyService.getSurvetList(page, pageSize);
+        Page<Survey> surveyList = surveyService.getSurveyList(page, pageSize);
         model.addAttribute("surveyList", surveyList);
         return "survey";
     }
@@ -91,16 +98,23 @@ public class SurveyController {
         } catch (IOException e) {
 
         }
-
+        Map<Nutrient, Double> avgNutrientMap = surveyService.getAverageScoresByNutrient(answerIdMap);
+        redirectAttributes.addFlashAttribute("avgNutrientMap", avgNutrientMap);
         List<Nutrient> highestNutrients = surveyService.getNutrientsWithHighestScores(answerIdMap);
         redirectAttributes.addFlashAttribute("highestNutrients", highestNutrients);
+        List<Nutrient> top3Nutrients = surveyService.top3ScoresByNutrient(answerIdMap);
+        redirectAttributes.addFlashAttribute("top3Nutrients", top3Nutrients);
         return "redirect:/survey/result";
     }
 
     @GetMapping("/result")
     public String success(@ModelAttribute("highestNutrients") ArrayList<Nutrient> highestNutrients,
+                          @ModelAttribute("avgNutrientMap") Map<Nutrient, Double> avgNutrientMap,
+                          @ModelAttribute("top3Nutrients") ArrayList<Nutrient> top3Nutrients,
                           Model model){
         model.addAttribute("highestNutrients", highestNutrients);
+        model.addAttribute("avgNutrientMap", avgNutrientMap);
+        model.addAttribute("top3Nutrients", top3Nutrients);
         for(Nutrient nutrient : highestNutrients){
             System.out.println(nutrient.getName());
         }
