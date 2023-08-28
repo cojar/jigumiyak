@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -43,12 +44,19 @@ public class PurchaseService {
         return purchase;
     }
 
+    public Purchase getPurchase(Long id) {
+        return this.purchaseRepository.findById(id)
+                .orElse(null);
+    }
+
+    public List<Purchase> getList() {
+        return this.purchaseRepository.findAll();
+    }
+
     public Purchase getPurchaseByPurchaserAndPurchaseId(SiteUser purchaser, String purchaseId) {
         return this.purchaseRepository.findByPurchaserAndPurchaseId(purchaser, purchaseId)
                 .orElse(null);
     }
-
-
 
     public void delete(Purchase purchase) {
         this.purchaseRepository.delete(purchase);

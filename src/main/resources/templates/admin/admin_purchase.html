@@ -1,0 +1,178 @@
+<html layout:decorate="~{admin/ad_navbar}">
+<head>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+
+    <!-- 데이지 UI 불러오기 -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.5/dist/full.css" rel="stylesheet" type="text/css" />
+    <!-- 테일윈드 불러오기 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+<!--    <link rel="stylesheet" type="text/css" th:href="@{/css/admin_user.css}">-->
+    <title>ADMIN-PURCHASE</title>
+</head>
+<div layout:fragment="content" class="relative">
+    <table class="w-11/12 mx-auto border-collapse" style="min-width:1500px">
+        <thead>
+        <tr class="border-b-4 border-double border-gray-500 h-12">
+            <th class="border-l-2 border-r-2 border-gray-300 w-24 px-2">아이디</th>
+            <th class="border-l-2 border-r-2 border-gray-300 px-2">결제일</th>
+            <th class="border-l-2 border-r-2 border-gray-300 w-100 px-2">상품명</th>
+            <th class="border-l-2 border-r-2 border-gray-300 w-100 px-2">구매자명</th>
+            <th class="border-l-2 border-r-2 border-gray-300 px-2">결제방법</th>
+            <th class="border-l-2 border-r-2 border-gray-300 px-2">결제상세</th>
+            <th class="border-l-2 border-r-2 border-gray-300 px-2">결제금액</th>
+            <th class="border-l-2 border-r-2 border-gray-300 px-2">결제상태</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="purchase, loop : ${purchaseList}" class="border h-9 text-sm">
+            <td th:text="${purchase.purchaser.loginId}" class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
+            <td th:text="${#temporals.format(purchase.payDate, 'yy.MM.dd HH:mm')}" class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
+            <td th:text="${purchase.purchaseName}" th:attr="onclick=|_showDetail('${purchase.id}')|"
+                class="border-l-2 border-r-2 border-b-2 border-gray-300 text-start px-2 cursor-pointer"></td>
+            <td th:text="${purchase.purchaserName}" class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
+            <td th:text="${purchase.method}" class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
+            <td th:text="${purchase.paymentDetail}" class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
+            <td th:text="|${#numbers.formatInteger(purchase.totalAmount, 0, 'COMMA')}원|" class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
+            <td th:text="${purchase.purchaseState.stateKor}" class="border-l-2 border-r-2 border-b-2 border-gray-300 text-center px-2"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- 모달 영역 컨트롤 -->
+    <input type="checkbox" id="purchaseDetailModal" class="modal-toggle" />
+    <!-- 모달 영역 시작 -->
+    <div class="modal">
+        <div class="modal-box w-9/12 max-w-5xl relative">
+            <div class="modal-action absolute my-0 py-0 top-[16px] right-[24px]">
+                <label for="purchaseDetailModal" class="btn btn-sm border-gray-300 bg-gray-400">닫기</label>
+            </div>
+            <h3 class="font-bold text-xl border-b-4 border-double border-gray-300 flex items-center gap-1">
+                <div>주문 상세</div>
+                <div class="text-sm">-</div>
+                <div class="text-sm" id="modal_purchaseName"></div>
+            </h3>
+            <div class="shadow mt-3 py-3">
+                <h6 class="border-b-2 border-gray-300 mx-2">주문고객 정보</h6>
+                <div class="mt-[10px] flex gap-5 items-center">
+                    <div class="flex-[0_0_20%]">
+                        <span class="label-text ml-5">아이디</span>
+                    </div>
+                    <div>
+                        <span class="label-text" id="modal_loginId"></span>
+                    </div>
+                </div>
+                <div class="mt-[10px] flex gap-5 items-center">
+                    <div class="flex-[0_0_20%]">
+                        <span class="label-text ml-5">이메일</span>
+                    </div>
+                    <div>
+                        <span class="label-text" id="modal_email"></span>
+                    </div>
+                </div>
+                <div class="mt-[10px] flex gap-5 items-center">
+                    <div class="flex-[0_0_20%]">
+                        <span class="label-text ml-5">보내는 분</span>
+                    </div>
+                    <div>
+                        <span class="label-text" id="modal_purchaserName"></span>
+                    </div>
+                </div>
+                <div class="mt-[10px] flex gap-5 items-center">
+                    <div class="flex-[0_0_20%]">
+                        <span class="label-text ml-5">휴대폰</span>
+                    </div>
+                    <div>
+                        <span class="label-text" id="modal_purchaserPhoneNumber"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="shadow mt-3 py-3">
+                <h6 class="border-b-2 border-gray-300 mx-2">배송지 정보</h6>
+                <div class="mt-[10px] flex gap-5 items-center">
+                    <div class="flex-[0_0_20%]">
+                        <span class="label-text ml-5">받는 분</span>
+                    </div>
+                    <div>
+                        <span class="label-text" id="modal_receiverName"></span>
+                    </div>
+                </div>
+                <div class="mt-[10px] flex gap-5 items-center">
+                    <div class="flex-[0_0_20%]">
+                        <span class="label-text ml-5">휴대폰</span>
+                    </div>
+                    <div>
+                        <span class="label-text" id="modal_receiverPhoneNumber"></span>
+                    </div>
+                </div>
+                <div class="mt-[10px] flex gap-5 items-center">
+                    <div class="flex-[0_0_20%]">
+                        <span class="label-text ml-5">주소</span>
+                    </div>
+                    <div>
+                        <span class="label-text" id="modal_receiverAddress"></span>
+                    </div>
+                </div>
+                <div class="mt-[10px] flex gap-5 items-center">
+                    <div class="flex-[0_0_20%]">
+                        <span class="label-text ml-5">배송 요청사항</span>
+                    </div>
+                    <div>
+                        <span class="label-text" id="modal_deliveryRequest"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="shadow mt-3 py-3">
+                <h6 class="border-b-2 border-gray-300 mx-2">결제 정보</h6>
+                <div class="mt-[10px] flex gap-5 items-center">
+                    <div class="flex-[0_0_20%]">
+                        <span class="label-text ml-5">결제 금액</span>
+                    </div>
+                    <div>
+                        <span class="label-text" id="modal_totalAmount"></span>
+                    </div>
+                </div>
+                <div class="mt-[10px] flex gap-5 items-center">
+                    <div class="flex-[0_0_20%]">
+                        <span class="label-text ml-5">결제 방법</span>
+                    </div>
+                    <div>
+                        <span class="label-text" id="modal_method"></span>
+                    </div>
+                </div>
+                <div class="mt-[10px] flex gap-5 items-center">
+                    <div class="flex-[0_0_20%]">
+                        <span class="label-text ml-5">결제 상세</span>
+                    </div>
+                    <div>
+                        <span class="label-text" id="modal_paymentDetail"></span>
+                    </div>
+                </div>
+                <div class="mt-[10px] flex gap-5 items-center">
+                    <div class="flex-[0_0_20%]">
+                        <span class="label-text ml-5">결제 승인</span>
+                    </div>
+                    <div>
+                        <span class="label-text" id="modal_payDate"></span>
+                    </div>
+                </div>
+                <div class="mt-[10px] flex gap-5 items-center">
+                    <div class="flex-[0_0_20%]">
+                        <span class="label-text ml-5">결제 상태</span>
+                    </div>
+                    <div>
+                        <span class="label-text" id="modal_purchaseState"></span>
+                    </div>
+                </div>
+            </div>
+            <div id="item-anchor" class="shadow mt-3 py-3">
+                <h6 class="border-b-2 border-gray-300 mx-2">주문상품 정보</h6>
+            </div>
+        </div>
+    </div>
+    <!-- 모달 영역 끝 -->
+</div>
+<script layout:fragment="script" type="text/javascript" th:src="@{/js/admin_purchase.js}"></script>
+</html>
