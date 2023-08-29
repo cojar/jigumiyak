@@ -73,7 +73,8 @@
             <div th:utext="|A. ${@commonUtil.markdown(faq.answer)}|"></div>
             <div class="my-5">답변이 충분하지 않으시다면 1:1상담신청을 이용해 주세요.</div>
             <div>
-              <a href="/inquiry/create" class="border py-3 px-5 bg-white">1:1 상담하기</a>
+              <button type="button" th:attr="onclick=|_anonymous('/inquiry/create', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}')|"
+                      class="border py-3 px-5 bg-white">1:1 상담하기</button>
             </div>
           </div>
         </li>
