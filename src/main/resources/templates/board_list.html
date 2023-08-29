@@ -71,12 +71,12 @@
             </tr>
             </tbody>
         </table>
-        <a th:attr="onclick=|_anonymous('/board/create', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}')|" class="cursor-pointer block text-center w-32 rounded-xl p-3 mt-5" style="background:#E9B384;">글 작성하기</a>
+        <a th:attr="onclick=|_anonymous('/board/create', '${!#strings.contains(#authentication.authorities, 'ROLE_ANONYMOUS')}')|" class="z-10 cursor-pointer block text-center w-32 rounded-xl p-3 mt-5" style="background:#E9B384;">글 작성하기</a>
 
 
         <!-- 페이징 -->
-        <div th:if="${!paging.isEmpty()}" class="w-full flex justify-center -mt-12 mb-8">
-            <ul class="w-full flex justify-center items-center">
+        <div th:if="${!paging.isEmpty()}" class="w-auto mx-auto flex justify-center -mt-12 mb-8">
+            <ul class="flex justify-center items-center">
                 <li th:classappend="${!paging.hasPrevious} ? 'disabled'" class="py-3 px-1">
                     <a class="page-link" href="javascript:void(0)" th:data-page="${paging.number-1}"><span>이전</span></a>
                 </li>
