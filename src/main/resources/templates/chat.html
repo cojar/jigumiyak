@@ -46,7 +46,7 @@
               <div class="about flex items-center">
                 <i class="fa-solid fa-user-doctor fa-lg" style="color: #000000;"></i>
                 <div class="ml-5">
-                  <div id="master" class="name">약사 MASTER</div>
+                  <div class="name">약사 MASTER</div>
                   <div id="master-status" class="status">
                     <i id="master-status-icon" class="fas fa-circle offline"></i> <!-- Font Awesome icon here -->
                     <span id="master-status-content">offline</span>
@@ -109,7 +109,6 @@
 
 	   	 if(myId != 'master') {
 	   		 receiverId = 'master';
-	   	 } else {
 	   	 }
 
          document.querySelector("#disconn").addEventListener("click", (e) => {
@@ -121,7 +120,7 @@
 	        	send();
          });
 
-         const websocket = new WebSocket("wss://jigumiyak.com/ws/chat");
+         const websocket = new WebSocket("ws://localhost:4000/ws/chat");
 	         websocket.onmessage = onMessage;
 	         websocket.onopen = onOpen;
 	         websocket.onclose = onClose;
