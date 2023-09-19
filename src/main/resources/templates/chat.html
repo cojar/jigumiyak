@@ -100,369 +100,408 @@
 
 
 <script type="text/javascript" th:inline="javascript">
-		 var myId = document.getElementById('myId').textContent;
-		 var receiverId;
-	     var preOnlineList;
-	     var masterStatusContent;
-   		 var preMasterStatus;
-	   	 var masterStatus;
+var myId = document.getElementById('myId').textContent;
+var receiverId;
+var preOnlineList;
+var masterStatusContent;
+var preMasterStatus;
+var masterStatus;
 
-	   	 if(myId != 'master') {
-	   		 receiverId = 'master';
-	   	 }
+//id 마스터 아니면 받는 사람 마스터
+if(myId != 'master') {
+   receiverId = 'master';
+}
 
-         document.querySelector("#disconn").addEventListener("click", (e) => {
-        	// location.href = "/";
-        	window.close();
-         })
+//버튼 클릭시 창 닫기
+document.querySelector("#disconn").addEventListener("click", (e) => {
+  // location.href = "/";
+  window.close();
+})
 
-         document.querySelector("#button-send").addEventListener("click", (e) => {
-	        	send();
-         });
+document.querySelector("#button-send").addEventListener("click", (e) => {
+      send();
+});
 
-         const websocket = new WebSocket("ws://localhost:4000/ws/chat");
-	         websocket.onmessage = onMessage;
-	         websocket.onopen = onOpen;
-	         websocket.onclose = onClose;
+// 웹 소켓 연결
+//wss://jigumiyak.com/ws/chat
+const websocket = new WebSocket("ws://localhost:4000/ws/chat");
+   websocket.onmessage = onMessage;
+   websocket.onopen = onOpen;
+   websocket.onclose = onClose;
 
-         // send a message
-         function send(){
-            var message = document.getElementById("msg").value;
-			// don't send when content is empty
-            if(message != "") {
-	        	 let msg = {
-	        		 'receiverId' : receiverId,
-	        		 'message' : message
-	        	 }
+// 메시지 보내기
+function send(){
+  var message = document.getElementById("msg").value;
 
-	             if(message != null) {
-	             	websocket.send(JSON.stringify(msg));
-	             }
-	             document.getElementById("msg").value = '';
-	         }
-         }
+  // 빈 값은 전송 안됨
+  if(message != "") {
+       let msg = {
+           'receiverId' : receiverId,
+           'message' : message
+       }
 
-         //on exit chat room
-         function onClose(evt) {
-        	 console.log("close event : " + evt);
-         }
+       if(message != null) {
+          websocket.send(JSON.stringify(msg));
+       }
+       document.getElementById("msg").value = '';
+   }
+}
 
-         //on entering chat room
-         function onOpen(evt) {
-        	 console.log("open event : " + evt);
-         }
+//on exit chat room
+function onClose(evt) {
+   console.log("close event : " + evt);
+}
 
-         // on message controller
-         function onMessage(msg) {
-        	 masterStatusContent = document.getElementById('master-status-content');
-        	 preMasterStatus = masterStatusContent.innerHTML;
+//on entering chat room
+function onOpen(evt) {
+   console.log("open event : " + evt);
+}
 
-        	 console.log('msg.data >>> ', msg.data);
-        	 var data = JSON.parse(msg.data);
+// on message controller
+function onMessage(msg) {
+   masterStatusContent = document.getElementById('master-status-content');
+   preMasterStatus = masterStatusContent.innerHTML;
 
-        	 var onlineList = data.onlineList;
-        	 console.log('onlineList >>>> ', onlineList);
+   console.log('msg.data >>> ', msg.data);
+   var data = JSON.parse(msg.data);
 
-             var senderId = data.senderId;
-             console.log('senderId >>> ', senderId)
-             // var receiverId = data.receiverId;
-             // console.log('receiverId >>> ', receiverId)
-             var message = data.message;
-             console.log('message >>> ', message)
-             var time = data.time;
-             console.log('time >>> ', time)
-             masterStatus = data.masterStatus;
-             console.log('preMasterStatus >>> ', preMasterStatus)
-             console.log('masterStatus >>> ', masterStatus)
-             var newOne = data.newOne;
-             console.log('newOne >>> ', newOne);
-             var outOne = data.outOne;
-             console.log('outOne >>> ', outOne);
+   var onlineList = data.onlineList;
+   console.log('onlineList >>>> ', onlineList);
 
+   var senderId = data.senderId;
+   console.log('senderId >>> ', senderId)
 
+   var message = data.message;
+   console.log('message >>> ', message)
 
-             // when user login
-             // first login master -> get all onlined user list
-             if(newOne != null) {
-            	 console.log("new One is not null");
-				if(myId == 'master' && newOne == "master") {
-					getOnlineList(onlineList);
-				} else if(myId == "master" && newOne != "master") {
-					console.log("new one login >>>> " , newOne);
-					insertOnlineList(newOne);
-				}
-             }
-             // when user disconnect
-             if(outOne != null && myId == 'master') {
-            	 console.log("user disconnect >>> ", outOne);
-            	 deleteOnlieList(outOne);
-             }
+   var time = data.time;
+   console.log('time >>> ', time)
 
-             if (myId === 'master' && senderId !== 'master' && receiverId !== senderId) {
-                  addStagingMessage(senderId, time, message);
-              } else {
-                  insertMessage(senderId, time, message);
-              }
+   masterStatus = data.masterStatus;
+   console.log('preMasterStatus >>> ', preMasterStatus)
+   console.log('masterStatus >>> ', masterStatus)
 
-              // 마스터 상태를 업데이트합니다
-              updateMasterStatus();
+   var newOne = data.newOne;
+   console.log('newOne >>> ', newOne);
 
-              // 채팅 내용을 가장 아래로 스크롤합니다
-              scrollDown();
-       	 }
+   var outOne = data.outOne;
+   console.log('outOne >>> ', outOne);
 
-         // insert a message
-         function insertMessage(senderId, time, message) {
-        	  var chatContent =  document.querySelector("#chat-content");
-              if(senderId == myId) {
-             	// insert a message into chat content to myself
-                  var li = document.createElement('li');
-                  li.classList.add('message-li', 'clearfix', 'float-right');
-                  var infoDiv = document.createElement('div');
-                  infoDiv.classList.add('message-data');
-                  li.appendChild(infoDiv);
-                  var timeSpan = document.createElement('span');
-                  timeSpan.classList.add('message-data-time');
-                  timeSpan.textContent = time;
-                  infoDiv.appendChild(timeSpan);
-                  var msgDiv = document.createElement('div');
-                  msgDiv.classList.add('message', 'my-message');
-                  msgDiv.textContent = message;
-                  li.appendChild(msgDiv);
+   // 사용자 로그인
+   // first login master -> get all onlined user list
+   if(newOne != null) {
+       console.log("new One is not null");
+      if(myId == 'master' && newOne == "master") {
+          getOnlineList(onlineList);
+      } else if(myId == "master" && newOne != "master") {
+          console.log("new one login >>>> " , newOne);
+          insertOnlineList(newOne);
+      }
+   }
+   // 사용자 로그아웃
+   if(outOne != null && myId == 'master') {
+       console.log("user disconnect >>> ", outOne);
+       deleteOnlieList(outOne);
+   }
 
-                  chatContent.appendChild(li);
-                  scrollDown();
-              } else {
- 				// insert a message into chat content to other
- 	            var li = document.createElement('li');
-                 li.classList.add('message-li', 'clearfix');
-                 var infoDiv = document.createElement('div');
-                 infoDiv.classList.add('message-data');
-                 li.appendChild(infoDiv);
-                 var timeSpan = document.createElement('span');
-                 timeSpan.classList.add('message-data-time');
-                 timeSpan.textContent = time;
-                 infoDiv.appendChild(timeSpan);
-                 var msgDiv = document.createElement('div');
-                 msgDiv.classList.add('message', 'other-message');
-                 msgDiv.textContent = message;
-                 li.appendChild(msgDiv);
+   if (myId === 'master' && senderId !== 'master' && receiverId !== senderId) {
+        addStagingMessage(senderId, time, message);
+    } else {
+        insertMessage(senderId, time, message);
+    }
 
-                 chatContent.appendChild(li);
-                 scrollDown();
-              }
-         }
+    // 마스터 상태를 업데이트합니다
+    updateMasterStatus();
 
-         // save staging messages
-         function addStagingMessage(senderId, time, message) {
+    // 채팅 내용을 가장 아래로 스크롤
+    scrollDown();
+}
 
-        	 var container = [];
-      		 var data = {
-      				 "time":time,
-      				 "message":message,
-      				 "senderId":senderId
-      		 		}
-      		 console.log('staging message data >>> ', data)
-        	 if(sessionStorage.getItem(senderId) != null) {
-        	 	 container = JSON.parse(sessionStorage.getItem(senderId));
-        	 	 console.log('stagine message container >>> ', container);
-				 container.push(data);
-        	 } else {
-        		 container.push(data);
-        	 }
-			 sessionStorage.setItem(senderId, JSON.stringify(container));
+// 메시지 표시
+function insertMessage(senderId, time, message) {
+    var chatContent =  document.querySelector("#chat-content");
 
-			 if(document.getElementById(senderId) != null) {
-				 var circle = document.getElementById(senderId).querySelector('.circle');
-				 var count = document.getElementById(senderId).querySelector('.circle > .staging-count');
-				 var n = count.textContent;
-				 if(n == ""){
-					 n = 0
-				 }
-				 n ++;
-				 circle.classList.remove('d-none');
-				 count.textContent = n;
-			 }
-         }
+    if(senderId == myId) {
+      // 내가 보낸 메시지 오른쪽 정렬
+        var li = document.createElement('li');
+        li.classList.add('message-li', 'clearfix', 'float-right');
 
-         // onclick onlined user icon
-         function activeToggle(element){
-        	 if(!element.classList.contains('active')){
-        		 element.classList.add('active');
-        	 } else {
-        		 element.classList.remove('active');
-        	 };
-        	 var preReceiverId = receiverId;
-        	 receiverId = element.querySelector('.about > .name').textContent;
-        	 console.log('<<<< toggleAction >>>>>')
-        	 console.log('receiverId >>> ', receiverId);
-        	 console.log('preReceiverId >>> ', preReceiverId);
+        // 메시지 정보를 감싸는 div 엘리먼트
+        var infoDiv = document.createElement('div');
+        infoDiv.classList.add('message-data');
+        li.appendChild(infoDiv);
 
-        	 if(receiverId != preReceiverId && preReceiverId != null)
-	        	 document.getElementById(preReceiverId).classList.remove('active');
+        // 메시지 전송 시간
+        var timeSpan = document.createElement('span');
+        timeSpan.classList.add('message-data-time');
+        timeSpan.textContent = time;
+        infoDiv.appendChild(timeSpan);
 
-        	 setChatHistory(preReceiverId);
-        	 document.getElementById('chat-content').innerHTML = "";
-        	 getChatHistory(receiverId);
-        	 divideChatSection(receiverId);
-        	 if(document.getElementById(receiverId).querySelector('.circle') != null) {
-	        	 document.getElementById(receiverId).querySelector('.circle > .staging-count').textContent = "";
-	        	 document.getElementById(receiverId).querySelector('.circle').classList.add('d-none');
-        	 }
-         }
+        var msgDiv = document.createElement('div');
+        msgDiv.classList.add('message', 'my-message');
+        msgDiv.textContent = message;
+        li.appendChild(msgDiv);
 
-	      // insert all users into online list
-         function getOnlineList(onlineList){
-	        var onlineUser =  document.querySelector("#online-user");
-        	onlineUser.innerHTML = "";
-			onlineList.forEach(user => {
-	        	insertOnlineList(user);
-			});
-         }
+        // 채팅 컨텐츠에 추가
+        chatContent.appendChild(li);
+        scrollDown();
 
-         // insert online user list
-         function insertOnlineList(user) {
+    } else {
+      // 다른 사용자가 보낸 메세지 왼쪽 정렬
+       var li = document.createElement('li');
+       li.classList.add('message-li', 'clearfix');
 
-        	 if(document.getElementById(user) == null) {
-	        	var onlineUser =  document.querySelector("#online-user");
+       // 메시지 정보를 감싸는 div 엘리먼트
+       var infoDiv = document.createElement('div');
+       infoDiv.classList.add('message-data');
+       li.appendChild(infoDiv);
 
-	       		var li = document.createElement('li');
-	            li.classList.add('clearfix');
-	            li.setAttribute('onclick', 'activeToggle(this)');
-	            li.setAttribute('id', user);
+       // 메시지 전송 시간
+       var timeSpan = document.createElement('span');
+       timeSpan.classList.add('message-data-time');
+       timeSpan.textContent = time;
+       infoDiv.appendChild(timeSpan);
 
-	            var aboutDiv = document.createElement('div');
-	            aboutDiv.classList.add('about');
-	            var name = document.createElement('div');
-	            name.classList.add('name');
-	            name.textContent = user;
-	            aboutDiv.appendChild(name);
+       var msgDiv = document.createElement('div');
+       msgDiv.classList.add('message', 'other-message');
+       msgDiv.textContent = message;
+       li.appendChild(msgDiv);
 
-	            var statusDiv = document.createElement('div');
-	            statusDiv.classList.add('status');
-	            var icon = document.createElement('i');
-	            icon.setAttribute('id', 'master-status-icon');
-	            icon.classList.add('fa', 'fa-circle', 'online');
-	            var span = document.createElement('span');
-	            span.setAttribute('id', 'master-status-content');
-	            span.textContent = 'online';
-	            statusDiv.appendChild(icon);
-	            statusDiv.appendChild(span);
+       chatContent.appendChild(li);
+       scrollDown();
+    }
+}
 
-	            aboutDiv.appendChild(statusDiv);
+// 다른 사용자가 수신한 메세지를 저장하고 해당 메세지의 수량을 표시
+function addStagingMessage(senderId, time, message) {
 
-	            li.appendChild(aboutDiv);
-
-	            var alertDiv = document.createElement('div');
-	            alertDiv.classList.add('circle', 'd-flex', 'align-items-center', 'justify-content-center', 'd-none');
-	            aspan = document.createElement('span');
-	            aspan.classList.add('staging-count');
-	            alertDiv.appendChild(aspan);
-	            li.appendChild(alertDiv);
-
-	            onlineUser.appendChild(li);
-        	 }
-         };
-
-         // delete outOne from onlineList
-         function deleteOnlieList(outOne) {
-	     	var element =  document.getElementById(outOne);
-			element.parentNode.removeChild(element);
-         }
-
-         // insert division of receiver
-         function divideChatSection(receiverId){
-        	  var div = document.createElement('div');
-              div.classList.add('clearfix');
-              var str = receiverId + '님과의 대화 시작 ';
-              var hr = document.createElement('hr');
-
-              div.textContent = str;
-              div.appendChild(hr);
-              var chatContent =  document.querySelector("#chat-content");
-              chatContent.appendChild(div);
-
-              scrollDown();
-         };
-
-         // update master status
-         function updateMasterStatus(){
-        	 if(preMasterStatus != masterStatus) {
- 				var icon = document.getElementById('master-status-icon');
-
- 				if(masterStatus == "online") {
- 	            	 icon.classList.remove('offline');
- 	            	 icon.classList.add('online');
- 	             } else {
- 	            	 icon.classList.remove('online');
- 	            	 icon.classList.add('offline');
- 	             }
- 				masterStatusContent.innerHTML = masterStatus;
- 			}
-         };
-
-         // save chat history
-         function setChatHistory(name){
-        	 var value =[];
-        	 document.querySelectorAll('.message-li').forEach(item => {
-
-        		 var time = item.querySelector('.message-data > .message-data-time').textContent;
-        		 var message = item.querySelector('.message').textContent;
-        		 var senderId;
-        		 var type = item.querySelector('.message').classList[1];
-        		 if(type == 'my-message'){
-        			 senderId = myId;
-        		 } else {
-        			 senderId = name;
-        		 }
-
-        		 data = {
-        				 "time":time,
-        				 "message":message,
-        				 "senderId":senderId
-        		 }
-        		 value.push(data);
-
-        	 })
-
-        	 sessionStorage.setItem(name, JSON.stringify(value));
-         };
-
-         // insert pre chat history
-         function getChatHistory(name){
-        	 var data = JSON.parse(sessionStorage.getItem(name));
-
-        	 if(data != null) {
-	        	 data.forEach(item => {
-	        		 var time = item.time;
-	        		 var message = item.message;
-	        		 var senderId = item.senderId;
-
-	        		 insertMessage(senderId, time, message);
-	        	 })
-        	 }
-         };
-
-         // scroll down event
-         function scrollDown() {
-              var chatContent = document.querySelector("#chat-content");
-              chatContent.scrollTop = chatContent.scrollHeight;
+   var container = [];
+   var data = {
+           "time":time,
+           "message":message,
+           "senderId":senderId
           }
 
-          document.getElementById("msg").addEventListener("keydown", function(event) {
-              if (event.keyCode === 13) {
-                  event.preventDefault(); // Prevent the default behavior (line break)
-                  send(); // Call the send function to send the message
-              }
-          });
-	</script>
+   console.log('staging message data >>> ', data)
+
+   if(sessionStorage.getItem(senderId) != null) {
+       container = JSON.parse(sessionStorage.getItem(senderId));
+       console.log('staging message container >>> ', container);
+       container.push(data);
+   } else {
+       // 컨테이너가 없는 경우, 새로운 배열을 만들고 메시지 데이터를 추가
+       container.push(data);
+   }
+
+   sessionStorage.setItem(senderId, JSON.stringify(container));
+
+   // 해당 발신자(senderId)의 스테이징 메시지 개수를 화면에 표시
+   if(document.getElementById(senderId) != null) {
+       var circle = document.getElementById(senderId).querySelector('.circle');
+       var count = document.getElementById(senderId).querySelector('.circle > .staging-count');
+       var n = count.textContent;
+       if(n == ""){
+           n = 0
+       }
+       n ++;
+       circle.classList.remove('d-none');
+       count.textContent = n;
+   }
+}
+
+// 온라인 사용자 클릭 채팅시작
+function activeToggle(element){
+   if(!element.classList.contains('active')){
+       element.classList.add('active');
+   } else {
+       element.classList.remove('active');
+   };
+
+   // 이전 대화 상대자(receiverId)를 저장하고, 새로운 대화 상대자를 설정
+   var preReceiverId = receiverId;
+   receiverId = element.querySelector('.about > .name').textContent;
+   console.log('<<<< toggleAction >>>>>')
+   console.log('receiverId >>> ', receiverId);
+   console.log('preReceiverId >>> ', preReceiverId);
+
+   // 이전 대화 상대자와 새 대화 상대자가 다를 경우 이전 대화 상대자 아이콘에서 "active" 클래스를 제거
+   if(receiverId != preReceiverId && preReceiverId != null)
+       document.getElementById(preReceiverId).classList.remove('active');
+
+   // 이전 대화자와 채팅 내용 저장
+   setChatHistory(preReceiverId);
+
+   // 현재 대화 내용 지우고, 새로운 대화 상대자의 채팅 내용을 표시
+   document.getElementById('chat-content').innerHTML = "";
+   getChatHistory(receiverId);
+   divideChatSection(receiverId);
+
+   // 대화 상대자의 스테이징 메시지 개수를 초기화하고 화면에서 숨김
+   if(document.getElementById(receiverId).querySelector('.circle') != null) {
+       document.getElementById(receiverId).querySelector('.circle > .staging-count').textContent = "";
+       document.getElementById(receiverId).querySelector('.circle').classList.add('d-none');
+   }
+}
+
+// 온라인 사용자 목록 화면에 표시
+function getOnlineList(onlineList){
+  var onlineUser =  document.querySelector("#online-user");
+  onlineUser.innerHTML = "";
+  onlineList.forEach(user => {
+      insertOnlineList(user);
+  });
+}
+
+// 온라인 사용자 추가
+function insertOnlineList(user) {
+   // 온라인 사용자 목록에 존재하지 않는 경우에만 실행
+   if(document.getElementById(user) == null) {
+      var onlineUser =  document.querySelector("#online-user");
+
+      // 새로운 사용자를 나타내는 리스트 아이템 엘리먼트를 생성
+      var li = document.createElement('li');
+      li.classList.add('clearfix');
+      li.setAttribute('onclick', 'activeToggle(this)');
+      li.setAttribute('id', user);
+
+      var aboutDiv = document.createElement('div');
+      aboutDiv.classList.add('about');
+
+      var name = document.createElement('div');
+      name.classList.add('name');
+      name.textContent = user;
+      aboutDiv.appendChild(name);
+
+      // 사용자 온라인 상태를 나타내는 엘리먼트를 생성
+      var statusDiv = document.createElement('div');
+      statusDiv.classList.add('status');
+
+      // 온라인 상태 아이콘을 생성하고 설정
+      var icon = document.createElement('i');
+      icon.setAttribute('id', 'master-status-icon');
+      icon.classList.add('fa', 'fa-circle', 'online');
+      var span = document.createElement('span');
+      span.setAttribute('id', 'master-status-content');
+      span.textContent = 'online';
+      statusDiv.appendChild(icon);
+      statusDiv.appendChild(span);
+
+      aboutDiv.appendChild(statusDiv);
+
+      li.appendChild(aboutDiv);
+
+      // 스테이징 메시지 알림을 나타내는 엘리먼트를 생성
+      var alertDiv = document.createElement('div');
+      alertDiv.classList.add('circle', 'd-flex', 'align-items-center', 'justify-content-center', 'd-none');
+      aspan = document.createElement('span');
+      aspan.classList.add('staging-count');
+      alertDiv.appendChild(aspan);
+      li.appendChild(alertDiv);
+
+      // 온라인 사용자 목록에 새로운 사용자 엘리먼트를 추가
+      onlineUser.appendChild(li);
+   }
+};
+
+// 오프라인 유저 삭제
+function deleteOnlieList(outOne) {
+  var element =  document.getElementById(outOne);
+  element.parentNode.removeChild(element);
+}
+
+// 대화시작 문구 출력
+function divideChatSection(receiverId){
+    var div = document.createElement('div');
+    div.classList.add('clearfix');
+    var str = receiverId + '님과의 대화 시작 ';
+    var hr = document.createElement('hr');
+
+    div.textContent = str;
+    div.appendChild(hr);
+    var chatContent =  document.querySelector("#chat-content");
+    chatContent.appendChild(div);
+
+    scrollDown();
+};
+
+// 마스터 상태 업데이트
+function updateMasterStatus(){
+   if(preMasterStatus != masterStatus) {
+      var icon = document.getElementById('master-status-icon');
+
+      if(masterStatus == "online") {
+           icon.classList.remove('offline');
+           icon.classList.add('online');
+       } else {
+           icon.classList.remove('online');
+           icon.classList.add('offline');
+       }
+      masterStatusContent.innerHTML = masterStatus;
+  }
+};
+
+// 채팅 히스토리 저장
+function setChatHistory(name){
+   var value =[];
+   document.querySelectorAll('.message-li').forEach(item => {
+
+       var time = item.querySelector('.message-data > .message-data-time').textContent;
+       var message = item.querySelector('.message').textContent;
+       var senderId;
+       var type = item.querySelector('.message').classList[1];
+       if(type == 'my-message'){
+           senderId = myId;
+       } else {
+           senderId = name;
+       }
+
+       data = {
+               "time":time,
+               "message":message,
+               "senderId":senderId
+       }
+       value.push(data);
+
+   })
+
+   sessionStorage.setItem(name, JSON.stringify(value));
+};
+
+// 대화기록 불러와서 대화창에 표시
+function getChatHistory(name){
+   var data = JSON.parse(sessionStorage.getItem(name));
+
+   if(data != null) {
+       data.forEach(item => {
+           var time = item.time;
+           var message = item.message;
+           var senderId = item.senderId;
+
+           insertMessage(senderId, time, message);
+       })
+   }
+};
+
+function scrollDown() {
+    var chatContent = document.querySelector("#chat-content");
+    chatContent.scrollTop = chatContent.scrollHeight;
+}
+
+// enter 키로 전송
+document.getElementById("msg").addEventListener("keydown", function(event) {
+    if (event.keyCode === 13) {
+        event.preventDefault(); // Prevent the default behavior (line break)
+        send(); // Call the send function to send the message
+    }
+});
+</script>
 
 <!-- bootstrap function -->
 <script type="text/javascript">
-		$(function() {
-			$('[data-toggle="tooltip"]').tooltip();
-		});
-	</script>
+    $(function() {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
 
 </body>
 </html>
